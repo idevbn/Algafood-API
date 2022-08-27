@@ -20,4 +20,8 @@ public class Restaurante {
     private String nome;
 
     private BigDecimal taxaFrete;
+
+    @ManyToOne
+    @JoinColumn(name = "cozinha_id")
+    private Cozinha cozinha;
 }
