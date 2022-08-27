@@ -21,6 +21,12 @@ public class CadastroCozinha {
         return query.getResultList();
     }
 
+    public Cozinha buscar(Long id) {
+        Cozinha cozinha = manager.find(Cozinha.class, id);
+
+        return cozinha;
+    }
+
     @Transactional
     public Cozinha adicionar(Cozinha cozinha) {
         Cozinha cozinhaPersistida = manager.merge(cozinha);
