@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
-public class ConsultaCozinhaMain {
+public class BuscaCozinhaMain {
     public static void main(String args[]) {
         ApplicationContext applicationContext = new SpringApplicationBuilder(AlgafoodApiApplication.class)
                 .web(WebApplicationType.NONE)
@@ -16,10 +16,8 @@ public class ConsultaCozinhaMain {
 
         CadastroCozinha cadastroCozinha = applicationContext.getBean(CadastroCozinha.class);
 
-        List<Cozinha> cozinhas = cadastroCozinha.listar();
+        Cozinha cozinha = cadastroCozinha.buscar(1L);
 
-        for (Cozinha cozinha : cozinhas) {
-            System.out.println("Cozinha " + cozinha.getNome());
-        }
+        System.out.printf("Cozinha: %s\n", cozinha.getNome());
     }
 }

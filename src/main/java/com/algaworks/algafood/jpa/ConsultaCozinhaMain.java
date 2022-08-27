@@ -19,7 +19,7 @@ public class ConsultaCozinhaMain {
         List<Cozinha> cozinhas = cadastroCozinha.listar();
 
         for (Cozinha cozinha : cozinhas) {
-            System.out.println("Cozinha " + cozinha.getNome());
+            System.out.printf("Cozinha: %s\n", cozinha.getNome());
         }
     }
 }
