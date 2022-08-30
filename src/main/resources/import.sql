@@ -18,3 +18,6 @@ INSERT INTO tb_cidade (nome, estado_id) VALUES ('Parahyba', 1);
 INSERT INTO tb_cidade (nome, estado_id) VALUES ('Passa-e-fica', 2);
 INSERT INTO tb_cidade (nome, estado_id) VALUES ('Itapipoca', 3);
 INSERT INTO tb_cidade (nome, estado_id) VALUES ('Garanhuns', 4);
+
+INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_COZINHAS', 'Permissão para consultar cozinhas');
+INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_COZINHAS', 'Permissão para editar cozinhas');
