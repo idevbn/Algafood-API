@@ -9,7 +9,12 @@ INSERT INTO tb_forma_pagamento (id, descricao, restaurante_id) VALUES (1, 'Cart�
 INSERT INTO tb_forma_pagamento (id, descricao, restaurante_id) VALUES (2, 'Cartão de débito', 2);
 INSERT INTO tb_forma_pagamento (id, descricao, restaurante_id) VALUES (3, 'Pix', 3);
 
-INSERT INTO tb_estado (nome) VALUES ('PB');
-INSERT INTO tb_estado (nome) VALUES ('RN');
-INSERT INTO tb_estado (nome) VALUES ('CE');
-INSERT INTO tb_estado (nome) VALUES ('PE');
+INSERT INTO tb_estado (id, nome) VALUES (1, 'PB');
+INSERT INTO tb_estado (id, nome) VALUES (2, 'RN');
+INSERT INTO tb_estado (id, nome) VALUES (3, 'CE');
+INSERT INTO tb_estado (id, nome) VALUES (4, 'PE');
+
+INSERT INTO tb_cidade (nome, estado_id) VALUES ('Parahyba', 1);
+INSERT INTO tb_cidade (nome, estado_id) VALUES ('Passa-e-fica', 2);
+INSERT INTO tb_cidade (nome, estado_id) VALUES ('Itapipoca', 3);
+INSERT INTO tb_cidade (nome, estado_id) VALUES ('Garanhuns', 4);
