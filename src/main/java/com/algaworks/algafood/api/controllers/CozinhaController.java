@@ -4,6 +4,7 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,5 +22,12 @@ public class CozinhaController {
         List<Cozinha> cozinhas = this.repository.listar();
 
         return cozinhas;
+    }
+
+    @GetMapping(value = "{id}")
+    public Cozinha buscar(@PathVariable(value = "id") Long id) throws Exception {
+        Cozinha cozinha = this.repository.buscar(id);
+
+        return cozinha;
     }
 }
