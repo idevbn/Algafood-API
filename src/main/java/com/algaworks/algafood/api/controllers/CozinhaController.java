@@ -4,6 +4,7 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -75,5 +76,34 @@ public class CozinhaController {
                 .build();
 
         return cozinhaResponse;
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Cozinha> remover(@PathVariable("id") Long id) {
+        try {
+            Cozinha cozinhaBuscada = this.repository.buscar(id);
+
+            if (cozinhaBuscada != null) {
+                this.repository.remover(cozinhaBuscada);
+
+                ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
+                        .status(HttpStatus.NO_CONTENT)
+                        .build();
+
+                return cozinhaResponse;
+            }
+
+            ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+
+            return cozinhaResponse;
+        } catch (DataIntegrityViolationException ex) {
+            ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .build();
+
+            return cozinhaResponse;
+        }
     }
 }
