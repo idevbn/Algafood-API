@@ -34,9 +34,9 @@ public class CozinhaController {
             return cozinhaResponse;
         }
         // Outra forma (shortcut): ResponseEntity.notFound().build();
-        ResponseEntity<Cozinha> cozinhaResposta = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
-        return cozinhaResposta;
+        return cozinhaResponse;
     }
 
     @PostMapping
