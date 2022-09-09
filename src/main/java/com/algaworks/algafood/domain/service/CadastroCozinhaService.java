@@ -18,7 +18,7 @@ public class CadastroCozinhaService {
     public Cozinha salvar(Cozinha cozinha) {
         Cozinha cozinhaSalva = this.repository.salvar(cozinha);
 
-        return cozinha;
+        return cozinhaSalva;
     }
 
     public void excluir(Long id) {
