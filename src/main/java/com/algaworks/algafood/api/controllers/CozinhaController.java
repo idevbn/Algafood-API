@@ -68,7 +68,7 @@ public class CozinhaController {
         if (cozinhaAtual != null) {
             BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-            Cozinha cozinhaSalva = this.repository.salvar(cozinhaAtual);
+            Cozinha cozinhaSalva = this.service.salvar(cozinhaAtual);
 
             ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
                     .status(HttpStatus.OK)
