@@ -28,12 +28,12 @@ public class CadastroCozinhaService {
         }
         catch (EmptyResultDataAccessException ex) {
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de cozinho com id = %d", id)
+                    String.format("Não existe um cadastro de cozinho com id=%d", id)
             );
         }
         catch (DataIntegrityViolationException ex) {
             throw new EntidadeEmUsoException(
-                    String.format("Cozinha de id = %d não pode ser removida pois está em uso", id)
+                    String.format("Cozinha de id=%d não pode ser removida pois está em uso", id)
             );
         }
     }
