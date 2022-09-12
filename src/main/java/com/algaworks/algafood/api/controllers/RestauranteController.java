@@ -59,7 +59,7 @@ public class RestauranteController {
 
             return restauranteResponse;
         } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<?> restauranteResponse = ResponseEntity
+            ResponseEntity<String> restauranteResponse = ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(ex.getMessage());
 
@@ -88,7 +88,7 @@ public class RestauranteController {
 
         } catch (EntidadeNaoEncontradaException ex) {
 
-            ResponseEntity<?> restauranteResponse = ResponseEntity
+            ResponseEntity<String> restauranteResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(ex.getMessage());
 
