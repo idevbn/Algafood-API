@@ -1,6 +1,5 @@
 package com.algaworks.algafood.infraestructure.repository;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
