@@ -73,6 +73,6 @@ public class CadastroCidadeService {
             throw new EntidadeNaoEncontradaException(
                     String.format("Não existe um cadastro de cidade com id=%d", id)
             );
-        } 
+        }
     }
 }
