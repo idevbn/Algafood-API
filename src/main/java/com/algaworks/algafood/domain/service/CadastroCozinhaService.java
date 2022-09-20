@@ -16,7 +16,7 @@ public class CadastroCozinhaService {
     CozinhaRepository repository;
 
     public Cozinha salvar(Cozinha cozinha) {
-        Cozinha cozinhaSalva = this.repository.salvar(cozinha);
+        Cozinha cozinhaSalva = this.repository.save(cozinha);
 
         return cozinhaSalva;
     }
@@ -24,11 +24,11 @@ public class CadastroCozinhaService {
     public void excluir(Long id) {
 
         try {
-            this.repository.remover(id);
+            this.repository.deleteById(id);
         }
         catch (EmptyResultDataAccessException ex) {
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de cozinho com id=%d", id)
+                    String.format("Não existe um cadastro de cozinha com id=%d", id)
             );
         }
         catch (DataIntegrityViolationException ex) {

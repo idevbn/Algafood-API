@@ -7,6 +7,8 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Optional;
+
 public class BuscaCozinhaMain {
     public static void main(String args[]) {
         ApplicationContext applicationContext = new SpringApplicationBuilder(AlgafoodApiApplication.class)
@@ -15,8 +17,8 @@ public class BuscaCozinhaMain {
 
         CozinhaRepository cozinhaRepository = applicationContext.getBean(CozinhaRepository.class);
 
-        Cozinha cozinha = cozinhaRepository.buscar(1L);
+        Optional<Cozinha> cozinha = cozinhaRepository.findById(1L);
 
-        System.out.printf("Cozinha: %s\n", cozinha.getNome());
+        System.out.printf("Cozinha: %s\n", cozinha.get().getNome());
     }
 }

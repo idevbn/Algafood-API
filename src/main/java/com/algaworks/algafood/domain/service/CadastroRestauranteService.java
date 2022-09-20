@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CadastroRestauranteService {
@@ -35,9 +36,9 @@ public class CadastroRestauranteService {
         }
 
         Long cozinhaId = restauranteBuscado.getCozinha().getId();
-        Cozinha cozinha = this.cozinhaRepository.buscar(cozinhaId);
+        Optional<Cozinha> cozinha = this.cozinhaRepository.findById(cozinhaId);
 
-        if (cozinha == null) {
+        if (cozinha.isEmpty()) {
             throw new EntidadeNaoEncontradaException(
                     String.format("Não existe uma cozinha cadastrada com o id=%d", cozinhaId)
             );
@@ -48,13 +49,10 @@ public class CadastroRestauranteService {
 
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = this.cozinhaRepository.buscar(cozinhaId);
-
-        if (cozinha == null) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe uma cozinha cadastrada com o id=%d", cozinhaId)
-            );
-        }
+        Cozinha cozinha = this.cozinhaRepository.findById(cozinhaId)
+                .orElseThrow(() -> new EntidadeNaoEncontradaException(
+                        String.format("Não existe uma cozinha cadastrada com o id=%d", cozinhaId)
+                ));
 
         restaurante.setCozinha(cozinha);
 
