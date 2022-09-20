@@ -17,7 +17,7 @@ public class ConsultaEstadoMain {
 
         EstadoRepository estadoRepository = applicationContext.getBean(EstadoRepository.class);
 
-        List<Estado> estados = estadoRepository.listar();
+        List<Estado> estados = estadoRepository.findAll();
 
         for (Estado estado : estados) {
             System.out.printf("Estado: %s - Id: %d \n",

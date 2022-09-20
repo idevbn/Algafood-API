@@ -21,21 +21,21 @@ public class CadastroRestauranteService {
     private CozinhaRepository cozinhaRepository;
 
     public List<Restaurante> listar() {
-        List<Restaurante> restaurantes = this.repository.listar();
+        List<Restaurante> restaurantes = this.repository.findAll();
 
         return restaurantes;
     }
 
     public Restaurante buscar(Long id) {
-        Restaurante restauranteBuscado = this.repository.buscar(id);
+        Optional<Restaurante> restauranteBuscado = this.repository.findById(id);
 
-        if (restauranteBuscado == null) {
+        if (restauranteBuscado.isEmpty()) {
             throw new EntidadeNaoEncontradaException(
                     String.format("Não existe um restaurante cadastrado com o id=%d", id)
             );
         }
 
-        Long cozinhaId = restauranteBuscado.getCozinha().getId();
+        Long cozinhaId = restauranteBuscado.get().getCozinha().getId();
         Optional<Cozinha> cozinha = this.cozinhaRepository.findById(cozinhaId);
 
         if (cozinha.isEmpty()) {
@@ -44,7 +44,7 @@ public class CadastroRestauranteService {
             );
         }
 
-        return restauranteBuscado;
+        return restauranteBuscado.get();
     }
 
     public Restaurante salvar(Restaurante restaurante) {
@@ -56,7 +56,7 @@ public class CadastroRestauranteService {
 
         restaurante.setCozinha(cozinha);
 
-        Restaurante restauranteSalvo = this.repository.salvar(restaurante);
+        Restaurante restauranteSalvo = this.repository.save(restaurante);
 
         return restauranteSalvo;
     }

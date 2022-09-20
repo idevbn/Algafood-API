@@ -17,7 +17,7 @@ public class ConsultaFormaPagamentoMain {
 
         FormaPagamentoRepository formaPagamentoRepository = applicationContext.getBean(FormaPagamentoRepository.class);
 
-        List<FormaPagamento> formasPagamento = formaPagamentoRepository.listar();
+        List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
 
         for (FormaPagamento formaPagamento : formasPagamento) {
             System.out.printf("Forma de pagamento: %s - Restaurante: %s - Cozinha: %s \n",

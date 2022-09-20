@@ -34,22 +34,38 @@ public class RestauranteController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable(value = "id") Long id) {
-        Restaurante restauranteBuscado = this.service.buscar(id);
+    public ResponseEntity<?> buscar(@PathVariable(value = "id") Long id) {
+//        Restaurante restauranteBuscado = this.service.buscar(id);
+//
+//        if (restauranteBuscado == null) {
+//            ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
+//                    .status(HttpStatus.NOT_FOUND)
+//                    .build();
+//
+//            return restauranteResponse;
+//        }
+//
+//        ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(restauranteBuscado);
+//
+//        return restauranteResponse;
 
-        if (restauranteBuscado == null) {
+        try {
+            Restaurante restauranteBuscado = this.service.buscar(id);
+
             ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(restauranteBuscado);
+
+            return restauranteResponse;
+        } catch (EntidadeNaoEncontradaException ex) {
+            ResponseEntity<String> restauranteResponse = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
-                    .build();
+                    .body(ex.getMessage());
 
             return restauranteResponse;
         }
-
-        ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(restauranteBuscado);
-
-        return restauranteResponse;
     }
 
     @PostMapping

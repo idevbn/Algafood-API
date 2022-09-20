@@ -25,8 +25,8 @@ public class InclusaoRestauranteMain {
         restaurante2.setNome("El Taco - Comida Mexicana");
         restaurante2.setTaxaFrete(BigDecimal.valueOf(13.67));
 
-        restaurante1 = restauranteRepository.salvar(restaurante1);
-        restaurante2 = restauranteRepository.salvar(restaurante2);
+        restaurante1 = restauranteRepository.save(restaurante1);
+        restaurante2 = restauranteRepository.save(restaurante2);
 
         System.out.printf("%d - %s - %f\n",
                 restaurante1.getId(),

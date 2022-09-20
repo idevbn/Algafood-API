@@ -22,7 +22,7 @@ public class AlteracaoRestauranteMain {
         restaurante.setNome("Tokyo - Comida Japonesa");
         restaurante.setTaxaFrete(BigDecimal.valueOf(8.94));
 
-        restauranteRepository.salvar(restaurante);
+        restauranteRepository.save(restaurante);
 
         System.out.printf("%d - %s\n", restaurante.getId(), restaurante.getNome());
     }
