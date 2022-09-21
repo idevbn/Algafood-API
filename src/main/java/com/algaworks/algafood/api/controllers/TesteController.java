@@ -77,4 +77,32 @@ public class TesteController {
 
         return restaurantesResponse;
     }
+
+    @GetMapping(value = "/restaurantes/primeiro-por-nome")
+    public ResponseEntity<Optional<Restaurante>> restaurantePrimeiroPorNome(
+            @RequestParam String nome
+    ) {
+        Optional<Restaurante> restaurante = this.restauranteRepository
+                .findFirstRestauranteByNomeContaining(nome);
+
+        ResponseEntity<Optional<Restaurante>> restauranteResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restaurante);
+
+        return restauranteResponse;
+    }
+
+    @GetMapping(value = "/restaurantes/top2-por-nome")
+    public ResponseEntity<List<Restaurante>> restaurantesTop2PorNome(
+            @RequestParam String nome
+    ) {
+        List<Restaurante> restaurantes = this.restauranteRepository
+                .findTop2ByNomeContaining(nome);
+
+        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restaurantes);
+
+        return restaurantesResponse;
+    }
 }
