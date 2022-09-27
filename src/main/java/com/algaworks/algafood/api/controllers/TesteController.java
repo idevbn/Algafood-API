@@ -69,7 +69,7 @@ public class TesteController {
             @RequestParam Long cozinhaId
     ) {
         List<Restaurante> restaurantes = this.restauranteRepository
-                .findByNomeContainingAndCozinhaId(nome, cozinhaId);
+                .consultarPorNome(nome, cozinhaId);
 
         ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
