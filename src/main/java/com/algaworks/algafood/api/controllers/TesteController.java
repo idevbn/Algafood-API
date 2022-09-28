@@ -105,4 +105,20 @@ public class TesteController {
 
         return restaurantesResponse;
     }
+
+    @GetMapping(value = "/restaurantes/por-nome-e-frete")
+    public ResponseEntity<List<Restaurante>> restaurantesPorNomeEFrete(
+            @RequestParam String nome,
+            @RequestParam BigDecimal taxaFreteInicial,
+            @RequestParam BigDecimal taxaFreteFinal
+    ) {
+        List<Restaurante> restaurantes = this.restauranteRepository
+                .find(nome, taxaFreteInicial, taxaFreteFinal);
+
+        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restaurantes);
+
+        return restaurantesResponse;
+    }
 }

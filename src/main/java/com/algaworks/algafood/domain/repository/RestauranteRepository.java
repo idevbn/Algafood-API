@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-public interface RestauranteRepository extends JpaRepository<Restaurante, Long> {
+public interface RestauranteRepository extends JpaRepository<Restaurante, Long>, RestauranteRepositoryQuery {
     List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
 
 //    @Query(value = "from Restaurante where nome like %:nome% and cozinha.id = :id")
@@ -18,4 +18,6 @@ public interface RestauranteRepository extends JpaRepository<Restaurante, Long> 
     Optional<Restaurante> findFirstRestauranteByNomeContaining(String nome);
 
     List<Restaurante> findTop2ByNomeContaining(String nome);
+
+    List<Restaurante> find(String nome, BigDecimal taxaFreteInicial,  BigDecimal taxaFreteFinal);
 }
