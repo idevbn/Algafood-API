@@ -108,9 +108,9 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/por-nome-e-frete")
     public ResponseEntity<List<Restaurante>> restaurantesPorNomeEFrete(
-            @RequestParam String nome,
-            @RequestParam BigDecimal taxaFreteInicial,
-            @RequestParam BigDecimal taxaFreteFinal
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) BigDecimal taxaFreteInicial,
+            @RequestParam(required = false) BigDecimal taxaFreteFinal
     ) {
         List<Restaurante> restaurantes = this.restauranteRepository
                 .find(nome, taxaFreteInicial, taxaFreteFinal);
