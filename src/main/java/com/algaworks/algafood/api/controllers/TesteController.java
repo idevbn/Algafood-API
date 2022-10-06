@@ -136,4 +136,15 @@ public class TesteController {
 
         return restaurantesResponse;
     }
+
+    @GetMapping(value = "/restaurantes/buscar-primeiro")
+    public ResponseEntity<Optional<Restaurante>> restauranteBuscarPrimeiro() {
+        Optional<Restaurante> restaurante = this.restauranteRepository.buscarPrimeiro();
+
+        ResponseEntity<Optional<Restaurante>> restauranteResponse = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restaurante);
+
+        return restauranteResponse;
+    }
 }
