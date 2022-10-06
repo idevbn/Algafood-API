@@ -1,11 +1,12 @@
 package com.algaworks.algafood.api.controllers;
 
+import static com.algaworks.algafood.infraestructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.algaworks.algafood.infraestructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
+
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
-import com.algaworks.algafood.infraestructure.repository.spec.RestauranteComFreteGratisSpec;
-import com.algaworks.algafood.infraestructure.repository.spec.RestauranteComNomeSemelhanteSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -128,11 +129,9 @@ public class TesteController {
     public ResponseEntity<List<Restaurante>> restaurantesComFreteGratis(
             @RequestParam(required = false) String nome
     ) {
-        var comFreteGratis = new RestauranteComFreteGratisSpec();
-        var comNomeSemelhante = new RestauranteComNomeSemelhanteSpec(nome);
 
         List<Restaurante> restaurantes = this.restauranteRepository
-                .findAll(comFreteGratis.and(comNomeSemelhante));
+                .findAll(comFreteGratis().and(comNomeSemelhante(nome)));
 
         ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
