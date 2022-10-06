@@ -1,8 +1,5 @@
 package com.algaworks.algafood.api.controllers;
 
-import static com.algaworks.algafood.infraestructure.repository.spec.RestauranteSpecs.comFreteGratis;
-import static com.algaworks.algafood.infraestructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
-
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
@@ -131,7 +128,7 @@ public class TesteController {
     ) {
 
         List<Restaurante> restaurantes = this.restauranteRepository
-                .findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+                .findComFreteGratis(nome);
 
         ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
