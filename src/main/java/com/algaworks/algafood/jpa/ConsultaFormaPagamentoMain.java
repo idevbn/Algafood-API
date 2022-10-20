@@ -20,10 +20,8 @@ public class ConsultaFormaPagamentoMain {
         List<FormaPagamento> formasPagamento = formaPagamentoRepository.findAll();
 
         for (FormaPagamento formaPagamento : formasPagamento) {
-            System.out.printf("Forma de pagamento: %s - Restaurante: %s - Cozinha: %s \n",
-                    formaPagamento.getDescricao(),
-                    formaPagamento.getRestaurante().getNome(),
-                    formaPagamento.getRestaurante().getCozinha().getNome()
+            System.out.printf("Forma de pagamento: %s \n",
+                    formaPagamento.getDescricao()
             );
         }
     }
