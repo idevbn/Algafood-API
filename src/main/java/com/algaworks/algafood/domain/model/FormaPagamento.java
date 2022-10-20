@@ -18,8 +18,4 @@ public class FormaPagamento {
 
     @Column(nullable = false)
     private String descricao;
-
-    @ManyToOne
-    @JoinColumn(name = "restaurante_id")
-    private Restaurante restaurante;
 }
