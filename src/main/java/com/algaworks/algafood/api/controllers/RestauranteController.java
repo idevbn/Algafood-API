@@ -35,21 +35,6 @@ public class RestauranteController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<?> buscar(@PathVariable(value = "id") Long id) {
-//        Restaurante restauranteBuscado = this.service.buscar(id);
-//
-//        if (restauranteBuscado == null) {
-//            ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-//                    .status(HttpStatus.NOT_FOUND)
-//                    .build();
-//
-//            return restauranteResponse;
-//        }
-//
-//        ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(restauranteBuscado);
-//
-//        return restauranteResponse;
 
         try {
             Restaurante restauranteBuscado = this.service.buscar(id);
