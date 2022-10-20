@@ -5,9 +5,10 @@ INSERT INTO  tb_restaurante (id, nome, taxa_frete, cozinha_id) VALUES (1, 'Pad T
 INSERT INTO  tb_restaurante (id, nome, taxa_frete, cozinha_id) VALUES (2, 'Bistrô Vadapav', 9.80, 2);
 INSERT INTO  tb_restaurante (id, nome, taxa_frete, cozinha_id) VALUES (3, 'Namaskar', 7.39, 2);
 
-INSERT INTO tb_forma_pagamento (id, descricao, restaurante_id) VALUES (1, 'Cartão de crédito', 1);
-INSERT INTO tb_forma_pagamento (id, descricao, restaurante_id) VALUES (2, 'Cartão de débito', 2);
-INSERT INTO tb_forma_pagamento (id, descricao, restaurante_id) VALUES (3, 'Pix', 3);
+INSERT INTO tb_forma_pagamento (id, descricao) VALUES (1, 'Dinheiro');
+INSERT INTO tb_forma_pagamento (id, descricao) VALUES (2, 'Cartão de crédito');
+INSERT INTO tb_forma_pagamento (id, descricao) VALUES (3, 'Cartão de débito');
+INSERT INTO tb_forma_pagamento (id, descricao) VALUES (4, 'Pix');
 
 INSERT INTO tb_estado (id, nome) VALUES (1, 'PB');
 INSERT INTO tb_estado (id, nome) VALUES (2, 'RN');
@@ -21,3 +22,5 @@ INSERT INTO tb_cidade (nome, estado_id) VALUES ('Garanhuns', 4);
 
 INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_COZINHAS', 'Permissão para consultar cozinhas');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_COZINHAS', 'Permissão para editar cozinhas');
+
+INSERT INTO tb_restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (2, 1), (2, 4), (3, 1), (3, 2), (3, 3);
