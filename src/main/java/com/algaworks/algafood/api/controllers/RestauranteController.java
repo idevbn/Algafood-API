@@ -80,7 +80,9 @@ public class RestauranteController {
         try {
             Restaurante restauranteAtual = this.service.buscar(id);
 
-            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco");
+            BeanUtils.copyProperties(
+                    restaurante, restauranteAtual, "id", "formasPagamento", "endereco","dataCadastro"
+            );
 
             Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);
 
