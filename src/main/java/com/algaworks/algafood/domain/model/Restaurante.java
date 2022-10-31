@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_restaurante")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Restaurante {
 
-    @EqualsAndHashCode.Include
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -33,8 +33,8 @@ public class Restaurante {
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
-    @JsonIgnore
     @Embedded
+    @JsonIgnore
     private Endereco endereco;
 
     @JsonIgnore
@@ -55,4 +55,5 @@ public class Restaurante {
             inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
     )
     private List<FormaPagamento> formasPagamento = new ArrayList<>();
+
 }

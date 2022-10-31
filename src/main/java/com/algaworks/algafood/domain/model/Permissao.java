@@ -5,14 +5,14 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
 @Entity
 @Table(name = "tb_permissao")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Permissao {
 
-    @EqualsAndHashCode.Include
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -21,4 +21,5 @@ public class Permissao {
 
     @Column(nullable = false)
     private String descricao;
+
 }

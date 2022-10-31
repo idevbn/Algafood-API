@@ -6,13 +6,13 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_cidade")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Cidade {
 
-    @EqualsAndHashCode.Include
     @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -22,4 +22,5 @@ public class Cidade {
     @ManyToOne
     @JoinColumn(name = "estado_id", nullable = false)
     private Estado estado;
+
 }
