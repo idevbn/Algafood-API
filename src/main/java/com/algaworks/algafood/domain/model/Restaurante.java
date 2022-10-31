@@ -56,4 +56,8 @@ public class Restaurante {
     )
     private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "restaurante")
+    private List<Produto> produtos = new ArrayList<>();
+
 }
