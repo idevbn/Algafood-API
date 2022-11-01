@@ -24,3 +24,7 @@ INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_COZINHAS', 'Permis
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_COZINHAS', 'Permissão para editar cozinhas');
 
 INSERT INTO tb_restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) VALUES (1, 1), (1, 2), (1, 3), (1, 4), (2, 1), (2, 4), (3, 1), (3, 2), (3, 3);
+
+INSERT INTO tb_produto (id, ativo, nome, descricao, preco, restaurante_id) VALUES  (1, 1, 'Samosa', 'Pastéis fritos que podem ser recheados com lentilhas ou algum tipo de carne, temperados com especiarias indianas', 12.25, 3);
+INSERT INTO tb_produto (id, ativo, nome, descricao, preco, restaurante_id) VALUES  (2, 1, 'Pad Thai', 'Composto por noodles misturados num wok bem quente com rebentos de soja, camarão, ovo e cebola e temperados com molho de soja, açúcar e malaguetas.', 21.45, 1);
+INSERT INTO tb_produto (id, ativo, nome, descricao, preco, restaurante_id) VALUES  (3, 1, 'Palak Paneer', 'Consiste basicamente de três ingredientes: espinafre, queijo e gengibre.', 24.95, 2);
