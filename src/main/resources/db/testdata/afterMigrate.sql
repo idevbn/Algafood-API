@@ -1,3 +1,30 @@
+SET foreign_key_checks = 0;
+
+DELETE FROM tb_cidade;
+DELETE FROM tb_cozinha;
+DELETE FROM tb_estado;
+DELETE FROM tb_forma_pagamento;
+DELETE FROM tb_grupo;
+DELETE FROM tb_grupo_permissao;
+DELETE FROM tb_permissao;
+DELETE FROM tb_produto;
+DELETE FROM tb_restaurante;
+DELETE FROM tb_restaurante_forma_pagamento;
+DELETE FROM tb_usuario;
+DELETE FROM tb_usuario_grupo;
+
+SET foreign_key_checks = 1;
+
+ALTER TABLE tb_cidade auto_increment = 1;
+ALTER TABLE tb_cozinha auto_increment = 1;
+ALTER TABLE tb_estado auto_increment = 1;
+ALTER TABLE tb_forma_pagamento auto_increment = 1;
+ALTER TABLE tb_grupo auto_increment = 1;
+ALTER TABLE tb_permissao auto_increment = 1;
+ALTER TABLE tb_produto auto_increment = 1;
+ALTER TABLE tb_restaurante auto_increment = 1;
+ALTER TABLE tb_usuario auto_increment = 1;
+
 INSERT INTO tb_cozinha (nome) VALUES ('Tailandesa');
 INSERT INTO tb_cozinha (nome) VALUES ('Indiana');
 
