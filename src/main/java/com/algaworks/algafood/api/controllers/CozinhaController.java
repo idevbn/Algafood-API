@@ -1,7 +1,5 @@
 package com.algaworks.algafood.api.controllers;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -88,28 +86,35 @@ public class CozinhaController {
         return cozinhaResponse;
     }
 
+//    @DeleteMapping(value = "/{id}")
+//    public ResponseEntity<?> remover(@PathVariable("id") Long id) {
+//        try {
+//            this.service.excluir(id);
+//
+//            ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
+//                    .status(HttpStatus.NO_CONTENT)
+//                    .build();
+//
+//            return cozinhaResponse;
+//        } catch (EntidadeNaoEncontradaException ex) {
+//            ResponseEntity<?> cozinhaResponse = ResponseEntity
+//                    .status(HttpStatus.NOT_FOUND)
+//                    .body(ex.getMessage());
+//
+//            return cozinhaResponse;
+//        } catch (EntidadeEmUsoException ex) {
+//            ResponseEntity<?> cozinhaResponse = ResponseEntity
+//                    .status(HttpStatus.CONFLICT)
+//                    .body(ex.getMessage());
+//
+//            return cozinhaResponse;
+//        }
+//    }
+
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> remover(@PathVariable("id") Long id) {
-        try {
-            this.service.excluir(id);
-
-            ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .build();
-
-            return cozinhaResponse;
-        } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<?> cozinhaResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
-
-            return cozinhaResponse;
-        } catch (EntidadeEmUsoException ex) {
-            ResponseEntity<?> cozinhaResponse = ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(ex.getMessage());
-
-            return cozinhaResponse;
-        }
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable("id") Long id) {
+        this.service.excluir(id);
     }
+
 }
