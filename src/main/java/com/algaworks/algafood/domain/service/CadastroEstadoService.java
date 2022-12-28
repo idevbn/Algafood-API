@@ -9,32 +9,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 public class CadastroEstadoService {
 
+    private static final String MSG_ESTADO_NAO_ENCONTRADO = "Não existe um cadastro de estado com id=%d";
+    private static final String MSG_ESTADO_EM_USO = "Estado de id=%d não pode ser removido pois está em uso";
+
     @Autowired
     private EstadoRepository repository;
-
-    public List<Estado> listar() {
-        List<Estado> estados = this.repository.findAll();
-
-        return estados;
-    }
-
-    public Estado buscar(Long id) {
-        Optional<Estado> estadoBuscado = this.repository.findById(id);
-
-        if (estadoBuscado.isEmpty()) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um estado cadastrado com o id=%d", id)
-            );
-        }
-
-        return estadoBuscado.get();
-    }
 
     public Estado salvar(Estado estado) {
         Estado estadoSalvo = this.repository.save(estado);
@@ -47,12 +29,23 @@ public class CadastroEstadoService {
             this.repository.deleteById(id);
         } catch (EmptyResultDataAccessException ex) {
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de estado com id=%d", id)
+                    String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
             );
         } catch (DataIntegrityViolationException ex) {
             throw new EntidadeEmUsoException(
-                    String.format("Estado de id=%d não pode ser removido pois está em uso", id)
+                    String.format(MSG_ESTADO_EM_USO, id)
             );
         }
     }
+    
+    public Estado buscarOuFalhar(final Long id) {
+        final Estado estadoEncontrado = this.repository.findById(id).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
+                )
+        );
+
+        return estadoEncontrado;
+    }
+    
 }
