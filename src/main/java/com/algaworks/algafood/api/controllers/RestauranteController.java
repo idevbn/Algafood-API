@@ -1,5 +1,7 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -41,9 +43,13 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
     public Restaurante adicionar(@RequestBody final Restaurante restaurante) {
-        final Restaurante restauranteSalvo = this.service.salvar(restaurante);
+        try {
+            final Restaurante restauranteSalvo = this.service.salvar(restaurante);
 
-        return restauranteSalvo;
+            return restauranteSalvo;
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping(value = "/{id}")
@@ -59,9 +65,13 @@ public class RestauranteController {
                 "id", "formasPagamento", "endereco","dataCadastro"
         );
 
-        final Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);
+        try {
+            final Restaurante restauranteSalvo = this.service.salvar(restaurante);
 
-        return restauranteSalvo;
+            return restauranteSalvo;
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PatchMapping(value = "/{id}")
