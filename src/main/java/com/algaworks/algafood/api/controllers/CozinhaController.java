@@ -36,12 +36,9 @@ public class CozinhaController {
 
     @GetMapping(value = "/{id}")
     public Cozinha buscar(@PathVariable(value = "id") Long id) {
+        final Cozinha cozinha = this.service.buscarOuFalhar(id);
 
-        final Cozinha cozinhaEncontrada = this.repository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException("Mensagem")
-        );
-
-        return cozinhaEncontrada;
+        return cozinha;
     }
 
     @PostMapping
@@ -60,6 +57,8 @@ public class CozinhaController {
             @PathVariable("id") Long id,
             @RequestBody Cozinha cozinha
     ) {
+
+
         Optional<Cozinha> cozinhaAtual = this.repository.findById(id);
 
         if (cozinhaAtual.isPresent()) {

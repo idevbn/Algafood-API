@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastroCozinhaService {
 
+    public static final String MSG_COZINHA_NAO_ENCONTRADA = "Não existe um cadastro de cozinha com id=%d";
+
     @Autowired
     CozinhaRepository repository;
 
@@ -28,7 +30,7 @@ public class CadastroCozinhaService {
         }
         catch (EmptyResultDataAccessException ex) {
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de cozinha com id=%d", id)
+                    String.format(MSG_COZINHA_NAO_ENCONTRADA, id)
             );
         }
         catch (DataIntegrityViolationException ex) {
@@ -37,4 +39,15 @@ public class CadastroCozinhaService {
             );
         }
     }
+
+    public Cozinha buscarOuFalhar(final Long id) {
+        final Cozinha cozinhaEncontrada = this.repository.findById(id).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id)
+                )
+        );
+
+        return cozinhaEncontrada;
+    }
+
 }
