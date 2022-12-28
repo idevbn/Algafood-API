@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -34,19 +35,13 @@ public class CozinhaController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cozinha> buscar(@PathVariable(value = "id") Long id) {
-        Optional<Cozinha> cozinha = this.repository.findById(id);
+    public Cozinha buscar(@PathVariable(value = "id") Long id) {
 
-        if (cozinha.isPresent()) {
-            ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(cozinha.get());
+        final Cozinha cozinhaEncontrada = this.repository.findById(id).orElseThrow(
+                () -> new EntidadeNaoEncontradaException("Mensagem")
+        );
 
-            return cozinhaResponse;
-        }
-        ResponseEntity<Cozinha> cozinhaResponse = ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
-        return cozinhaResponse;
+        return cozinhaEncontrada;
     }
 
     @PostMapping
