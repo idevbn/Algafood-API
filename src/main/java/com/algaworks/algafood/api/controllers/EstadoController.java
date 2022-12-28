@@ -1,13 +1,11 @@
 package com.algaworks.algafood.api.controllers;
 
-import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Estado;
+import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,97 +15,52 @@ import java.util.List;
 public class EstadoController {
 
     @Autowired
+    private EstadoRepository repository;
+
+    @Autowired
     private CadastroEstadoService service;
 
     @GetMapping
-    public ResponseEntity<List<Estado>> listar() {
-        List<Estado> estados = this.service.listar();
+    public List<Estado> listar() {
+        final List<Estado> estados = this.repository.findAll();
 
-        ResponseEntity<List<Estado>> estadosReponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(estados);
-
-        return estadosReponse;
+        return estados;
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> buscar(@PathVariable(value = "id") Long id) {
-        try {
-            Estado estado = this.service.buscar(id);
+    public Estado buscar(@PathVariable(value = "id") final Long id) {
 
-            ResponseEntity<Estado> estadoResponse = ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(estado);
+        final Estado estadoEncontrado = this.service.buscarOuFalhar(id);
 
-            return estadoResponse;
-        } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<String> estadoResponse = ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ex.getMessage());
-
-            return estadoResponse;
-        }
+        return estadoEncontrado;
     }
 
     @PostMapping
-    public ResponseEntity<Estado> adicionar(@RequestBody Estado estado) {
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Estado adicionar(@RequestBody final Estado estado) {
         Estado estadoSalvo = this.service.salvar(estado);
 
-        ResponseEntity<Estado> estadoResponse = ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(estadoSalvo);
-
-        return estadoResponse;
+        return estadoSalvo;
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> atualizar(
-            @PathVariable(value = "id") Long id,
+    public Estado atualizar(
+            @PathVariable(value = "id") final Long id,
             @RequestBody Estado estado
     ) {
-        try {
-            Estado estadoAtual = this.service.buscar(id);
+        final Estado estadoAtual = this.service.buscarOuFalhar(id);
 
-            BeanUtils.copyProperties(estado, estadoAtual, "id");
+        BeanUtils.copyProperties(estado, estadoAtual, "id");
 
-            Estado estadoSalvo = this.service.salvar(estadoAtual);
+        final Estado estadoSalvo = this.service.salvar(estadoAtual);
 
-            ResponseEntity<Estado> estadoResponse = ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(estadoSalvo);
-
-            return estadoResponse;
-        } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<String> estadoResponse = ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ex.getMessage());
-
-            return estadoResponse;
-        }
+        return estadoSalvo;
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> remover(@PathVariable(value = "id") Long id) {
-        try {
-            this.service.excluir(id);
-
-            ResponseEntity<Estado> estadoResponse = ResponseEntity
-                    .status(HttpStatus.NO_CONTENT)
-                    .build();
-
-            return estadoResponse;
-        } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<String> estadoResponse = ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ex.getMessage());
-
-            return estadoResponse;
-        } catch (EntidadeEmUsoException ex) {
-            ResponseEntity<String> estadoResponse = ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(ex.getMessage());
-
-            return estadoResponse;
-        }
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable(value = "id") final Long id) {
+        this.service.excluir(id);
     }
+
 }

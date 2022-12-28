@@ -1,13 +1,12 @@
 package com.algaworks.algafood.api.controllers;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,121 +19,78 @@ import java.util.Map;
 public class RestauranteController {
 
     @Autowired
+    private RestauranteRepository repository;
+
+    @Autowired
     private CadastroRestauranteService service;
 
     @GetMapping
-    public ResponseEntity<List<Restaurante>> listar() {
-        List<Restaurante> restaurantes = this.service.listar();
+    public List<Restaurante> listar() {
+        final List<Restaurante> restaurantes = this.repository.findAll();
 
-        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
-                .status(HttpStatus.OK)
-                .body(restaurantes);
-
-        return restaurantesResponse;
+        return restaurantes;
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> buscar(@PathVariable(value = "id") Long id) {
+    public Restaurante buscar(@PathVariable(value = "id") final Long id) {
+        final Restaurante restauranteEncontrado = this.service.buscarOuFalhar(id);
 
-        try {
-            Restaurante restauranteBuscado = this.service.buscar(id);
-
-            ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(restauranteBuscado);
-
-            return restauranteResponse;
-        } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<String> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
-
-            return restauranteResponse;
-        }
+        return restauranteEncontrado;
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
-        try {
-            Restaurante restauranteSalvo = this.service.salvar(restaurante);
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Restaurante adicionar(@RequestBody final Restaurante restaurante) {
+        final Restaurante restauranteSalvo = this.service.salvar(restaurante);
 
-            ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(restauranteSalvo);
-
-            return restauranteResponse;
-        } catch (EntidadeNaoEncontradaException ex) {
-            ResponseEntity<String> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ex.getMessage());
-
-            return restauranteResponse;
-        }
+        return restauranteSalvo;
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<?> atualizar(
-            @PathVariable(value = "id") Long id,
-            @RequestBody Restaurante restaurante
+    public Restaurante atualizar(
+            @PathVariable(value = "id") final Long id,
+            @RequestBody final Restaurante restaurante
     ) {
-        try {
-            Restaurante restauranteAtual = this.service.buscar(id);
+        final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
-            BeanUtils.copyProperties(
-                    restaurante, restauranteAtual, "id", "formasPagamento", "endereco","dataCadastro"
-            );
+        BeanUtils.copyProperties(
+                restaurante,
+                restauranteAtual,
+                "id", "formasPagamento", "endereco","dataCadastro"
+        );
 
-            Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);
+        final Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);
 
-            ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(restauranteSalvo);
-
-            return restauranteResponse;
-
-        } catch (EntidadeNaoEncontradaException ex) {
-
-            ResponseEntity<String> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(ex.getMessage());
-
-            return restauranteResponse;
-        }
+        return restauranteSalvo;
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<?> atualizarParcialmente(
-            @PathVariable("id") Long id,
-            @RequestBody Map<String, Object> campos
+    public Restaurante atualizarParcialmente(
+            @PathVariable("id") final Long id,
+            @RequestBody final Map<String, Object> campos
     ) {
-        Restaurante restauranteAtual = this.service.buscar(id);
-
-        if (restauranteAtual == null) {
-            ResponseEntity<Restaurante> restauranteResponse = ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
-
-            return restauranteResponse;
-        }
+        final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
         merge(campos, restauranteAtual);
 
-        ResponseEntity<?> atualizar = this.atualizar(id, restauranteAtual);
+        final Restaurante atualizar = this.atualizar(id, restauranteAtual);
 
         return atualizar;
     }
 
-    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
-        ObjectMapper objectMapper = new ObjectMapper();                                            
-        Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
+    private void merge(final Map<String, Object> dadosOrigem, final Restaurante restauranteDestino) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+
+        final Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
 
         dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
             Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
             field.setAccessible(true);
 
-            Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
+            final Object novoValor = ReflectionUtils.getField(field, restauranteOrigem);
 
             ReflectionUtils.setField(field, restauranteDestino, novoValor);
         });
     }
+
 }
