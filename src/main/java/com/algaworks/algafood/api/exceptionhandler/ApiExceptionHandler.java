@@ -3,7 +3,9 @@ package com.algaworks.algafood.api.exceptionhandler;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -107,6 +110,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             );
 
             return response;
+        } else if (rootCause instanceof PropertyBindingException) {
+            final ResponseEntity<Object> response = this.handlePropertyBindingException(
+                    (PropertyBindingException) rootCause, headers, status, request
+            );
+
+            return response;
         }
 
         final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
@@ -170,9 +179,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final HttpStatus status,
             final WebRequest request
     ) {
-        final String path = ex.getPath().stream()
-                .map(ref -> ref.getFieldName())
-                .collect(Collectors.joining("."));
+        final String path = this.joinPath(ex.getPath());
 
         final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
 
@@ -190,6 +197,38 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .handleExceptionInternal(ex, apiError, headers, status, request);
 
         return response;
+    }
+
+    private ResponseEntity<Object> handlePropertyBindingException(
+            final PropertyBindingException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        final String path = this.joinPath(ex.getPath());
+
+        final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
+
+        final String detail = String.format(
+                "A propriedade '%s' não existe. Corrija ou remova essa propriedade e tente novamente",
+                path
+        );
+
+        final ApiError apiError = this
+                .createApiErrorBuilder(status, mensagemIncompreensivel, detail).build();
+
+        final ResponseEntity<Object> response = this
+                .handleExceptionInternal(ex, apiError, headers, status, request);
+
+        return response;
+    }
+
+    private String joinPath(final List<Reference> references) {
+        final String path = references.stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+
+        return path;
     }
 
 }
