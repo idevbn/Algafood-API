@@ -3,6 +3,8 @@ package com.algaworks.algafood.api.exceptionhandler;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.stream.Collectors;
 
 /**
  * Classe responsável por capturar as exceções de todos os controladores
@@ -33,13 +37,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiError apiError = this.createApiErrorBuilder(status, entidadeNaoEncontrada, detail)
                 .build();
 
-        return handleExceptionInternal(
+        final ResponseEntity<Object> response = this.handleExceptionInternal(
                 ex,
                 apiError,
                 new HttpHeaders(),
                 status,
                 request
         );
+
+        return response;
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
@@ -53,13 +59,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         final ApiError apiError = this.createApiErrorBuilder(status, entidadeEmUso, detail).build();
 
-        return handleExceptionInternal(
+        final ResponseEntity<Object> response = handleExceptionInternal(
                 ex,
                 apiError,
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
                 request
         );
+
+        return response;
     }
 
     @ExceptionHandler(NegocioException.class)
@@ -73,13 +81,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         final ApiError apiError = this.createApiErrorBuilder(status, erroNegocio, detail).build();
 
-        return handleExceptionInternal(
+        final ResponseEntity<Object> response = this.handleExceptionInternal(
                 ex,
                 apiError,
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST,
                 request
         );
+
+        return response;
     }
 
     @Override
@@ -89,13 +99,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final HttpStatus status,
             final WebRequest request
     ) {
+        final Throwable rootCause = ExceptionUtils.getRootCause(ex);
+
+        if (rootCause instanceof InvalidFormatException) {
+            final ResponseEntity<Object> response = this.handleInvalidFormatException(
+                    (InvalidFormatException) rootCause, headers, status, request
+            );
+
+            return response;
+        }
+
         final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
         final String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 
         final ApiError apiError = this.createApiErrorBuilder(status, mensagemIncompreensivel, detail)
                 .build();
 
-        return handleExceptionInternal(ex, apiError, new HttpHeaders(), status, request);
+        final ResponseEntity<Object> response = this
+                .handleExceptionInternal(ex, apiError, new HttpHeaders(), status, request);
+
+        return response;
     }
 
     @Override
@@ -139,6 +162,34 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .detail(detail);
 
         return apiErrorBuilder;
+    }
+
+    private ResponseEntity<Object> handleInvalidFormatException(
+            final InvalidFormatException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        final String path = ex.getPath().stream()
+                .map(ref -> ref.getFieldName())
+                .collect(Collectors.joining("."));
+
+        final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
+
+        final String detail = String.format(
+                "A propriedade '%s' recebeu o valor '%s'"
+                        + " que é de um tipo inválido. Corrija e informe um valor compatível "
+                        + "com o tipo '%s'."
+                , path, ex.getValue(), ex.getTargetType().getSimpleName()
+        );
+
+        final ApiError apiError = this
+                .createApiErrorBuilder(status, mensagemIncompreensivel, detail).build();
+
+        final ResponseEntity<Object> response = this
+                .handleExceptionInternal(ex, apiError, headers, status, request);
+
+        return response;
     }
 
 }
