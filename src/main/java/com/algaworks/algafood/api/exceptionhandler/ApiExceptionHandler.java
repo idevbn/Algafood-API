@@ -46,9 +46,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final EntidadeEmUsoException ex,
             final WebRequest request
     ) {
+        final HttpStatus status = HttpStatus.CONFLICT;
+        final ApiErrorType entidadeEmUso = ApiErrorType.ENTIDADE_EM_USO;
+        final String detail = ex.getMessage();
+
+        final ApiError apiError = this.createApiErrorBuilder(status, entidadeEmUso, detail).build();
+
         return handleExceptionInternal(
                 ex,
-                ex.getMessage(),
+                apiError,
                 new HttpHeaders(),
                 HttpStatus.CONFLICT,
                 request
@@ -60,9 +66,15 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final NegocioException ex,
             final WebRequest request
     ) {
+        final HttpStatus status = HttpStatus.BAD_REQUEST;
+        final ApiErrorType erroNegocio = ApiErrorType.ERRO_NEGOCIO;
+        final String detail = ex.getMessage();
+
+        final ApiError apiError = this.createApiErrorBuilder(status, erroNegocio, detail).build();
+
         return handleExceptionInternal(
                 ex,
-                ex.getMessage(),
+                apiError,
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST,
                 request
