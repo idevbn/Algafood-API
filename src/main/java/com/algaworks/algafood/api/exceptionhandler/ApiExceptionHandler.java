@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-
 /**
  * Classe responsável por capturar as exceções de todos os controladores
+ *
+ * Ver mais sobre a especificação RFC-7807 em:
+ * <a href="https://www.rfc-editor.org/rfc/rfc7807">...</a>}
  */
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
@@ -24,11 +25,18 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final EntidadeNaoEncontradaException ex,
             final WebRequest request
     ) {
+        final HttpStatus status = HttpStatus.NOT_FOUND;
+        final ApiErrorType entidadeNaoEncontrada = ApiErrorType.ENTIDADE_NAO_ENCONTRADA;
+        final String detail = ex.getMessage();
+
+        final ApiError apiError = this.createApiErrorBuilder(status, entidadeNaoEncontrada, detail)
+                .build();
+
         return handleExceptionInternal(
                 ex,
-                ex.getMessage(),
+                apiError,
                 new HttpHeaders(),
-                HttpStatus.NOT_FOUND,
+                status,
                 request
         );
     }
@@ -71,17 +79,37 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     ) {
         if (body == null) {
             body = ApiError.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem(status.getReasonPhrase())
+                    .title(status.getReasonPhrase())
+                    .status(status.value())
                     .build();
         } else if (body instanceof String) {
             body = ApiError.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem((String) body)
+                    .title((String) body)
+                    .status(status.value())
                     .build();
         }
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    /**
+     * Método privado que cria uma instância de {@link ApiError.ApiErrorBuilder}
+     *
+     * @param status - o código HTTP da mensagem de erro
+     * @param apiErrorType - instância do enum com propriedades do erro
+     * @param detail - texto com a mensagem detalhada do erro
+     * @return
+     */
+    private ApiError.ApiErrorBuilder createApiErrorBuilder(
+            final HttpStatus status, final ApiErrorType apiErrorType, final String detail
+    ) {
+        final ApiError.ApiErrorBuilder apiErrorBuilder = ApiError.builder()
+                .status(status.value())
+                .type(apiErrorType.getUri())
+                .title(apiErrorType.getTitle())
+                .detail(detail);
+
+        return apiErrorBuilder;
     }
 
 }
