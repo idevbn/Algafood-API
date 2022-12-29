@@ -3,11 +3,13 @@ package com.algaworks.algafood.api.exceptionhandler;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
 
@@ -15,63 +17,71 @@ import java.time.LocalDateTime;
  * Classe responsável por capturar as exceções de todos os controladores
  */
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(
-            final EntidadeNaoEncontradaException e
+            final EntidadeNaoEncontradaException ex,
+            final WebRequest request
     ) {
-        final ApiError apiError = ApiError.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage())
-                .build();
-
-        final ResponseEntity<ApiError> response = ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(apiError);
-
-        return response;
+        return handleExceptionInternal(
+                ex,
+                ex.getMessage(),
+                new HttpHeaders(),
+                HttpStatus.NOT_FOUND,
+                request
+        );
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<?> handleEntidadeEmUsoException(final EntidadeEmUsoException e) {
-        final ApiError apiError = ApiError.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage())
-                .build();
-
-        final ResponseEntity<ApiError> response = ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(apiError);
-
-        return response;
+    public ResponseEntity<?> handleEntidadeEmUsoException(
+            final EntidadeEmUsoException ex,
+            final WebRequest request
+    ) {
+        return handleExceptionInternal(
+                ex,
+                ex.getMessage(),
+                new HttpHeaders(),
+                HttpStatus.CONFLICT,
+                request
+        );
     }
 
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> handleNegocioException(final NegocioException e) {
-        final ApiError apiError = ApiError.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem(e.getMessage())
-                .build();
-
-        final ResponseEntity<ApiError> response = ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(apiError);
-
-        return response;
+    public ResponseEntity<?> handleNegocioException(
+            final NegocioException ex,
+            final WebRequest request
+    ) {
+        return handleExceptionInternal(
+                ex,
+                ex.getMessage(),
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
     }
 
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<?> handleHttpMediaTypeNotSupportedException(
-            final HttpMediaTypeNotSupportedException e
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(
+            final Exception ex,
+            Object body,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
     ) {
-        final ApiError apiError = ApiError.builder()
-                .dataHora(LocalDateTime.now())
-                .mensagem("O tipo de mídia não é aceito.")
-                .build();
+        if (body == null) {
+            body = ApiError.builder()
+                    .dataHora(LocalDateTime.now())
+                    .mensagem(status.getReasonPhrase())
+                    .build();
+        } else if (body instanceof String) {
+            body = ApiError.builder()
+                    .dataHora(LocalDateTime.now())
+                    .mensagem((String) body)
+                    .build();
+        }
 
-        final ResponseEntity<ApiError> response = ResponseEntity
-                .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                .body(apiError);
-
-        return response;
+        return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
 }
