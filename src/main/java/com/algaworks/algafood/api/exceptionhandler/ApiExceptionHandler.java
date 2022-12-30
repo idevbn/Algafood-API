@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.List;
@@ -131,6 +133,25 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @Override
+    protected ResponseEntity<Object> handleTypeMismatch(
+            final TypeMismatchException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+
+        if (ex instanceof MethodArgumentTypeMismatchException) {
+            final ResponseEntity<Object> response = this.handleMethodArgumentTypeMismatchException(
+                    (MethodArgumentTypeMismatchException) ex, headers, status, request
+            );
+
+            return response;
+        }
+
+        return super.handleTypeMismatch(ex, headers, status, request);
+    }
+
+    @Override
     protected ResponseEntity<Object> handleExceptionInternal(
             final Exception ex,
             Object body,
@@ -186,8 +207,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final String detail = String.format(
                 "A propriedade '%s' recebeu o valor '%s'"
                         + " que é de um tipo inválido. Corrija e informe um valor compatível "
-                        + "com o tipo '%s'."
-                , path, ex.getValue(), ex.getTargetType().getSimpleName()
+                        + "com o tipo %s."
+                ,path , ex.getValue(), ex.getTargetType().getSimpleName()
         );
 
         final ApiError apiError = this
@@ -216,6 +237,29 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         final ApiError apiError = this
                 .createApiErrorBuilder(status, mensagemIncompreensivel, detail).build();
+
+        final ResponseEntity<Object> response = this
+                .handleExceptionInternal(ex, apiError, headers, status, request);
+
+        return response;
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
+            final MethodArgumentTypeMismatchException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+        final ApiErrorType parametroInvalido = ApiErrorType.PARAMETRO_INVALIDO;
+
+        final String detail = String.format(
+                "O parâmetro da URL '%s' recebeu um valor '%s' que é de um tipo inválido. "
+                        + "Corrija e informe um valor válido com o tipo '%s'.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName()
+        );
+
+        final ApiError apiError = this
+                .createApiErrorBuilder(status, parametroInvalido, detail).build();
 
         final ResponseEntity<Object> response = this
                 .handleExceptionInternal(ex, apiError, headers, status, request);
