@@ -31,6 +31,11 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
+    public static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "A propriedade '%s' "
+            + "recebeu o valor '%s'"
+            + " que é de um tipo inválido. Corrija e informe um valor compatível "
+            + "com o tipo %s.";
+
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(
             final EntidadeNaoEncontradaException ex,
@@ -63,7 +68,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiErrorType entidadeEmUso = ApiErrorType.ENTIDADE_EM_USO;
         final String detail = ex.getMessage();
 
-        final ApiError apiError = this.createApiErrorBuilder(status, entidadeEmUso, detail).build();
+        final ApiError apiError = this.createApiErrorBuilder(status, entidadeEmUso, detail)
+                .userMessage(detail)
+                .build();
 
         final ResponseEntity<Object> response = handleExceptionInternal(
                 ex,
@@ -255,14 +262,14 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
 
         final String detail = String.format(
-                "A propriedade '%s' recebeu o valor '%s'"
-                        + " que é de um tipo inválido. Corrija e informe um valor compatível "
-                        + "com o tipo %s."
-                ,path , ex.getValue(), ex.getTargetType().getSimpleName()
+                MSG_ERRO_GENERICA_USUARIO_FINAL,
+                path, ex.getValue(), ex.getTargetType().getSimpleName()
         );
 
         final ApiError apiError = this
-                .createApiErrorBuilder(status, mensagemIncompreensivel, detail).build();
+                .createApiErrorBuilder(status, mensagemIncompreensivel, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
 
         final ResponseEntity<Object> response = this
                 .handleExceptionInternal(ex, apiError, headers, status, request);
@@ -286,7 +293,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         final ApiError apiError = this
-                .createApiErrorBuilder(status, mensagemIncompreensivel, detail).build();
+                .createApiErrorBuilder(status, mensagemIncompreensivel, detail)
+                .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
+                .build();
 
         final ResponseEntity<Object> response = this
                 .handleExceptionInternal(ex, apiError, headers, status, request);
