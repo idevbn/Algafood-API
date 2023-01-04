@@ -19,6 +19,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final String detail = ex.getMessage();
 
         final ApiError apiError = this.createApiErrorBuilder(status, entidadeNaoEncontrada, detail)
+                .userMessage(detail)
                 .build();
 
         final ResponseEntity<Object> response = this.handleExceptionInternal(
@@ -92,7 +94,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiErrorType erroNegocio = ApiErrorType.ERRO_NEGOCIO;
         final String detail = ex.getMessage();
 
-        final ApiError apiError = this.createApiErrorBuilder(status, erroNegocio, detail).build();
+        final ApiError apiError = this.createApiErrorBuilder(status, erroNegocio, detail)
+                .userMessage(detail)
+                .build();
 
         final ResponseEntity<Object> response = this.handleExceptionInternal(
                 ex,
@@ -118,7 +122,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         ex.printStackTrace();
 
-        final ApiError apiError = this.createApiErrorBuilder(status, erroDeSistema, detail).build();
+        final ApiError apiError = this.createApiErrorBuilder(status, erroDeSistema, detail)
+                .userMessage(detail)
+                .build();
 
         final ResponseEntity<Object> response = this.handleExceptionInternal(
                 ex,
@@ -200,6 +206,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         final ApiError apiError = this.createApiErrorBuilder(status, recursoNaoEncontrado, detail)
+                .userMessage(detail)
                 .build();
 
         final ResponseEntity<Object> response = this
@@ -220,11 +227,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             body = ApiError.builder()
                     .title(status.getReasonPhrase())
                     .status(status.value())
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         } else if (body instanceof String) {
             body = ApiError.builder()
                     .title((String) body)
                     .status(status.value())
+                    .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         }
 
@@ -246,7 +255,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .status(status.value())
                 .type(apiErrorType.getUri())
                 .title(apiErrorType.getTitle())
-                .detail(detail);
+                .detail(detail)
+                .timestamp(LocalDateTime.now());
 
         return apiErrorBuilder;
     }
@@ -318,7 +328,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         final ApiError apiError = this
-                .createApiErrorBuilder(status, parametroInvalido, detail).build();
+                .createApiErrorBuilder(status, parametroInvalido, detail)
+                .userMessage(detail)
+                .build();
 
         final ResponseEntity<Object> response = this
                 .handleExceptionInternal(ex, apiError, headers, status, request);

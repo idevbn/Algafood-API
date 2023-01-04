@@ -19,5 +19,6 @@ public class ApiError {
     private String title;
     private String detail;
     private String userMessage;
+    private LocalDateTime timestamp;
 
 }
