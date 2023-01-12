@@ -32,10 +32,9 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
-    public static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "A propriedade '%s' "
-            + "recebeu o valor '%s'"
-            + " que é de um tipo inválido. Corrija e informe um valor compatível "
-            + "com o tipo %s.";
+    public static final String MSG_ERRO_GENERICA_USUARIO_FINAL = "Ocorreu um erro inesperado no "
+            + "sistema. Tente novamente e se o problema persistir, entre em contato com o "
+            + "administrador do sistema.";
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> handleEntidadeNaoEncontradaException(
