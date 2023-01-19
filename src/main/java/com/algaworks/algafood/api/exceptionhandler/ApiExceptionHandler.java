@@ -253,8 +253,17 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente."
         );
 
+        final List<ApiError.Field> fields = ex.getFieldErrors()
+                .stream()
+                .map(fieldErr -> ApiError.Field.builder()
+                            .name(fieldErr.getField())
+                            .userMessage(fieldErr.getDefaultMessage())
+                            .build()
+                ).toList();
+
         final ApiError apiError = this.createApiErrorBuilder(status, dadosInvalidos, detail)
                 .userMessage(detail)
+                .fields(fields)
                 .build();
 
         final ResponseEntity<Object> response = this

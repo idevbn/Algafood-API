@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Classe que customiza o objeto de erro a ser exibido na mensagem da resposta
@@ -20,5 +21,13 @@ public class ApiError {
     private String detail;
     private String userMessage;
     private LocalDateTime timestamp;
+    private List<Field> fields;
+
+    @Getter
+    @Builder
+    public static class Field {
+        private String name;
+        private String userMessage;
+    }
 
 }
