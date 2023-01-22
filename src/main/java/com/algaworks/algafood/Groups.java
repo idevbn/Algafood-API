@@ -6,4 +6,8 @@ public interface Groups {
 
     }
 
+    public interface EstadoId {
+
+    }
+
 }
