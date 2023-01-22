@@ -13,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,8 +40,8 @@ public class Restaurante {
     @Valid
     @NotNull
     @ManyToOne
+    @ConvertGroup(to = Groups.CozinhaId.class)
     @JoinColumn(name = "cozinha_id", nullable = false)
-    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
     private Cozinha cozinha;
 
     @Embedded
