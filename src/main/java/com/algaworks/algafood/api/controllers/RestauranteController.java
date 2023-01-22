@@ -63,7 +63,7 @@ public class RestauranteController {
     @PutMapping(value = "/{id}")
     public Restaurante atualizar(
             @PathVariable(value = "id") final Long id,
-            @RequestBody final Restaurante restaurante
+            @RequestBody @Valid final Restaurante restaurante
     ) {
         final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
