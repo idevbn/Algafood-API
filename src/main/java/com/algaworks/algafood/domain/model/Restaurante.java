@@ -34,7 +34,7 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-    @PositiveOrZero(message = "{TaxaFrete.invalida}")
+    @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
