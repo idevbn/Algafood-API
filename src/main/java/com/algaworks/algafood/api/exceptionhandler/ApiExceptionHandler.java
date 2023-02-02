@@ -15,6 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -263,14 +264,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente."
         );
 
-        final List<ApiError.Field> fields = ex.getFieldErrors()
+        final List<ApiError.Object> objects = ex.getAllErrors()
                 .stream()
-                .map(fieldErr -> {
+                .map(objectError -> {
                     final String message = messageSource
-                            .getMessage(fieldErr, LocaleContextHolder.getLocale());
+                            .getMessage(objectError, LocaleContextHolder.getLocale());
 
-                    return ApiError.Field.builder()
-                                    .name(fieldErr.getField())
+                    String name = objectError.getObjectName();
+
+                    if (objectError instanceof FieldError) {
+                        name = ((FieldError) objectError).getField();
+                    }
+
+                    return ApiError.Object.builder()
+                                    .name(name)
                                     .userMessage(message)
                                     .build();
                         }
@@ -278,7 +285,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         final ApiError apiError = this.createApiErrorBuilder(status, dadosInvalidos, detail)
                 .userMessage(detail)
-                .fields(fields)
+                .objects(objects)
                 .build();
 
         final ResponseEntity<Object> response = this
