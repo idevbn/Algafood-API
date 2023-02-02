@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
+import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -112,6 +114,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ResponseEntity<Object> response = this.handleExceptionInternal(
                 ex,
                 apiError,
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request
+        );
+
+        return response;
+    }
+
+    @ExceptionHandler(ValidacaoException.class)
+    public ResponseEntity<?> handleValidacaoException(
+            final ValidacaoException ex,
+            final WebRequest request
+    ) {
+
+        final ResponseEntity<Object> response = this.handleValidationInternal(
+                ex,
+                ex.getBindingResult(),
                 new HttpHeaders(),
                 HttpStatus.BAD_REQUEST,
                 request
@@ -258,38 +277,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final HttpStatus status,
             final WebRequest request
     ) {
-        final ApiErrorType dadosInvalidos = ApiErrorType.DADOS_INVALIDOS;
-
-        final String detail = String.format(
-                "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente."
+        final ResponseEntity<Object> response = this.handleValidationInternal(
+                ex,
+                ex.getBindingResult(),
+                headers,
+                status,
+                request
         );
-
-        final List<ApiError.Object> objects = ex.getAllErrors()
-                .stream()
-                .map(objectError -> {
-                    final String message = messageSource
-                            .getMessage(objectError, LocaleContextHolder.getLocale());
-
-                    String name = objectError.getObjectName();
-
-                    if (objectError instanceof FieldError) {
-                        name = ((FieldError) objectError).getField();
-                    }
-
-                    return ApiError.Object.builder()
-                                    .name(name)
-                                    .userMessage(message)
-                                    .build();
-                        }
-                ).toList();
-
-        final ApiError apiError = this.createApiErrorBuilder(status, dadosInvalidos, detail)
-                .userMessage(detail)
-                .objects(objects)
-                .build();
-
-        final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, headers, status, request);
 
         return response;
     }
@@ -384,6 +378,48 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiError apiError = this
                 .createApiErrorBuilder(status, parametroInvalido, detail)
                 .userMessage(detail)
+                .build();
+
+        final ResponseEntity<Object> response = this
+                .handleExceptionInternal(ex, apiError, headers, status, request);
+
+        return response;
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(
+            final Exception ex,
+            final BindingResult bindingResult,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request
+    ) {
+
+        final ApiErrorType errorType = ApiErrorType.DADOS_INVALIDOS;
+
+        final String detail = "Um ou mais campos estão inválidos. " +
+                "Faça o preenchimento correto e tente novamente.";
+
+        final List<ApiError.Object> errObjects = bindingResult.getAllErrors().stream()
+                .map(objectError -> {
+                    final String message = messageSource
+                            .getMessage(objectError, LocaleContextHolder.getLocale());
+
+                    String name = objectError.getObjectName();
+
+                    if (objectError instanceof FieldError) {
+                        name = ((FieldError) objectError).getField();
+                    }
+
+                    return ApiError.Object.builder()
+                            .name(name)
+                            .userMessage(message)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        final ApiError apiError = this.createApiErrorBuilder(status, errorType, detail)
+                .userMessage(detail)
+                .objects(errObjects)
                 .build();
 
         final ResponseEntity<Object> response = this
