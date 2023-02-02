@@ -1,8 +1,8 @@
 package com.algaworks.algafood.domain.model;
 
 import com.algaworks.algafood.core.validation.Groups;
-import com.algaworks.algafood.core.validation.Multiplo;
 import com.algaworks.algafood.core.validation.TaxaFrete;
+import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,6 +23,8 @@ import java.util.List;
 @Entity
 @Table(name = "tb_restaurante")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ValorZeroIncluiDescricao(valorField = "taxaFrete",
+        descricaoField = "nome", descricaoObrigatoria = "Frete Grátis")
 public class Restaurante {
 
     @Id
@@ -35,9 +37,7 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-//    @PositiveOrZero
-//    @TaxaFrete
-    @Multiplo
+    @TaxaFrete
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
