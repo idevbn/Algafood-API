@@ -31,9 +31,9 @@ class CadastroCozinhaIntegrationTest {
 		Cozinha novaCozinha = new Cozinha();
 		novaCozinha.setNome("Chinesa");
 
-		novaCozinha = cozinhaService.salvar(novaCozinha);
+		novaCozinha = this.cozinhaService.salvar(novaCozinha);
 
-		assertThat(novaCozinha).isNull();
+		assertThat(novaCozinha).isNotNull();
 		assertThat(novaCozinha.getId()).isNotNull();
 	}
 
