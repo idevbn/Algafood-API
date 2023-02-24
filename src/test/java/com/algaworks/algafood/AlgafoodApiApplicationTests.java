@@ -17,12 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-class CadastroCozinhaIntegrationTest {
+class CadastroCozinhaIT {
 
 	private final CadastroCozinhaService cozinhaService;
 
 	@Autowired
-	protected CadastroCozinhaIntegrationTest(final CadastroCozinhaService cozinhaService) {
+	protected CadastroCozinhaIT(final CadastroCozinhaService cozinhaService) {
 		this.cozinhaService = cozinhaService;
 	}
 
