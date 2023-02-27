@@ -1,9 +1,10 @@
 package com.algaworks.algafood;
 
+import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import util.DatabaseCleaner;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.hasItems;
@@ -27,42 +29,30 @@ class CadastroCozinhaIT {
 
 	private final CadastroCozinhaService cozinhaService;
 
-	private final Flyway flyway;
+	private final CozinhaRepository cozinhaRepository;
+
+	private final DatabaseCleaner databaseCleaner;
 
 	@LocalServerPort
 	private int port;
 
 	@Autowired
 	private CadastroCozinhaIT(final CadastroCozinhaService cozinhaService,
-							  final Flyway flyway) {
+							  final CozinhaRepository cozinhaRepository,
+							  final DatabaseCleaner databaseCleaner) {
 		this.cozinhaService = cozinhaService;
-		this.flyway = flyway;
+		this.cozinhaRepository = cozinhaRepository;
+		this.databaseCleaner = databaseCleaner;
 	}
 
-	/**
-	 * A ideia de injetar o flyway no método setup (executado antes de cada
-	 * método de teste) está relacionada com a questão da independência entre
-	 * os testes. A migração executada no método setup, anotado com @BeforeEach,
-	 * faz com que os dados não sejam acumulados e, assim, o método que testa o cadastro
-	 * não influi no método que verifica o tamanho (listagem das cozinhas).
-	 *
-	 * Dessa forma, garante-se uma indenpendência entre os dados.
-	 *
-	 * Por que isso foi adotado?
-	 * R: A ordem de execução de testes do JUnit não é garantida, e caso esteja funcionando
-	 * no modelo atual, caso houvesse uma alteração em um nome de teste, p.ex. o método
-	 * deveRetornarStatus201_QuandoCadastrarCozinhas fosse modificado para
-	 * testeRetornarStatus201_QuandoCadastrarCozinhas, caso a ordem fosse alterada na execução
-	 * e esse método fosse testado antes do método de listagem, o tamanho do array de cozinhas
-	 * mudaria (seria acrescido de 1). Assim os testes estariam DEPENDENTES entre si e falhariam.
-	 */
 	@BeforeEach
 	public void setup() {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = this.port;
 		RestAssured.basePath = COZINHAS;
 
-		this.flyway.migrate();
+		this.databaseCleaner.clearTables();
+		this.prepararDados();
 	}
 
 	@Test
@@ -99,6 +89,16 @@ class CadastroCozinhaIT {
 				.post()
 				.then()
 				.statusCode(HttpStatus.CREATED.value());
+	}
+
+	private void prepararDados() {
+		final Cozinha cozinha1 = new Cozinha();
+		cozinha1.setNome("Tailandesa");
+		this.cozinhaRepository.save(cozinha1);
+
+		final Cozinha cozinha2 = new Cozinha();
+		cozinha2.setNome("Indiana");
+		this.cozinhaRepository.save(cozinha2);
 	}
 
 }
