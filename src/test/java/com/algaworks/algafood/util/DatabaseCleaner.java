@@ -1,4 +1,4 @@
-package util;
+package com.algaworks.algafood.util;
 // Baseado em: https://brightinventions.pl/blog/clear-database-in-spring-boot-tests/
 
 import org.slf4j.Logger;
