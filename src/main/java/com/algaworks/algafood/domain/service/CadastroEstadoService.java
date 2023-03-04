@@ -9,6 +9,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class CadastroEstadoService {
 
@@ -17,12 +19,14 @@ public class CadastroEstadoService {
     @Autowired
     private EstadoRepository repository;
 
+    @Transactional
     public Estado salvar(Estado estado) {
         Estado estadoSalvo = this.repository.save(estado);
 
         return estadoSalvo;
     }
 
+    @Transactional
     public void excluir(Long id) {
         try {
             this.repository.deleteById(id);

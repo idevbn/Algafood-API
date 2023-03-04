@@ -9,18 +9,22 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class CadastroCozinhaService {
 
     @Autowired
     CozinhaRepository repository;
 
+    @Transactional
     public Cozinha salvar(final Cozinha cozinha) {
         final Cozinha cozinhaSalva = this.repository.save(cozinha);
 
         return cozinhaSalva;
     }
 
+    @Transactional
     public void excluir(final Long id) {
 
         try {
