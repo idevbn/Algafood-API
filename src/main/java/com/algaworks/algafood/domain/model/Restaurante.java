@@ -3,8 +3,6 @@ package com.algaworks.algafood.domain.model;
 import com.algaworks.algafood.core.validation.Groups;
 import com.algaworks.algafood.core.validation.TaxaFrete;
 import com.algaworks.algafood.core.validation.ValorZeroIncluiDescricao;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -47,24 +45,19 @@ public class Restaurante {
     @ManyToOne
     @ConvertGroup(to = Groups.CozinhaId.class)
     @JoinColumn(name = "cozinha_id", nullable = false)
-    @JsonIgnoreProperties(value = "nome", allowGetters = true)
     private Cozinha cozinha;
 
     @Embedded
-    @JsonIgnore
     private Endereco endereco;
 
-    @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
-    @JsonIgnore
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataAtualizacao;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "tb_restaurante_forma_pagamento",
@@ -73,7 +66,6 @@ public class Restaurante {
     )
     private List<FormaPagamento> formasPagamento = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
 
