@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.model;
+package com.algaworks.algafood.api.model.out;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class RestauranteModel {
+public class RestauranteOutputDTO {
 
     private Long id;
     private String nome;
     private BigDecimal taxaFrete;
-    private CozinhaModel cozinha;
+    private CozinhaOutputDTO cozinha;
 
 }
