@@ -1,10 +1,13 @@
 package com.algaworks.algafood.api.controllers;
 
-import com.algaworks.algafood.api.model.CozinhaModel;
-import com.algaworks.algafood.api.model.RestauranteModel;
+import com.algaworks.algafood.api.model.in.CozinhaInputDTO;
+import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
+import com.algaworks.algafood.api.model.out.CozinhaOutputDTO;
+import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -42,45 +45,48 @@ public class RestauranteController {
     private SmartValidator validator;
 
     @GetMapping
-    public List<RestauranteModel> listar() {
+    public List<RestauranteOutputDTO> listar() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
-        final List<RestauranteModel> restaurantesModels = this.toCollectionModel(restaurantes);
+        final List<RestauranteOutputDTO> restauranteOutputDTO = this.toCollectionModel(restaurantes);
 
-        return restaurantesModels;
+        return restauranteOutputDTO;
     }
 
     @GetMapping(value = "/{id}")
-    public RestauranteModel buscar(@PathVariable(value = "id") final Long id) {
+    public RestauranteOutputDTO buscar(@PathVariable(value = "id") final Long id) {
         final Restaurante restauranteEncontrado = this.service.buscarOuFalhar(id);
 
-        final RestauranteModel restauranteModel = this.toModel(restauranteEncontrado);
+        final RestauranteOutputDTO restauranteOutputDTO = this.toModel(restauranteEncontrado);
 
-        return restauranteModel;
+        return restauranteOutputDTO;
     }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public RestauranteModel adicionar(
-            @RequestBody @Valid final Restaurante restaurante
+    public RestauranteOutputDTO adicionar(
+            @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
         try {
+            final Restaurante restaurante = this.toDomainObject(restauranteInputDTO);
+
             final Restaurante restauranteSalvo = this.service.salvar(restaurante);
 
-            final RestauranteModel restauranteModel = this.toModel(restauranteSalvo);
-            System.out.println("Nome da Cozinha associada ao Restaurante: " + restauranteModel.getCozinha().getNome());
+            final RestauranteOutputDTO restauranteOutputDTO = this.toModel(restauranteSalvo);
 
-            return restauranteModel;
+            return restauranteOutputDTO;
         } catch (final CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PutMapping(value = "/{id}")
-    public RestauranteModel atualizar(
+    public RestauranteOutputDTO atualizar(
             @PathVariable(value = "id") final Long id,
-            @RequestBody @Valid final Restaurante restaurante
+            @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
+        final Restaurante restaurante = this.toDomainObject(restauranteInputDTO);
+
         final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
         BeanUtils.copyProperties(
@@ -92,16 +98,16 @@ public class RestauranteController {
         try {
             final Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);
 
-            final RestauranteModel restauranteModel = this.toModel(restauranteSalvo);
+            final RestauranteOutputDTO restauranteOutputDTO = this.toModel(restauranteSalvo);
 
-            return restauranteModel;
+            return restauranteOutputDTO;
         } catch (final CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PatchMapping(value = "/{id}")
-    public RestauranteModel atualizarParcialmente(
+    public RestauranteOutputDTO atualizarParcialmente(
             @PathVariable("id") final Long id,
             @RequestBody final Map<String, Object> campos,
             final HttpServletRequest request
@@ -112,7 +118,8 @@ public class RestauranteController {
 
         validate(restauranteAtual, "restaurante");
 
-        final RestauranteModel atualizar = this.atualizar(id, restauranteAtual);
+        final RestauranteOutputDTO atualizar = this
+                .atualizar(id, this.toInputObject(restauranteAtual));
 
         return atualizar;
     }
@@ -165,29 +172,56 @@ public class RestauranteController {
         }
     }
 
-    private RestauranteModel toModel(final Restaurante restaurante) {
-        final CozinhaModel cozinhaModel = new CozinhaModel();
-        cozinhaModel.setId(restaurante.getCozinha().getId());
-        cozinhaModel.setNome(restaurante.getCozinha().getNome());
+    private RestauranteOutputDTO toModel(final Restaurante restaurante) {
+        final CozinhaOutputDTO cozinhaDTO = new CozinhaOutputDTO();
+        cozinhaDTO.setId(restaurante.getCozinha().getId());
+        cozinhaDTO.setNome(restaurante.getCozinha().getNome());
 
-        final RestauranteModel restauranteModel = new RestauranteModel();
-        restauranteModel.setId(restaurante.getId());
-        restauranteModel.setNome(restaurante.getNome());
-        restauranteModel.setTaxaFrete(restaurante.getTaxaFrete());
-        restauranteModel.setCozinha(cozinhaModel);
-        return restauranteModel;
+        final RestauranteOutputDTO restauranteOutputDTO = new RestauranteOutputDTO();
+        restauranteOutputDTO.setId(restaurante.getId());
+        restauranteOutputDTO.setNome(restaurante.getNome());
+        restauranteOutputDTO.setTaxaFrete(restaurante.getTaxaFrete());
+        restauranteOutputDTO.setCozinha(cozinhaDTO);
+        return restauranteOutputDTO;
     }
 
-    private List<RestauranteModel> toCollectionModel(final List<Restaurante> restaurantes) {
-        final List<RestauranteModel> restaurantesModels = new ArrayList<>();
+    private List<RestauranteOutputDTO> toCollectionModel(final List<Restaurante> restaurantes) {
+        final List<RestauranteOutputDTO> restaurantesOutputDTO = new ArrayList<>();
 
         for (final Restaurante restaurante : restaurantes) {
-            final RestauranteModel restauranteModel = this.toModel(restaurante);
+            final RestauranteOutputDTO restauranteOutputDTO = this.toModel(restaurante);
 
-            restaurantesModels.add(restauranteModel);
+            restaurantesOutputDTO.add(restauranteOutputDTO);
         }
 
-        return restaurantesModels;
+        return restaurantesOutputDTO;
+    }
+
+    private Restaurante toDomainObject(final RestauranteInputDTO restauranteInputDTO) {
+        final Restaurante restaurante = new Restaurante();
+
+        restaurante.setNome(restauranteInputDTO.getNome());
+        restaurante.setTaxaFrete(restauranteInputDTO.getTaxaFrete());
+
+        final Cozinha cozinha = new Cozinha();
+        cozinha.setId(restauranteInputDTO.getCozinha().getId());
+
+        restaurante.setCozinha(cozinha);
+
+        return restaurante;
+    }
+
+    private RestauranteInputDTO toInputObject(final Restaurante restaurante) {
+        final RestauranteInputDTO restauranteInputDTO = new RestauranteInputDTO();
+        restauranteInputDTO.setNome(restaurante.getNome());
+        restauranteInputDTO.setTaxaFrete(restaurante.getTaxaFrete());
+
+        final CozinhaInputDTO cozinhaInputDTO = new CozinhaInputDTO();
+        cozinhaInputDTO.setId(restaurante.getCozinha().getId());
+
+        restauranteInputDTO.setCozinha(cozinhaInputDTO);
+
+        return restauranteInputDTO;
     }
 
 }

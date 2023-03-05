@@ -31,19 +31,19 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+//    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @NotNull
-    @TaxaFrete
+//    @NotNull
+//    @TaxaFrete
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
-    @Valid
-    @NotNull
+//    @Valid
+//    @NotNull
     @ManyToOne
-    @ConvertGroup(to = Groups.CozinhaId.class)
+//    @ConvertGroup(to = Groups.CozinhaId.class)
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
