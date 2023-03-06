@@ -1,8 +1,9 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.model.out.CozinhaOutputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.domain.model.Restaurante;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,16 +16,17 @@ import java.util.List;
 @Component
 public class RestauranteOutputDTOAssembler {
 
-    public RestauranteOutputDTO toModel(final Restaurante restaurante) {
-        final CozinhaOutputDTO cozinhaDTO = new CozinhaOutputDTO();
-        cozinhaDTO.setId(restaurante.getCozinha().getId());
-        cozinhaDTO.setNome(restaurante.getCozinha().getNome());
+    private final ModelMapper modelMapper;
 
-        final RestauranteOutputDTO restauranteOutputDTO = new RestauranteOutputDTO();
-        restauranteOutputDTO.setId(restaurante.getId());
-        restauranteOutputDTO.setNome(restaurante.getNome());
-        restauranteOutputDTO.setTaxaFrete(restaurante.getTaxaFrete());
-        restauranteOutputDTO.setCozinha(cozinhaDTO);
+    @Autowired
+    public RestauranteOutputDTOAssembler(final ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
+
+    public RestauranteOutputDTO toModel(final Restaurante restaurante) {
+        final RestauranteOutputDTO restauranteOutputDTO = this.modelMapper
+                .map(restaurante, RestauranteOutputDTO.class);
+
         return restauranteOutputDTO;
     }
 
