@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.assembler.RestauranteInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.RestauranteOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.CozinhaInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
@@ -42,15 +43,19 @@ public class RestauranteController {
 
     private final RestauranteOutputDTOAssembler assembler;
 
+    private final RestauranteInputDTODisassembler disassembler;
+
     @Autowired
     public RestauranteController(final RestauranteRepository repository,
                                  final CadastroRestauranteService service,
                                  final SmartValidator validator,
-                                 final RestauranteOutputDTOAssembler assembler) {
+                                 final RestauranteOutputDTOAssembler assembler,
+                                 final RestauranteInputDTODisassembler disassembler) {
         this.repository = repository;
         this.service = service;
         this.validator = validator;
         this.assembler = assembler;
+        this.disassembler = disassembler;
     }
 
 
@@ -80,7 +85,8 @@ public class RestauranteController {
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
         try {
-            final Restaurante restaurante = this.toDomainObject(restauranteInputDTO);
+            final Restaurante restaurante = this.disassembler
+                    .toDomainObject(restauranteInputDTO);
 
             final Restaurante restauranteSalvo = this.service.salvar(restaurante);
 
@@ -98,7 +104,8 @@ public class RestauranteController {
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
-        final Restaurante restaurante = this.toDomainObject(restauranteInputDTO);
+        final Restaurante restaurante = this.disassembler
+                .toDomainObject(restauranteInputDTO);
 
         final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
@@ -184,20 +191,6 @@ public class RestauranteController {
                     servletServerHttpRequest
             );
         }
-    }
-    
-    private Restaurante toDomainObject(final RestauranteInputDTO restauranteInputDTO) {
-        final Restaurante restaurante = new Restaurante();
-
-        restaurante.setNome(restauranteInputDTO.getNome());
-        restaurante.setTaxaFrete(restauranteInputDTO.getTaxaFrete());
-
-        final Cozinha cozinha = new Cozinha();
-        cozinha.setId(restauranteInputDTO.getCozinha().getId());
-
-        restaurante.setCozinha(cozinha);
-
-        return restaurante;
     }
 
     private RestauranteInputDTO toInputObject(final Restaurante restaurante) {
