@@ -8,14 +8,12 @@ import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -104,16 +102,10 @@ public class RestauranteController {
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
-        final Restaurante restaurante = this.disassembler
-                .toDomainObject(restauranteInputDTO);
 
         final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
-        BeanUtils.copyProperties(
-                restaurante,
-                restauranteAtual,
-                "id", "formasPagamento", "endereco","dataCadastro"
-        );
+        this.disassembler.copyToDomainObject(restauranteInputDTO, restauranteAtual);
 
         try {
             final Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);

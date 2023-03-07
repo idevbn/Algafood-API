@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
+import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,29 @@ public class RestauranteInputDTODisassembler {
                 .map(restauranteInputDTO, Restaurante.class);
 
         return restaurante;
+    }
+
+    /**
+     * Faz a cópia de um {@link RestauranteInputDTO},
+     * recebendo
+     * @param restauranteInputDTO
+     * @param restaurante
+     * para um {@link Restaurante}.
+     *
+     * É atribuído um novo valor para a cozinha pois:
+     *
+     * Caso o  {@link Restaurante} seja criado e atribuído
+     * na criação uma {@link Cozinha} de id = 1, caso na atualização
+     * a referência da {@link Cozinha} seja alterada para outro id,
+     * será disparado um erro 500 pois o JPA entendende que tentou-se
+     * alterar um id, e não uma referência.
+     */
+    public void copyToDomainObject(
+            final RestauranteInputDTO restauranteInputDTO,
+            final Restaurante restaurante) {
+        restaurante.setCozinha(new Cozinha());
+
+        this.modelMapper.map(restauranteInputDTO, restaurante);
     }
 
 }
