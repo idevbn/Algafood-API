@@ -22,6 +22,6 @@ public class RestauranteInputDTO {
 
     @Valid
     @NotNull
-    private CozinhaInputDTO cozinha;
+    private CozinhaIdInputDTO cozinha;
 
 }

@@ -2,7 +2,7 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.RestauranteInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.RestauranteOutputDTOAssembler;
-import com.algaworks.algafood.api.model.in.CozinhaInputDTO;
+import com.algaworks.algafood.api.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.core.validation.ValidacaoException;
@@ -190,7 +190,7 @@ public class RestauranteController {
         restauranteInputDTO.setNome(restaurante.getNome());
         restauranteInputDTO.setTaxaFrete(restaurante.getTaxaFrete());
 
-        final CozinhaInputDTO cozinhaInputDTO = new CozinhaInputDTO();
+        final CozinhaIdInputDTO cozinhaInputDTO = new CozinhaIdInputDTO();
         cozinhaInputDTO.setId(restaurante.getCozinha().getId());
 
         restauranteInputDTO.setCozinha(cozinhaInputDTO);

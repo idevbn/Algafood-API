@@ -1,9 +1,12 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.assembler.EstadoInputDTODisassembler;
+import com.algaworks.algafood.api.assembler.EstadoOutputDTOAssembler;
+import com.algaworks.algafood.api.model.in.EstadoInputDTO;
+import com.algaworks.algafood.api.model.out.EstadoOutputDTO;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,47 +18,72 @@ import java.util.List;
 @RequestMapping(value = "/estados")
 public class EstadoController {
 
-    @Autowired
-    private EstadoRepository repository;
+    private final EstadoRepository repository;
+    private final CadastroEstadoService service;
+    private final EstadoInputDTODisassembler inputDTODisassembler;
+    private final EstadoOutputDTOAssembler outputDTOAssembler;
 
     @Autowired
-    private CadastroEstadoService service;
+    public EstadoController(final EstadoRepository repository,
+                            final CadastroEstadoService service,
+                            final EstadoInputDTODisassembler inputDTODisassembler,
+                            final EstadoOutputDTOAssembler outputDTOAssembler) {
+        this.repository = repository;
+        this.service = service;
+        this.inputDTODisassembler = inputDTODisassembler;
+        this.outputDTOAssembler = outputDTOAssembler;
+    }
 
     @GetMapping
-    public List<Estado> listar() {
+    public List<EstadoOutputDTO> listar() {
         final List<Estado> estados = this.repository.findAll();
 
-        return estados;
+        final List<EstadoOutputDTO> estadosOutputDTOS = this.outputDTOAssembler
+                .toCollectionModel(estados);
+
+        return estadosOutputDTOS;
     }
 
     @GetMapping(value = "/{id}")
-    public Estado buscar(@PathVariable(value = "id") final Long id) {
+    public EstadoOutputDTO buscar(@PathVariable(value = "id") final Long id) {
 
         final Estado estadoEncontrado = this.service.buscarOuFalhar(id);
 
-        return estadoEncontrado;
+        final EstadoOutputDTO estadoOutputDTO = this.outputDTOAssembler
+                .toModel(estadoEncontrado);
+
+        return estadoOutputDTO;
     }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Estado adicionar(@RequestBody @Valid final Estado estado) {
-        Estado estadoSalvo = this.service.salvar(estado);
+    public EstadoOutputDTO adicionar(@RequestBody @Valid final EstadoInputDTO estadoInputDTO) {
+        final Estado estado = this.inputDTODisassembler
+                .toDomainObject(estadoInputDTO);
 
-        return estadoSalvo;
+        final Estado estadoSalvo = this.service.salvar(estado);
+
+        final EstadoOutputDTO estadoOutputDTO = this.outputDTOAssembler
+                .toModel(estadoSalvo);
+
+        return estadoOutputDTO;
     }
 
     @PutMapping(value = "/{id}")
-    public Estado atualizar(
+    public EstadoOutputDTO atualizar(
             @PathVariable(value = "id") final Long id,
-            @RequestBody @Valid final Estado estado
+            @RequestBody @Valid final EstadoInputDTO estadoInputDTO
     ) {
         final Estado estadoAtual = this.service.buscarOuFalhar(id);
 
-        BeanUtils.copyProperties(estado, estadoAtual, "id");
+        this.inputDTODisassembler.copyToDomainObject(estadoInputDTO, estadoAtual);
 
         final Estado estadoSalvo = this.service.salvar(estadoAtual);
 
-        return estadoSalvo;
+        final EstadoOutputDTO estadoOutputDTO = this.outputDTOAssembler
+                .toModel(estadoSalvo);
+
+        return estadoOutputDTO;
     }
 
     @DeleteMapping(value = "/{id}")
