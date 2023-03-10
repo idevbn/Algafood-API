@@ -12,11 +12,15 @@ import javax.transaction.Transactional;
 @Service
 public class CadastroRestauranteService {
 
-    @Autowired
-    private RestauranteRepository repository;
+    private final RestauranteRepository repository;
+    private final CadastroCozinhaService cozinhaService;
 
     @Autowired
-    private CadastroCozinhaService cozinhaService;
+    public CadastroRestauranteService(final RestauranteRepository repository,
+                                      final CadastroCozinhaService cozinhaService) {
+        this.repository = repository;
+        this.cozinhaService = cozinhaService;
+    }
 
     @Transactional
     public Restaurante salvar(final Restaurante restaurante) {

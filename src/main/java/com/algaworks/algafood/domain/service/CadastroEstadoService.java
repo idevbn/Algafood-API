@@ -16,18 +16,22 @@ public class CadastroEstadoService {
 
     private static final String MSG_ESTADO_EM_USO = "Estado de id=%d não pode ser removido pois está em uso";
 
+    private final EstadoRepository repository;
+
     @Autowired
-    private EstadoRepository repository;
+    public CadastroEstadoService(final EstadoRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
-    public Estado salvar(Estado estado) {
-        Estado estadoSalvo = this.repository.save(estado);
+    public Estado salvar(final Estado estado) {
+        final Estado estadoSalvo = this.repository.save(estado);
 
         return estadoSalvo;
     }
 
     @Transactional
-    public void excluir(Long id) {
+    public void excluir(final Long id) {
         try {
             this.repository.deleteById(id);
             this.repository.flush();

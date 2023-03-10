@@ -14,8 +14,12 @@ import javax.transaction.Transactional;
 @Service
 public class CadastroCozinhaService {
 
+    private final CozinhaRepository repository;
+
     @Autowired
-    CozinhaRepository repository;
+    public CadastroCozinhaService(final CozinhaRepository repository) {
+        this.repository = repository;
+    }
 
     @Transactional
     public Cozinha salvar(final Cozinha cozinha) {

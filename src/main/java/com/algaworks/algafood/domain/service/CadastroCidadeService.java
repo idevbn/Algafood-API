@@ -17,11 +17,15 @@ public class CadastroCidadeService {
 
     private static final String MSG_CIDADE_EM_USO = "Cidade com id=%d não pode ser removida, pois está em uso";
 
-    @Autowired
-    private CidadeRepository repository;
+    private final CidadeRepository repository;
+    private final CadastroEstadoService estadoService;
 
     @Autowired
-    private CadastroEstadoService estadoService;
+    public CadastroCidadeService(final CidadeRepository repository,
+                                 final CadastroEstadoService estadoService) {
+        this.repository = repository;
+        this.estadoService = estadoService;
+    }
 
     @Transactional
     public Cidade salvar(final Cidade cidade) {
