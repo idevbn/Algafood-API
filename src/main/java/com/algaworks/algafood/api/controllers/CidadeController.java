@@ -11,6 +11,7 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -36,29 +37,39 @@ public class CidadeController {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
-
     @GetMapping
-    public List<CidadeOutputDTO> listar() {
+    public ResponseEntity<List<CidadeOutputDTO>> listar() {
         final List<Cidade> cidades = this.repository.findAll();
 
         final List<CidadeOutputDTO> cidadesOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(cidades);
 
-        return cidadesOutputDTOS;
+        final ResponseEntity<List<CidadeOutputDTO>> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cidadesOutputDTOS);
+
+        return response;
     }
 
     @GetMapping(value = "/{id}")
-    public CidadeOutputDTO buscar(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<CidadeOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Cidade cidadeEncontrada = this.service.buscarOuFalhar(id);
 
-        final CidadeOutputDTO cidadeOutputDTO = this.outputDTOAssembler.toModel(cidadeEncontrada);
+        final CidadeOutputDTO cidadeOutputDTO = this.outputDTOAssembler
+                .toModel(cidadeEncontrada);
 
-        return cidadeOutputDTO;
+        final ResponseEntity<CidadeOutputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cidadeOutputDTO);
+
+        return response;
     }
 
     @PostMapping
     @ResponseStatus(value = HttpStatus.CREATED)
-    public CidadeOutputDTO adicionar(@RequestBody @Valid final CidadeInputDTO cidadeInputDTO) {
+    public ResponseEntity<CidadeOutputDTO> adicionar(
+            @RequestBody @Valid final CidadeInputDTO cidadeInputDTO
+    ) {
         try {
             final Cidade cidade = this.inputDTODisassembler
                     .toDomainObject(cidadeInputDTO);
@@ -68,14 +79,18 @@ public class CidadeController {
             final CidadeOutputDTO cidadeOutputDTO = this.outputDTOAssembler
                     .toModel(cidadeSalva);
 
-            return cidadeOutputDTO;
+            final ResponseEntity<CidadeOutputDTO> response = ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(cidadeOutputDTO);
+
+            return response;
         } catch (final EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PutMapping(value = "/{id}")
-    public CidadeOutputDTO atualizar(
+    public ResponseEntity<CidadeOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final CidadeInputDTO cidadeInputDTO
     ) {
@@ -89,16 +104,25 @@ public class CidadeController {
             final CidadeOutputDTO cidadeOutputDTO = this.outputDTOAssembler
                     .toModel(cidadeSalva);
 
-            return cidadeOutputDTO;
+            final ResponseEntity<CidadeOutputDTO> response = ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(cidadeOutputDTO);
+
+            return response;
         } catch (final EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @DeleteMapping(value = "/{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Void> remover(@PathVariable(value = "id") Long id) {
         this.service.excluir(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
     }
 
 }

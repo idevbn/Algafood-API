@@ -9,6 +9,7 @@ import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,29 +36,38 @@ public class EstadoController {
     }
 
     @GetMapping
-    public List<EstadoOutputDTO> listar() {
+    public ResponseEntity<List<EstadoOutputDTO>> listar() {
         final List<Estado> estados = this.repository.findAll();
 
         final List<EstadoOutputDTO> estadosOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(estados);
 
-        return estadosOutputDTOS;
+        final ResponseEntity<List<EstadoOutputDTO>> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estadosOutputDTOS);
+
+        return response;
     }
 
     @GetMapping(value = "/{id}")
-    public EstadoOutputDTO buscar(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<EstadoOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
 
         final Estado estadoEncontrado = this.service.buscarOuFalhar(id);
 
         final EstadoOutputDTO estadoOutputDTO = this.outputDTOAssembler
                 .toModel(estadoEncontrado);
 
-        return estadoOutputDTO;
+        final ResponseEntity<EstadoOutputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estadoOutputDTO);
+
+        return response;
     }
 
     @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public EstadoOutputDTO adicionar(@RequestBody @Valid final EstadoInputDTO estadoInputDTO) {
+    public ResponseEntity<EstadoOutputDTO> adicionar(
+            @RequestBody @Valid final EstadoInputDTO estadoInputDTO
+    ) {
         final Estado estado = this.inputDTODisassembler
                 .toDomainObject(estadoInputDTO);
 
@@ -66,11 +76,15 @@ public class EstadoController {
         final EstadoOutputDTO estadoOutputDTO = this.outputDTOAssembler
                 .toModel(estadoSalvo);
 
-        return estadoOutputDTO;
+        final ResponseEntity<EstadoOutputDTO> response = ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(estadoOutputDTO);
+
+        return response;
     }
 
     @PutMapping(value = "/{id}")
-    public EstadoOutputDTO atualizar(
+    public ResponseEntity<EstadoOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final EstadoInputDTO estadoInputDTO
     ) {
@@ -83,13 +97,22 @@ public class EstadoController {
         final EstadoOutputDTO estadoOutputDTO = this.outputDTOAssembler
                 .toModel(estadoSalvo);
 
-        return estadoOutputDTO;
+        final ResponseEntity<EstadoOutputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estadoOutputDTO);
+
+        return response;
     }
 
     @DeleteMapping(value = "/{id}")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<Void> remover(@PathVariable(value = "id") final Long id) {
         this.service.excluir(id);
+
+        ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
     }
 
 }

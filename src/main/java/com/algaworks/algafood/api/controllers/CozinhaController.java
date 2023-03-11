@@ -9,6 +9,7 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,29 +35,37 @@ public class CozinhaController {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
-
     @GetMapping
-    public List<CozinhaOutputDTO> listar() {
+    public ResponseEntity<List<CozinhaOutputDTO>> listar() {
         final List<Cozinha> cozinhas = this.repository.findAll();
 
         final List<CozinhaOutputDTO> cozinhasOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(cozinhas);
 
-        return cozinhasOutputDTOS;
+        final ResponseEntity<List<CozinhaOutputDTO>> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cozinhasOutputDTOS);
+
+        return response;
     }
 
     @GetMapping(value = "/{id}")
-    public CozinhaOutputDTO buscar(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<CozinhaOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Cozinha cozinha = this.service.buscarOuFalhar(id);
 
         final CozinhaOutputDTO cozinhaOutputDTO = this.outputDTOAssembler.toModel(cozinha);
 
-        return cozinhaOutputDTO;
+        final ResponseEntity<CozinhaOutputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cozinhaOutputDTO);
+
+        return response;
     }
 
     @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public CozinhaOutputDTO adicionar(@RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO) {
+    public ResponseEntity<CozinhaOutputDTO> adicionar(
+            @RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO
+    ) {
         final Cozinha cozinha = this.inputDTODisassembler
                 .toDomainObject(cozinhaInputDTO);
 
@@ -65,11 +74,15 @@ public class CozinhaController {
         final CozinhaOutputDTO cozinhaOutputDTO = this.outputDTOAssembler
                 .toModel(cozinhaSalva);
 
-        return cozinhaOutputDTO;
+        final ResponseEntity<CozinhaOutputDTO> response = ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(cozinhaOutputDTO);
+
+        return response;
     }
 
     @PutMapping(value = "/{id}")
-    public CozinhaOutputDTO atualizar(
+    public ResponseEntity<CozinhaOutputDTO> atualizar(
             @PathVariable("id") Long id,
             @RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO
     ) {
@@ -82,13 +95,23 @@ public class CozinhaController {
         final CozinhaOutputDTO cozinhaOutputDTO = this.outputDTOAssembler
                 .toModel(cozinhaSalva);
 
-        return cozinhaOutputDTO;
+        final ResponseEntity<CozinhaOutputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cozinhaOutputDTO);
+
+        return response;
     }
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> remover(@PathVariable("id") Long id) {
         this.service.excluir(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
     }
 
 }

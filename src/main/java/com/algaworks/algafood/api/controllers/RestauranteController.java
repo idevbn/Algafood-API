@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.ReflectionUtils;
@@ -55,31 +56,37 @@ public class RestauranteController {
         this.assembler = assembler;
         this.disassembler = disassembler;
     }
-
-
+    
     @GetMapping
-    public List<RestauranteOutputDTO> listar() {
+    public ResponseEntity<List<RestauranteOutputDTO>> listar() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
         final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
                 .toCollectionModel(restaurantes);
 
-        return restauranteOutputDTO;
+        final ResponseEntity<List<RestauranteOutputDTO>> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restauranteOutputDTO);
+
+        return response;
     }
 
     @GetMapping(value = "/{id}")
-    public RestauranteOutputDTO buscar(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<RestauranteOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Restaurante restauranteEncontrado = this.service.buscarOuFalhar(id);
 
         final RestauranteOutputDTO restauranteOutputDTO = this.assembler
                 .toModel(restauranteEncontrado);
 
-        return restauranteOutputDTO;
+        final ResponseEntity<RestauranteOutputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restauranteOutputDTO);
+
+        return response;
     }
 
     @PostMapping
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public RestauranteOutputDTO adicionar(
+    public ResponseEntity<RestauranteOutputDTO> adicionar(
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
         try {
@@ -91,14 +98,18 @@ public class RestauranteController {
             final RestauranteOutputDTO restauranteOutputDTO = this.assembler
                     .toModel(restauranteSalvo);
 
-            return restauranteOutputDTO;
+            final ResponseEntity<RestauranteOutputDTO> response = ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(restauranteOutputDTO);
+
+            return response;
         } catch (final CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PutMapping(value = "/{id}")
-    public RestauranteOutputDTO atualizar(
+    public ResponseEntity<RestauranteOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
@@ -113,14 +124,18 @@ public class RestauranteController {
             final RestauranteOutputDTO restauranteOutputDTO = this.assembler
                     .toModel(restauranteSalvo);
 
-            return restauranteOutputDTO;
+            final ResponseEntity<RestauranteOutputDTO> response = ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(restauranteOutputDTO);
+
+            return response;
         } catch (final CozinhaNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
 
     @PatchMapping(value = "/{id}")
-    public RestauranteOutputDTO atualizarParcialmente(
+    public ResponseEntity<RestauranteOutputDTO> atualizarParcialmente(
             @PathVariable("id") final Long id,
             @RequestBody final Map<String, Object> campos,
             final HttpServletRequest request
@@ -131,7 +146,7 @@ public class RestauranteController {
 
         validate(restauranteAtual, "restaurante");
 
-        final RestauranteOutputDTO atualizar = this
+        final ResponseEntity<RestauranteOutputDTO> atualizar = this
                 .atualizar(id, this.toInputObject(restauranteAtual));
 
         return atualizar;
@@ -148,9 +163,14 @@ public class RestauranteController {
      * O POST não é IDEMPOTENTE.
      */
     @PutMapping(value = "/{id}/ativo")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void ativar(@PathVariable("id") final Long id) {
+    public ResponseEntity<Void> ativar(@PathVariable("id") final Long id) {
         this.service.ativar(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
     }
 
     /**
@@ -159,9 +179,14 @@ public class RestauranteController {
      * @param id
      */
     @DeleteMapping(value = "/{id}/ativo")
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void inativar(@PathVariable("id") final Long id) {
+    public ResponseEntity<Void> inativar(@PathVariable("id") final Long id) {
         this.service.inativar(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
     }
 
     private void validate(final Restaurante restaurante, final String objectName) {
