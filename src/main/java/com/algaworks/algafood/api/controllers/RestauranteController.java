@@ -137,6 +137,33 @@ public class RestauranteController {
         return atualizar;
     }
 
+    /**
+     * PUT /restaurantes/{id}/ativo -> ativa um
+     * {@link Restaurante} com base no valor do
+     * @param id
+     *
+     * Uma requisição do tipo PUT não gera efeitos
+     * colaterais caso seja realizada várias vezes
+     * em sequência.
+     * O POST não é IDEMPOTENTE.
+     */
+    @PutMapping(value = "/{id}/ativo")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void ativar(@PathVariable("id") final Long id) {
+        this.service.ativar(id);
+    }
+
+    /**
+     * DELETE /restaurantes/{id}/ativo -> inativa
+     * um {@link Restaurante} com base no valor do
+     * @param id
+     */
+    @DeleteMapping(value = "/{id}/ativo")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void inativar(@PathVariable("id") final Long id) {
+        this.service.inativar(id);
+    }
+
     private void validate(final Restaurante restaurante, final String objectName) {
         final BeanPropertyBindingResult bindingResult =
                 new BeanPropertyBindingResult(restaurante, objectName);
