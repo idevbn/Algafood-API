@@ -43,4 +43,18 @@ public class CadastroRestauranteService {
         return restauranteEncontrado;
     }
 
+    @Transactional
+    public void ativar(final Long id) {
+        final Restaurante restauranteAtual = this.buscarOuFalhar(id);
+
+        restauranteAtual.ativar();
+    }
+
+    @Transactional
+    public void inativar(final Long id) {
+        final Restaurante restauranteAtual = this.buscarOuFalhar(id);
+
+        restauranteAtual.inativar();
+    }
+
 }
