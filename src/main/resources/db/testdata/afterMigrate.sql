@@ -28,9 +28,9 @@ ALTER TABLE tb_usuario auto_increment = 1;
 INSERT INTO tb_cozinha (nome) VALUES ('Tailandesa');
 INSERT INTO tb_cozinha (nome) VALUES ('Indiana');
 
-INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) VALUES (1, 'Pad Thai', 11.50, 1, utc_timestamp, utc_timestamp);
-INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) VALUES (2, 'Bistrô Vadapav', 9.80, 2, utc_timestamp, utc_timestamp);
-INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao) VALUES (3, 'Namaskar', 7.39, 2, utc_timestamp, utc_timestamp);
+INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) VALUES (1, 'Pad Thai', 11.50, 1, utc_timestamp, utc_timestamp, true);
+INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) VALUES (2, 'Bistrô Vadapav', 9.80, 2, utc_timestamp, utc_timestamp, true);
+INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo) VALUES (3, 'Namaskar', 7.39, 2, utc_timestamp, utc_timestamp, true);
 
 INSERT INTO tb_forma_pagamento (id, descricao) VALUES (1, 'Dinheiro');
 INSERT INTO tb_forma_pagamento (id, descricao) VALUES (2, 'Cartão de crédito');
