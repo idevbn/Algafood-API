@@ -13,5 +13,6 @@ public class RestauranteOutputDTO {
     private String nome;
     private BigDecimal precoFrete;
     private CozinhaOutputDTO cozinha;
+    private Boolean ativo;
 
 }
