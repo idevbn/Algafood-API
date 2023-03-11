@@ -20,17 +20,21 @@ import java.util.Optional;
 @RequestMapping(value = "/teste")
 public class TesteController {
 
-    @Autowired
-    private CozinhaRepository repository;
+    private final CozinhaRepository repository;
+    private final RestauranteRepository restauranteRepository;
 
     @Autowired
-    private RestauranteRepository restauranteRepository;
+    public TesteController(final CozinhaRepository repository,
+                           final RestauranteRepository restauranteRepository) {
+        this.repository = repository;
+        this.restauranteRepository = restauranteRepository;
+    }
 
     @GetMapping(value = "/cozinhas/por-nome")
-    public ResponseEntity<List<Cozinha>> cozinhasPorNome(@RequestParam String nome) {
-        List<Cozinha> cozinhas = this.repository.findTodasByNomeContaining(nome);
+    public ResponseEntity<List<Cozinha>> cozinhasPorNome(@RequestParam final String nome) {
+        final List<Cozinha> cozinhas = this.repository.findTodasByNomeContaining(nome);
 
-        ResponseEntity<List<Cozinha>> cozinhasResponse = ResponseEntity
+        final ResponseEntity<List<Cozinha>> cozinhasResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cozinhas);
 
@@ -38,10 +42,10 @@ public class TesteController {
     }
 
     @GetMapping(value = "/cozinhas/unica-por-nome")
-    public ResponseEntity<Optional<Cozinha>> cozinhaPorNome(@RequestParam String nome) {
-        Optional<Cozinha> cozinha = this.repository.findByNome(nome);
+    public ResponseEntity<Optional<Cozinha>> cozinhaPorNome(@RequestParam final String nome) {
+        final Optional<Cozinha> cozinha = this.repository.findByNome(nome);
 
-        ResponseEntity<Optional<Cozinha>> cozinhaResponse = ResponseEntity
+        final ResponseEntity<Optional<Cozinha>> cozinhaResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cozinha);
 
@@ -50,13 +54,13 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/por-taxa-frete")
     public ResponseEntity<List<Restaurante>> restaurantesPorTaxaFrete(
-            @RequestParam BigDecimal taxaInicial,
-            @RequestParam BigDecimal taxaFinal
+            @RequestParam final BigDecimal taxaInicial,
+            @RequestParam final BigDecimal taxaFinal
     ) {
-        List<Restaurante> restaurantes = this.restauranteRepository
+        final List<Restaurante> restaurantes = this.restauranteRepository
                 .findByTaxaFreteBetween(taxaInicial, taxaFinal);
 
-        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+        final ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurantes);
 
@@ -65,13 +69,13 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/por-nome")
     public ResponseEntity<List<Restaurante>> restaurantesPorNome(
-            @RequestParam String nome,
-            @RequestParam Long cozinhaId
+            @RequestParam final String nome,
+            @RequestParam final Long cozinhaId
     ) {
-        List<Restaurante> restaurantes = this.restauranteRepository
+        final List<Restaurante> restaurantes = this.restauranteRepository
                 .consultarPorNome(nome, cozinhaId);
 
-        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+        final ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurantes);
 
@@ -80,12 +84,12 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/primeiro-por-nome")
     public ResponseEntity<Optional<Restaurante>> restaurantePrimeiroPorNome(
-            @RequestParam String nome
+            @RequestParam final String nome
     ) {
-        Optional<Restaurante> restaurante = this.restauranteRepository
+        final Optional<Restaurante> restaurante = this.restauranteRepository
                 .findFirstRestauranteByNomeContaining(nome);
 
-        ResponseEntity<Optional<Restaurante>> restauranteResponse = ResponseEntity
+        final ResponseEntity<Optional<Restaurante>> restauranteResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurante);
 
@@ -94,12 +98,12 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/top2-por-nome")
     public ResponseEntity<List<Restaurante>> restaurantesTop2PorNome(
-            @RequestParam String nome
+            @RequestParam final String nome
     ) {
-        List<Restaurante> restaurantes = this.restauranteRepository
+        final List<Restaurante> restaurantes = this.restauranteRepository
                 .findTop2ByNomeContaining(nome);
 
-        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+        final ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurantes);
 
@@ -108,14 +112,14 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/por-nome-e-frete")
     public ResponseEntity<List<Restaurante>> restaurantesPorNomeEFrete(
-            @RequestParam(required = false) String nome,
-            @RequestParam(required = false) BigDecimal taxaFreteInicial,
-            @RequestParam(required = false) BigDecimal taxaFreteFinal
+            @RequestParam(required = false) final String nome,
+            @RequestParam(required = false) final BigDecimal taxaFreteInicial,
+            @RequestParam(required = false) final BigDecimal taxaFreteFinal
     ) {
-        List<Restaurante> restaurantes = this.restauranteRepository
+        final List<Restaurante> restaurantes = this.restauranteRepository
                 .find(nome, taxaFreteInicial, taxaFreteFinal);
 
-        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+        final ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurantes);
 
@@ -124,13 +128,12 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/com-frete-gratis")
     public ResponseEntity<List<Restaurante>> restaurantesComFreteGratis(
-            @RequestParam(required = false) String nome
+            @RequestParam(required = false) final String nome
     ) {
-
-        List<Restaurante> restaurantes = this.restauranteRepository
+        final List<Restaurante> restaurantes = this.restauranteRepository
                 .findComFreteGratis(nome);
 
-        ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
+        final ResponseEntity<List<Restaurante>> restaurantesResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurantes);
 
@@ -139,12 +142,13 @@ public class TesteController {
 
     @GetMapping(value = "/restaurantes/buscar-primeiro")
     public ResponseEntity<Optional<Restaurante>> restauranteBuscarPrimeiro() {
-        Optional<Restaurante> restaurante = this.restauranteRepository.buscarPrimeiro();
+        final Optional<Restaurante> restaurante = this.restauranteRepository.buscarPrimeiro();
 
-        ResponseEntity<Optional<Restaurante>> restauranteResponse = ResponseEntity
+        final ResponseEntity<Optional<Restaurante>> restauranteResponse = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(restaurante);
 
         return restauranteResponse;
     }
+
 }
