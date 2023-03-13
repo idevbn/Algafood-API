@@ -35,9 +35,9 @@ public class CadastroEstadoService {
         try {
             this.repository.deleteById(id);
             this.repository.flush();
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (final EmptyResultDataAccessException ex) {
             throw new EstadoNaoEncontradoException(id);
-        } catch (DataIntegrityViolationException ex) {
+        } catch (final DataIntegrityViolationException ex) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_ESTADO_EM_USO, id)
             );

@@ -45,9 +45,9 @@ public class CadastroCidadeService {
         try {
             this.repository.deleteById(id);
             this.repository.flush();
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (final EmptyResultDataAccessException ex) {
             throw new CidadeNaoEncontradaException(id);
-        } catch (DataIntegrityViolationException e) {
+        } catch (final DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_CIDADE_EM_USO, id));
         }
