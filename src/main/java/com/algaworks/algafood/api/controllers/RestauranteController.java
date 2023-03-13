@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.core.validation.ValidacaoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -103,7 +104,7 @@ public class RestauranteController {
                     .body(restauranteOutputDTO);
 
             return response;
-        } catch (final CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
@@ -129,7 +130,7 @@ public class RestauranteController {
                     .body(restauranteOutputDTO);
 
             return response;
-        } catch (final CozinhaNaoEncontradaException e) {
+        } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
             throw new NegocioException(e.getMessage(), e);
         }
     }
