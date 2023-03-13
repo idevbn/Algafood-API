@@ -57,3 +57,5 @@ INSERT INTO tb_produto (id, ativo, nome, descricao, preco, restaurante_id) VALUE
 INSERT INTO tb_produto (id, ativo, nome, descricao, preco, restaurante_id) VALUES  (3, 1, 'Palak Paneer', 'Consiste basicamente de três ingredientes: espinafre, queijo e gengibre.', 24.95, 2);
 
 INSERT INTO tb_grupo (nome) VALUES ('Gerente'), ('Vendedor'), ('Secretária'), ('Cadastrador');
+
+INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro, data_cadastro, data_atualizacao, ativo) VALUES (4, 'Thai PB', 8.75, 1, 1, '58123100', 'Rua da Parahyba', '1936', 'Varadouro', utc_timestamp, utc_timestamp, true);
