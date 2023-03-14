@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -25,7 +26,7 @@ public class FormaPagamentoOutputDTOAssembler {
     }
 
     public List<FormaPagamentoOutputDTO> toCollectionModel(
-            final List<FormaPagamento> formasPagamento
+            final Collection<FormaPagamento> formasPagamento
     ) {
         final List<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = new ArrayList<>();
 
