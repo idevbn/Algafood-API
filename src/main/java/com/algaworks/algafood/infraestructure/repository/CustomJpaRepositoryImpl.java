@@ -14,8 +14,8 @@ public class CustomJpaRepositoryImpl<T, ID>
     private EntityManager manager;
 
     public CustomJpaRepositoryImpl(
-            JpaEntityInformation<T, ?> entityInformation,
-            EntityManager entityManager
+            final JpaEntityInformation<T, ?> entityInformation,
+            final EntityManager entityManager
     ) {
         super(entityInformation, entityManager);
         this.manager = entityManager;
@@ -23,12 +23,18 @@ public class CustomJpaRepositoryImpl<T, ID>
 
     @Override
     public Optional<T> buscarPrimeiro() {
-        var jpql = "from " + getDomainClass().getName();
+        final String jpql = "from " + getDomainClass().getName();
 
-        T entity = manager.createQuery(jpql, getDomainClass())
+        final T entity = manager.createQuery(jpql, getDomainClass())
                 .setMaxResults(1)
                 .getSingleResult();
 
         return Optional.ofNullable(entity);
     }
+
+    @Override
+    public void detach(final T entity) {
+        this.manager.detach(entity);
+    }
+
 }
