@@ -59,3 +59,8 @@ INSERT INTO tb_produto (id, ativo, nome, descricao, preco, restaurante_id) VALUE
 INSERT INTO tb_grupo (nome) VALUES ('Gerente'), ('Vendedor'), ('Secretária'), ('Cadastrador');
 
 INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro, data_cadastro, data_atualizacao, ativo) VALUES (4, 'Thai PB', 8.75, 1, 1, '58123100', 'Rua da Parahyba', '1936', 'Varadouro', utc_timestamp, utc_timestamp, true);
+
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('José Peres', 'jose.peres@email.com', 'abc123', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Fernanda Cavalcanti', 'nanda_cavalcanti@email.com', '12345678', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Julio Macedo', 'macedojulio@email.com', 'aeiou123', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Mariana Neves', 'mari.neves@email.com', 'mn123vc', utc_timestamp);
