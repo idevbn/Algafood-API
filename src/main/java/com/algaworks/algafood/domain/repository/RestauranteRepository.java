@@ -10,14 +10,19 @@ import java.util.Optional;
 
 public interface RestauranteRepository extends CustomJpaRepository<Restaurante, Long>,
         RestauranteRepositoryQuery, JpaSpecificationExecutor<Restaurante> {
-    List<Restaurante> findByTaxaFreteBetween(BigDecimal taxaInicial, BigDecimal taxaFinal);
+    List<Restaurante> findByTaxaFreteBetween(final BigDecimal taxaInicial,
+                                             final BigDecimal taxaFinal);
 
 //    @Query(value = "from Restaurante where nome like %:nome% and cozinha.id = :id")
-    List<Restaurante> consultarPorNome(String nome, @Param(value = "id") Long cozinhaId);
+    List<Restaurante> consultarPorNome(final String nome,
+                                       @Param(value = "id") final Long cozinhaId);
 
-    Optional<Restaurante> findFirstRestauranteByNomeContaining(String nome);
+    Optional<Restaurante> findFirstRestauranteByNomeContaining(final String nome);
 
-    List<Restaurante> findTop2ByNomeContaining(String nome);
+    List<Restaurante> findTop2ByNomeContaining(final String nome);
 
-    List<Restaurante> find(String nome, BigDecimal taxaFreteInicial,  BigDecimal taxaFreteFinal);
+    List<Restaurante> find(
+            final String nome,
+            final BigDecimal taxaFreteInicial,
+            final BigDecimal taxaFreteFinal);
 }
