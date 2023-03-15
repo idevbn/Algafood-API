@@ -66,3 +66,5 @@ INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Julio Macedo
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Mariana Neves', 'mari.neves@email.com', 'mn123vc', utc_timestamp);
 
 INSERT INTO tb_grupo_permissao (grupo_id, permissao_id) VALUES (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
+
+INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1), (2, 4), (3, 2), (3, 3), (4, 1), (4, 4);
