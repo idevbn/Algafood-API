@@ -190,6 +190,28 @@ public class RestauranteController {
         return response;
     }
 
+    @PutMapping("/{id}/abertura")
+    public ResponseEntity<Void> abrir(@PathVariable("id") final Long id) {
+        this.service.abrir(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
+    }
+
+    @PutMapping("/{id}/fechamento")
+    public ResponseEntity<Void> fechar(@PathVariable("id") final Long id) {
+        this.service.fechar(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
+    }
+
     private void validate(final Restaurante restaurante, final String objectName) {
         final BeanPropertyBindingResult bindingResult =
                 new BeanPropertyBindingResult(restaurante, objectName);
