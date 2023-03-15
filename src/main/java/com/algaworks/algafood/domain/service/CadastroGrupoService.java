@@ -3,6 +3,7 @@ package com.algaworks.algafood.domain.service;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.GrupoNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Grupo;
+import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -18,10 +19,13 @@ public class CadastroGrupoService {
             = "Grupo de código %d não pode ser removido, pois está em uso";
 
     private final GrupoRepository repository;
+    private final CadastroPermissaoService permissaoService;
 
     @Autowired
-    public CadastroGrupoService(final GrupoRepository repository) {
+    public CadastroGrupoService(final GrupoRepository repository,
+                                final CadastroPermissaoService permissaoService) {
         this.repository = repository;
+        this.permissaoService = permissaoService;
     }
 
     @Transactional
@@ -52,6 +56,26 @@ public class CadastroGrupoService {
                     String.format(MSG_GRUPO_EM_USO, id)
             );
         }
+    }
+
+    @Transactional
+    public void associarPermissao(final Long grupoId,
+                                  final Long permissaoId) {
+        final Grupo grupo = this.buscarOuFalhar(grupoId);
+
+        final Permissao permissao = this.permissaoService.buscarOuFalhar(permissaoId);
+
+        grupo.adicionarPermissao(permissao);
+    }
+
+    @Transactional
+    public void desassociarPermissao(final Long grupoId,
+                                     final Long permissaoId) {
+        final Grupo grupo = this.buscarOuFalhar(grupoId);
+
+        final Permissao permissao = this.permissaoService.buscarOuFalhar(permissaoId);
+
+        grupo.removerPermissao(permissao);
     }
 
 }
