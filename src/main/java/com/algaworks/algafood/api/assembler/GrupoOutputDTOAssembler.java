@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -24,7 +25,7 @@ public class GrupoOutputDTOAssembler {
         return grupoOutputDTO;
     }
 
-    public List<GrupoOutputDTO> toCollectionModel(final List<Grupo> grupos) {
+    public List<GrupoOutputDTO> toCollectionModel(final Collection<Grupo> grupos) {
         final ArrayList<GrupoOutputDTO> gruposOutputDTO = new ArrayList<>();
 
         for (final Grupo grupo : grupos) {
