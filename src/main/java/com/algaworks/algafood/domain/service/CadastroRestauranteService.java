@@ -105,4 +105,26 @@ public class CadastroRestauranteService {
         restauranteEncontrado.adicionarFormaPagamento(formaPagamentoEncontrada);
     }
 
+    /**
+     * Método que controla a abertura de um {@link Restaurante}
+     * @param id
+     */
+    @Transactional
+    public void abrir(final Long id) {
+        final Restaurante restauranteAtual = buscarOuFalhar(id);
+
+        restauranteAtual.abrir();
+    }
+
+    /**
+     * Método que controla o fechamento de um {@link Restaurante}
+     * @param id
+     */
+    @Transactional
+    public void fechar(final Long id) {
+        final Restaurante restauranteAtual = buscarOuFalhar(id);
+
+        restauranteAtual.fechar();
+    }
+
 }
