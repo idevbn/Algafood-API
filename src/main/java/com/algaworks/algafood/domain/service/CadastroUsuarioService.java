@@ -2,6 +2,7 @@ package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.exception.UsuarioNaoEncontradoException;
+import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,13 @@ import java.util.Optional;
 public class CadastroUsuarioService {
 
     private final UsuarioRepository repository;
+    private final CadastroGrupoService grupoService;
 
     @Autowired
-    public CadastroUsuarioService(final UsuarioRepository repository) {
+    public CadastroUsuarioService(final UsuarioRepository repository,
+                                  final CadastroGrupoService grupoService) {
         this.repository = repository;
+        this.grupoService = grupoService;
     }
 
     public Usuario buscarOuFalhar(final Long id) {
@@ -54,6 +58,26 @@ public class CadastroUsuarioService {
         }
 
         usuarioEncontrado.setSenha(novaSenha);
+    }
+
+    @Transactional
+    public void associarGrupo(final Long usuarioId,
+                                  final Long grupoId) {
+        final Usuario usuario = this.buscarOuFalhar(usuarioId);
+
+        final Grupo grupo = this.grupoService.buscarOuFalhar(grupoId);
+
+        usuario.adicionarGrupo(grupo);
+    }
+
+    @Transactional
+    public void desassociarGrupo(final Long usuarioId,
+                                 final Long grupoId) {
+        final Usuario usuario = this.buscarOuFalhar(usuarioId);
+
+        final Grupo grupo = this.grupoService.buscarOuFalhar(grupoId);
+
+        usuario.removerGrupo(grupo);
     }
 
 }
