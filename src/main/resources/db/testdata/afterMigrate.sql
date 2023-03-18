@@ -12,6 +12,7 @@ DELETE FROM tb_restaurante;
 DELETE FROM tb_restaurante_forma_pagamento;
 DELETE FROM tb_usuario;
 DELETE FROM tb_usuario_grupo;
+DELETE FROM tb_restaurante_usuario_responsavel;
 
 SET foreign_key_checks = 1;
 
@@ -68,3 +69,7 @@ INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Mariana Neve
 INSERT INTO tb_grupo_permissao (grupo_id, permissao_id) VALUES (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
 INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1), (2, 4), (3, 2), (3, 3), (4, 1), (4, 4);
+
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '123456', utc_timestamp);
+
+INSERT INTO tb_restaurante_usuario_responsavel (restaurante_id, usuario_id) VALUES (1, 5), (2, 5);
