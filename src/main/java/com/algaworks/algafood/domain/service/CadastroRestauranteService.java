@@ -1,10 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
 import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
-import com.algaworks.algafood.domain.model.Cidade;
-import com.algaworks.algafood.domain.model.Cozinha;
-import com.algaworks.algafood.domain.model.FormaPagamento;
-import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.model.*;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +15,19 @@ public class CadastroRestauranteService {
     private final CadastroCozinhaService cozinhaService;
     private final CadastroCidadeService cidadeService;
     private final CadastroFormaPagamentoService formaPagamentoService;
+    private final CadastroUsuarioService usuarioService;
 
     @Autowired
     public CadastroRestauranteService(final RestauranteRepository repository,
                                       final CadastroCozinhaService cozinhaService,
                                       final CadastroCidadeService cidadeService,
-                                      final CadastroFormaPagamentoService formaPagamentoService) {
+                                      final CadastroFormaPagamentoService formaPagamentoService,
+                                      final CadastroUsuarioService usuarioService) {
         this.repository = repository;
         this.cozinhaService = cozinhaService;
         this.cidadeService = cidadeService;
         this.formaPagamentoService = formaPagamentoService;
+        this.usuarioService = usuarioService;
     }
 
     @Transactional
@@ -125,6 +125,26 @@ public class CadastroRestauranteService {
         final Restaurante restauranteAtual = buscarOuFalhar(id);
 
         restauranteAtual.fechar();
+    }
+
+    @Transactional
+    public void associarResponsavel(final Long restauranteId,
+                                    final Long usuarioId) {
+        final Restaurante restaurante = this.buscarOuFalhar(restauranteId);
+
+        final Usuario usuario = this.usuarioService.buscarOuFalhar(usuarioId);
+
+        restaurante.adicionarResponsavel(usuario);
+    }
+
+    @Transactional
+    public void desassociarResponsavel(final Long restauranteId,
+                                       final Long usuarioId) {
+        final Restaurante restaurante = this.buscarOuFalhar(restauranteId);
+
+        final Usuario usuario = this.usuarioService.buscarOuFalhar(usuarioId);
+
+        restaurante.removerResponsavel(usuario);
     }
 
 }
