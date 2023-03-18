@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -24,7 +25,7 @@ public class UsuarioOutputDTOAssembler {
         return usuarioOutputDTO;
     }
 
-    public List<UsuarioOutputDTO> toCollectionModel(final List<Usuario> usuarios) {
+    public List<UsuarioOutputDTO> toCollectionModel(final Collection<Usuario> usuarios) {
         final List<UsuarioOutputDTO> usuariosOutputDTO = new ArrayList<>();
 
         for (final Usuario usuario : usuarios) {
