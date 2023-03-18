@@ -9,6 +9,7 @@ import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -174,6 +175,21 @@ public class RestauranteController {
         return response;
     }
 
+    @PutMapping(value = "/ativacoes")
+    public ResponseEntity<Void> ativarMultiplos(@RequestBody final List<Long> ids) {
+        try {
+            this.service.ativar(ids);
+
+            final ResponseEntity<Void> response = ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .build();
+
+            return response;
+        } catch (final RestauranteNaoEncontradoException ex) {
+            throw new NegocioException(ex.getMessage(), ex);
+        }
+    }
+
     /**
      * DELETE /restaurantes/{id}/ativo -> inativa
      * um {@link Restaurante} com base no valor do
@@ -188,6 +204,22 @@ public class RestauranteController {
                 .build();
 
         return response;
+    }
+
+    @DeleteMapping(value = "/ativacoes")
+    public ResponseEntity<Void> inativarMultiplos(@RequestBody final List<Long> ids) {
+        try {
+            this.service.inativar(ids);
+
+            final ResponseEntity<Void> response = ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .build();
+
+            return response;
+
+        } catch (final RestauranteNaoEncontradoException ex) {
+            throw new NegocioException(ex.getMessage(), ex);
+        }
     }
 
     @PutMapping("/{id}/abertura")
