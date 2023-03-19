@@ -43,8 +43,8 @@ public class Pedido {
 
     private OffsetDateTime dataEntrega;
 
-    @ManyToOne
     @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private FormaPagamento formaPagamento;
 
     @ManyToOne
