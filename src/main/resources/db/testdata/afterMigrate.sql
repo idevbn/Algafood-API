@@ -13,6 +13,8 @@ DELETE FROM tb_restaurante_forma_pagamento;
 DELETE FROM tb_usuario;
 DELETE FROM tb_usuario_grupo;
 DELETE FROM tb_restaurante_usuario_responsavel;
+DELETE FROM tb_pedido;
+DELETE FROM tb_item_pedido;
 
 SET foreign_key_checks = 1;
 
@@ -25,6 +27,8 @@ ALTER TABLE tb_permissao auto_increment = 1;
 ALTER TABLE tb_produto auto_increment = 1;
 ALTER TABLE tb_restaurante auto_increment = 1;
 ALTER TABLE tb_usuario auto_increment = 1;
+ALTER TABLE tb_pedido auto_increment = 1;
+ALTER TABLE tb_item_pedido auto_increment = 1;
 
 INSERT INTO tb_cozinha (nome) VALUES ('Tailandesa');
 INSERT INTO tb_cozinha (nome) VALUES ('Indiana');
@@ -73,3 +77,10 @@ INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '123456', utc_timestamp);
 
 INSERT INTO tb_restaurante_usuario_responsavel (restaurante_id, usuario_id) VALUES (1, 5), (2, 5);
+
+INSERT INTO tb_pedido (id, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) VALUES (1, 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil', 'CRIADO', utc_timestamp, 298.90, 10, 308.90);
+INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (1, 1, 1, 1, 78.9, 78.9, null);
+INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (2, 1, 2, 2, 110, 220, 'Menos picante, por favor');
+
+INSERT INTO tb_pedido (id, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) VALUES (2, 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro', 'CRIADO', utc_timestamp, 79, 0, 79);
+INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (3, 2, 3, 1, 79, 79, 'Ao ponto');
