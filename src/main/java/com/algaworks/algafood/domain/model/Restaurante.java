@@ -103,4 +103,13 @@ public class Restaurante {
         return getResponsaveis().add(usuario);
     }
 
+    public boolean aceitaFormaPagamento(final FormaPagamento formaPagamento) {
+        return getFormasPagamento().contains(formaPagamento);
+    }
+
+    public boolean naoAceitaFormaPagamento(final FormaPagamento formaPagamento) {
+        return !aceitaFormaPagamento(formaPagamento);
+    }
+
+
 }
