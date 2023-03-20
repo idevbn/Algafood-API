@@ -1,7 +1,9 @@
 package com.algaworks.algafood.core.modelmapper;
 
+import com.algaworks.algafood.api.model.in.ItemPedidoInputDTO;
 import com.algaworks.algafood.api.model.out.EnderecoOutputDTO;
 import com.algaworks.algafood.domain.model.Endereco;
+import com.algaworks.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +35,15 @@ public class ModelMapperConfig {
         enderecoToEnderecoModelTypeMap.<String>addMapping(
                 enderecoSrc -> enderecoSrc.getCidade().getEstado().getNome(),
                 (enderecoModelDest, value) -> enderecoModelDest.getCidade().setEstado(value));
+
+        final TypeMap<ItemPedidoInputDTO, ItemPedido> itemPedidoInputToItemPedidoTypeMap =
+                modelMapper.createTypeMap(ItemPedidoInputDTO.class, ItemPedido.class);
+
+        /**
+         * Ignora o mapeamento do produtoId para o id do ItemPedido
+         */
+        itemPedidoInputToItemPedidoTypeMap
+                .addMappings(mapper -> mapper.skip(ItemPedido::setId));
 
         return modelMapper;
     }

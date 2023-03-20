@@ -1,20 +1,23 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.assembler.PedidoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.PedidoOutputDTOAssembler;
 import com.algaworks.algafood.api.assembler.PedidoResumoOutputDTOAssembler;
+import com.algaworks.algafood.api.model.in.PedidoInputDTO;
 import com.algaworks.algafood.api.model.out.PedidoOutputDTO;
 import com.algaworks.algafood.api.model.out.PedidoResumoOutputDTO;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
+import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,16 +28,19 @@ public class PedidoController {
     private final EmissaoPedidoService service;
     private final PedidoOutputDTOAssembler assembler;
     private final PedidoResumoOutputDTOAssembler assemblerPedidoResumo;
+    private final PedidoInputDTODisassembler disassembler;
 
     @Autowired
     public PedidoController(final PedidoRepository repository,
                             final EmissaoPedidoService service,
                             final PedidoOutputDTOAssembler assembler,
-                            final PedidoResumoOutputDTOAssembler assemblerPedidoResumo) {
+                            final PedidoResumoOutputDTOAssembler assemblerPedidoResumo,
+                            final PedidoInputDTODisassembler disassembler) {
         this.repository = repository;
         this.service = service;
         this.assembler = assembler;
         this.assemblerPedidoResumo = assemblerPedidoResumo;
+        this.disassembler = disassembler;
     }
 
     @GetMapping
@@ -62,6 +68,30 @@ public class PedidoController {
                 .body(pedidoOutputDTO);
 
         return response;
+    }
+
+    @PostMapping
+    public ResponseEntity<PedidoOutputDTO> adicionar(
+            @Valid @RequestBody final PedidoInputDTO pedidoInputDTO
+    ) {
+        try {
+            final Pedido pedido = this.disassembler.toDomainModel(pedidoInputDTO);
+
+            pedido.setCliente(new Usuario());
+            pedido.getCliente().setId(1L);
+
+            this.service.emitir(pedido);
+
+            final PedidoOutputDTO pedidoOutputDTO = this.assembler.toModel(pedido);
+
+            final ResponseEntity<PedidoOutputDTO> response = ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(pedidoOutputDTO);
+
+            return response;
+        } catch (final EntidadeNaoEncontradaException ex) {
+            throw new NegocioException(ex.getMessage(), ex);
+        }
     }
 
 }
