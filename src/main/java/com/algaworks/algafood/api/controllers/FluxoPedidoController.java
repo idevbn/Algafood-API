@@ -31,4 +31,26 @@ public class FluxoPedidoController {
         return response;
     }
 
+    @PutMapping(value = "/cancelamento")
+    public ResponseEntity<Void> cancelar(@PathVariable("id") final Long id) {
+        this.pedidoService.cancelar(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
+    }
+
+    @PutMapping(value = "/entrega")
+    public ResponseEntity<Void> entregar(@PathVariable("id") final Long id) {
+        this.pedidoService.entregar(id);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
+    }
+
 }
