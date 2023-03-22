@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -22,6 +23,8 @@ public class Pedido {
     @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private String codigo;
 
     private BigDecimal subtotal;
 
@@ -87,8 +90,8 @@ public class Pedido {
     private void setStatus(final StatusPedido novoStatus) {
         if (getStatus().naoPodeAlterarPara(novoStatus)) {
             throw new NegocioException(
-                    String.format("Status do pedido %d não pode ser alterado de %s para %s",
-                            getId(),
+                    String.format("Status do pedido %s não pode ser alterado de %s para %s",
+                            getCodigo(),
                             getStatus().getDescricao(),
                             novoStatus.getDescricao())
             );
@@ -103,6 +106,17 @@ public class Pedido {
 
     public void atribuirPedidoAosItens() {
         getItens().forEach(item -> item.setPedido(this));
+    }
+
+    /**
+     * Método que atribui um valor randômico de UUID a um Pedido,
+     * antes que o mesmo seja persistido no banco.
+     */
+    @PrePersist
+    private void gerarCodigo() {
+        final UUID uuid = UUID.randomUUID();
+
+        setCodigo(uuid.toString());
     }
 
 }

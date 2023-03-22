@@ -57,9 +57,9 @@ public class PedidoController {
         return response;
     }
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<PedidoOutputDTO> buscar(@PathVariable("id") final Long id) {
-        final Pedido pedido = this.service.buscarOuFalhar(id);
+    @GetMapping(value = "/{codigo}")
+    public ResponseEntity<PedidoOutputDTO> buscar(@PathVariable("codigo") final String codigo) {
+        final Pedido pedido = this.service.buscarOuFalhar(codigo);
 
         final PedidoOutputDTO pedidoOutputDTO = this.assembler.toModel(pedido);
 

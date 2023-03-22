@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/pedidos/{id}")
+@RequestMapping(value = "/pedidos/{codigo}")
 public class FluxoPedidoController {
 
     private final FluxoPedidoService pedidoService;
@@ -21,8 +21,8 @@ public class FluxoPedidoController {
     }
 
     @PutMapping(value = "/confirmacao")
-    public ResponseEntity<Void> confirmar(@PathVariable("id") final Long id) {
-        this.pedidoService.confirmar(id);
+    public ResponseEntity<Void> confirmar(@PathVariable("codigo") final String codigo) {
+        this.pedidoService.confirmar(codigo);
 
         final ResponseEntity<Void> response = ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -32,8 +32,8 @@ public class FluxoPedidoController {
     }
 
     @PutMapping(value = "/cancelamento")
-    public ResponseEntity<Void> cancelar(@PathVariable("id") final Long id) {
-        this.pedidoService.cancelar(id);
+    public ResponseEntity<Void> cancelar(@PathVariable("codigo") final String codigo) {
+        this.pedidoService.cancelar(codigo);
 
         final ResponseEntity<Void> response = ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
@@ -43,8 +43,8 @@ public class FluxoPedidoController {
     }
 
     @PutMapping(value = "/entrega")
-    public ResponseEntity<Void> entregar(@PathVariable("id") final Long id) {
-        this.pedidoService.entregar(id);
+    public ResponseEntity<Void> entregar(@PathVariable("codigo") final String codigo) {
+        this.pedidoService.entregar(codigo);
 
         final ResponseEntity<Void> response = ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

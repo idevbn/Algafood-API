@@ -34,9 +34,9 @@ public class EmissaoPedidoService {
         this.produtoService = produtoService;
     }
 
-    public Pedido buscarOuFalhar(final Long id) {
-        final Pedido pedido = this.repository.findById(id)
-                .orElseThrow(() -> new PedidoNaoEncontradoException(id));
+    public Pedido buscarOuFalhar(final String codigo) {
+        final Pedido pedido = this.repository.findByCodigo(codigo)
+                .orElseThrow(() -> new PedidoNaoEncontradoException(codigo));
 
         return pedido;
     }
