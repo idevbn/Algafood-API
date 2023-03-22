@@ -1,13 +1,10 @@
 package com.algaworks.algafood.domain.service;
 
-import com.algaworks.algafood.domain.enums.StatusPedido;
-import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.OffsetDateTime;
 
 @Service
 public class FluxoPedidoService {
@@ -23,51 +20,21 @@ public class FluxoPedidoService {
     public void confirmar(final Long pedidoId) {
         final Pedido pedido = this.pedidoService.buscarOuFalhar(pedidoId);
 
-        if (!pedido.getStatus().equals(StatusPedido.CRIADO)) {
-            throw new NegocioException(
-                    String.format("Status do pedido %d não pode ser alterado de %s para %s",
-                            pedido.getId(),
-                            pedido.getStatus().getDescricao(),
-                            StatusPedido.CONFIRMADO.getDescricao())
-            );
-        }
-
-        pedido.setStatus(StatusPedido.CONFIRMADO);
-        pedido.setDataConfirmacao(OffsetDateTime.now());
+       pedido.confirmar();
     }
 
     @Transactional
     public void cancelar(final Long pedidoId) {
         final Pedido pedido = this.pedidoService.buscarOuFalhar(pedidoId);
 
-        if (!pedido.getStatus().equals(StatusPedido.CRIADO)) {
-            throw new NegocioException(
-                    String.format("Status do pedido %d não pode ser alterado de %s para %s",
-                            pedido.getId(),
-                            pedido.getStatus().getDescricao(),
-                            StatusPedido.CANCELADO.getDescricao())
-            );
-        }
-
-        pedido.setStatus(StatusPedido.CANCELADO);
-        pedido.setDataConfirmacao(OffsetDateTime.now());
+        pedido.cancelar();
     }
 
     @Transactional
     public void entregar(final Long pedidoId) {
         final Pedido pedido = this.pedidoService.buscarOuFalhar(pedidoId);
 
-        if (!pedido.getStatus().equals(StatusPedido.CONFIRMADO)) {
-            throw new NegocioException(
-                    String.format("Status do pedido %d não pode ser alterado de %s para %s",
-                            pedido.getId(),
-                            pedido.getStatus().getDescricao(),
-                            StatusPedido.ENTREGUE.getDescricao())
-            );
-        }
-
-        pedido.setStatus(StatusPedido.ENTREGUE);
-        pedido.setDataConfirmacao(OffsetDateTime.now());
+        pedido.entregar();
     }
 
 }
