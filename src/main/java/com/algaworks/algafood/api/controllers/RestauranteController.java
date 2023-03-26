@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.assembler.RestauranteOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
+import com.algaworks.algafood.api.model.out.view.RestauranteView;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -13,6 +14,7 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -58,9 +60,14 @@ public class RestauranteController {
         this.assembler = assembler;
         this.disassembler = disassembler;
     }
-    
-    @GetMapping
-    public ResponseEntity<List<RestauranteOutputDTO>> listar() {
+
+    /**
+     * Retorna uma lista de {@link Restaurante}, apenas os parâmetros definidos
+     * no @JsonView (uma lista resumida).
+     */
+    @JsonView(RestauranteView.Resumo.class)
+    @GetMapping(params = "projecao=resumo")
+    public ResponseEntity<List<RestauranteOutputDTO>> listarResumido() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
         final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
@@ -72,6 +79,93 @@ public class RestauranteController {
 
         return response;
     }
+
+    /**
+     * Retorna uma lista de {@link Restaurante}, apenas os parâmetros definidos
+     * no @JsonView (nome e id).
+     */
+    @JsonView(RestauranteView.ApenasNome.class)
+    @GetMapping(params = "projecao=apenas-nome")
+    public ResponseEntity<List<RestauranteOutputDTO>> listarApenasNomes() {
+        final List<Restaurante> restaurantes = this.repository.findAll();
+
+        final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
+                .toCollectionModel(restaurantes);
+
+        final ResponseEntity<List<RestauranteOutputDTO>> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(restauranteOutputDTO);
+
+        return response;
+    }
+
+    /**
+     * Forma dinâmica de listar as views definidas com o @JsonView.
+     * Com essa lógica, é retornado por padrão uma view de resumo.
+     * Caso seja passada uma query com "apenas-nome" é retornada a
+     * view correspondente. O mesmo para o caso de ser passada uma
+     * query com "completo", retornando a lista de {@link Restaurante}
+     * completa.
+     */
+//    @GetMapping
+//    public ResponseEntity<MappingJacksonValue> listar(
+//            @RequestParam(required = false) final String projecao
+//    ) {
+//        final List<Restaurante> restaurantes = this.repository.findAll();
+//
+//        final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
+//                .toCollectionModel(restaurantes);
+//
+//        final MappingJacksonValue restaurantesWrapper =
+//                new MappingJacksonValue(restauranteOutputDTO);
+//
+//        restaurantesWrapper.setSerializationView(RestauranteView.Resumo.class);
+//
+//        if ("apenas-nome".equals(projecao)) {
+//            restaurantesWrapper.setSerializationView(RestauranteView.ApenasNome.class);
+//        } else if ("completo".equals(projecao)) {
+//            restaurantesWrapper.setSerializationView(null);
+//        }
+//
+//        final ResponseEntity<MappingJacksonValue> response = ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(restaurantesWrapper);
+//
+//        return response;
+//    }
+
+
+//    @JsonView(RestauranteView.Resumo.class)
+//    @GetMapping(params = "projecao=resumo")
+//    public ResponseEntity<List<RestauranteOutputDTO>> listarResumido() {
+//        final List<Restaurante> restaurantes = this.repository.findAll();
+//
+//        final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
+//                .toCollectionModel(restaurantes);
+//
+//        final ResponseEntity<List<RestauranteOutputDTO>> response = ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(restauranteOutputDTO);
+//
+//        return response;
+//    }
+//
+
+
+//    @JsonView(RestauranteView.ApenasNome.class)
+//    @GetMapping(params = "projecao=apenas-nome")
+//    public ResponseEntity<List<RestauranteOutputDTO>> listarApenasNomes() {
+//        final List<Restaurante> restaurantes = this.repository.findAll();
+//
+//        final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
+//                .toCollectionModel(restaurantes);
+//
+//        final ResponseEntity<List<RestauranteOutputDTO>> response = ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(restauranteOutputDTO);
+//
+//        return response;
+//    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<RestauranteOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
