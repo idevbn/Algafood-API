@@ -41,10 +41,19 @@ public class RestauranteProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoOutputDTO>> listar(@PathVariable("id") final Long id) {
+    public ResponseEntity<List<ProdutoOutputDTO>> listar(
+            @PathVariable("id") final Long id,
+            @RequestParam(required = false) final boolean inativos
+    ) {
         final Restaurante restaurante = this.restauranteService.buscarOuFalhar(id);
 
-        final List<Produto> produtos = this.repository.findByRestaurante(restaurante);
+        List<Produto> produtos;
+
+        if (inativos) {
+            produtos = this.repository.findByRestaurante(restaurante);
+        } else {
+            produtos = this.repository.findAtivosByRestaurante(restaurante);
+        }
 
         final List<ProdutoOutputDTO> produtosOutputDTOS = this
                 .assembler.toCollectionModel(produtos);
