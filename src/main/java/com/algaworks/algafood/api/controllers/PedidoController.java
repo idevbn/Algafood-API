@@ -12,13 +12,9 @@ import com.algaworks.algafood.domain.model.Pedido;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -48,49 +44,18 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<MappingJacksonValue> listar(
-            @RequestParam(required = false) final String campos
-    ) {
+    public ResponseEntity<List<PedidoResumoOutputDTO>> listar() {
         final List<Pedido> pedidos = this.repository.findAll();
 
         final List<PedidoResumoOutputDTO> pedidosResumoOutputDTOS = this
                 .assemblerPedidoResumo.toCollectionModel(pedidos);
 
-        final MappingJacksonValue pedidosWrapper =
-                new MappingJacksonValue(pedidosResumoOutputDTOS);
-
-        final SimpleFilterProvider filterProvider = new SimpleFilterProvider();
-        filterProvider.addFilter("pedidoFilter", SimpleBeanPropertyFilter.serializeAll());
-
-        if (StringUtils.isNotBlank(campos)) {
-            filterProvider.addFilter(
-                    "pedidoFilter",
-                    SimpleBeanPropertyFilter.filterOutAllExcept(campos.split(","))
-            );
-        }
-
-        pedidosWrapper.setFilters(filterProvider);
-
-        final ResponseEntity<MappingJacksonValue> response = ResponseEntity
+        final ResponseEntity<List<PedidoResumoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(pedidosWrapper);
+                .body(pedidosResumoOutputDTOS);
 
         return response;
     }
-
-//    @GetMapping
-//    public ResponseEntity<List<PedidoResumoOutputDTO>> listar() {
-//        final List<Pedido> pedidos = this.repository.findAll();
-//
-//        final List<PedidoResumoOutputDTO> pedidosResumoOutputDTOS = this
-//                .assemblerPedidoResumo.toCollectionModel(pedidos);
-//
-//        final ResponseEntity<List<PedidoResumoOutputDTO>> response = ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(pedidosResumoOutputDTOS);
-//
-//        return response;
-//    }
 
     @GetMapping(value = "/{codigo}")
     public ResponseEntity<PedidoOutputDTO> buscar(@PathVariable("codigo") final String codigo) {
