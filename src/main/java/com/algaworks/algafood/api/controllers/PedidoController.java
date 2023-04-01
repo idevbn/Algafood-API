@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.assembler.PedidoResumoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.PedidoInputDTO;
 import com.algaworks.algafood.api.model.out.PedidoOutputDTO;
 import com.algaworks.algafood.api.model.out.PedidoResumoOutputDTO;
+import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Pedido;
@@ -14,6 +15,7 @@ import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infraestructure.repository.spec.PedidoSpecs;
+import com.google.common.collect.ImmutableMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -51,9 +53,11 @@ public class PedidoController {
 
     @GetMapping
     public ResponseEntity<Page<PedidoResumoOutputDTO>> pesquisar(
-            @PageableDefault() final Pageable pageable,
+            @PageableDefault() Pageable pageable,
             final PedidoFilter filtro
     ) {
+        pageable = this.traduzirPageable(pageable);
+
         final Page<Pedido> pedidos = this.repository
                 .findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
@@ -105,6 +109,19 @@ public class PedidoController {
         } catch (final EntidadeNaoEncontradaException ex) {
             throw new NegocioException(ex.getMessage(), ex);
         }
+    }
+
+    private Pageable traduzirPageable(final Pageable pageable) {
+        final ImmutableMap<String, String> mapeamento = ImmutableMap.of(
+                "codigo", "codigo",
+                "restaurante.nome", "restaurante.nome",
+                "nomeCliente", "cliente.nome",
+                "valorTotal", "valorTotal"
+        );
+
+        final Pageable translatedPage = PageableTranslator.translate(pageable, mapeamento);
+
+        return translatedPage;
     }
 
 }
