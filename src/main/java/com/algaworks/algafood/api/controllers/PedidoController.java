@@ -15,6 +15,10 @@ import com.algaworks.algafood.domain.repository.filter.PedidoFilter;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infraestructure.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,15 +50,22 @@ public class PedidoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PedidoResumoOutputDTO>> pesquisar(final PedidoFilter filtro) {
-        final List<Pedido> pedidos = this.repository.findAll(PedidoSpecs.usandoFiltro(filtro));
+    public ResponseEntity<Page<PedidoResumoOutputDTO>> pesquisar(
+            @PageableDefault() final Pageable pageable,
+            final PedidoFilter filtro
+    ) {
+        final Page<Pedido> pedidos = this.repository
+                .findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
 
         final List<PedidoResumoOutputDTO> pedidosResumoOutputDTOS = this
-                .assemblerPedidoResumo.toCollectionModel(pedidos);
+                .assemblerPedidoResumo.toCollectionModel(pedidos.getContent());
 
-        final ResponseEntity<List<PedidoResumoOutputDTO>> response = ResponseEntity
+        final Page<PedidoResumoOutputDTO> pedidosPage =
+                new PageImpl<>(pedidosResumoOutputDTOS, pageable, pedidos.getTotalElements());
+
+        final ResponseEntity<Page<PedidoResumoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(pedidosResumoOutputDTOS);
+                .body(pedidosPage);
 
         return response;
     }
