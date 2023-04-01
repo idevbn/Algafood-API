@@ -31,10 +31,10 @@ public class PedidoSpecs {
                                 .get("dataCriacao"), filtro.getDataCriacaoInicio()));
             }
 
-            if (filtro.getDataCriacaFim() != null) {
+            if (filtro.getDataCriacaoFim() != null) {
                 predicates.add(builder
                         .lessThanOrEqualTo(root
-                                .get("dataCriacao"), filtro.getDataCriacaFim()));
+                                .get("dataCriacao"), filtro.getDataCriacaoFim()));
             }
 
             final Predicate predicate = builder.and(predicates.toArray(new Predicate[0]));
