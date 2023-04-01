@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -277,6 +278,23 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final HttpStatus status,
             final WebRequest request
     ) {
+        final ResponseEntity<Object> response = this.handleValidationInternal(
+                ex,
+                ex.getBindingResult(),
+                headers,
+                status,
+                request
+        );
+
+        return response;
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(
+            final BindException ex,
+            final HttpHeaders headers,
+            final HttpStatus status,
+            final WebRequest request) {
         final ResponseEntity<Object> response = this.handleValidationInternal(
                 ex,
                 ex.getBindingResult(),
