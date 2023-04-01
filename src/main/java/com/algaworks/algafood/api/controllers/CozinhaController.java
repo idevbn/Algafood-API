@@ -8,6 +8,9 @@ import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,15 +39,18 @@ public class CozinhaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CozinhaOutputDTO>> listar() {
-        final List<Cozinha> cozinhas = this.repository.findAll();
+    public ResponseEntity<Page<CozinhaOutputDTO>> listar(final Pageable pageable) {
+        final Page<Cozinha> cozinhas = this.repository.findAll(pageable);
 
         final List<CozinhaOutputDTO> cozinhasOutputDTOS = this.outputDTOAssembler
-                .toCollectionModel(cozinhas);
+                .toCollectionModel(cozinhas.getContent());
 
-        final ResponseEntity<List<CozinhaOutputDTO>> response = ResponseEntity
+        final Page<CozinhaOutputDTO> cozinhasPageResponse =
+                new PageImpl<>(cozinhasOutputDTOS, pageable, cozinhas.getTotalElements());
+
+        final ResponseEntity<Page<CozinhaOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(cozinhasOutputDTOS);
+                .body(cozinhasPageResponse);
 
         return response;
     }
