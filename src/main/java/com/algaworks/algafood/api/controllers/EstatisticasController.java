@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/estatisticas")
 public class EstatisticasController {
+
+    private static final String DEFAULT_VALUE_UTC = "+00:00";
 
     private final VendaQueryService vendaQueryService;
 
@@ -25,10 +28,12 @@ public class EstatisticasController {
 
     @GetMapping(value = "/vendas-diarias")
     public ResponseEntity<List<VendaDiaria>> consultarVendasDiarias(
-            final VendaDiariaFilter filter) {
+            final VendaDiariaFilter filter,
+            @RequestParam(required = false, defaultValue = DEFAULT_VALUE_UTC)
+            final String timeOffset) {
 
         final List<VendaDiaria> vendasDiarias = this.vendaQueryService
-                .consultarVendasDiarias(filter);
+                .consultarVendasDiarias(filter, timeOffset);
 
         final ResponseEntity<List<VendaDiaria>> response = ResponseEntity
                 .status(HttpStatus.OK)
