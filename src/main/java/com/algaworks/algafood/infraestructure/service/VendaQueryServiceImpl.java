@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -21,14 +22,24 @@ public class VendaQueryServiceImpl implements VendaQueryService {
     private EntityManager manager;
 
     @Override
-    public List<VendaDiaria> consultarVendasDiarias(final VendaDiariaFilter filter) {
+    public List<VendaDiaria> consultarVendasDiarias(final VendaDiariaFilter filter,
+                                                    final String timeOffset) {
         final CriteriaBuilder builder = this.manager.getCriteriaBuilder();
         final CriteriaQuery<VendaDiaria> query = builder.createQuery(VendaDiaria.class);
         final Root<Pedido> root = query.from(Pedido.class);
         final List<Predicate> predicates = new ArrayList<>();
 
+        final Expression<Date> functionConvertTzDataCriacao = builder
+                .function(
+                        "convert_tz",
+                        Date.class,
+                        root.get("dataCriacao"),
+                        builder.literal("+00:00"),
+                        builder.literal(timeOffset)
+                );
+
         final Expression<LocalDate> functionDateDataCriacao = builder
-                .function("date", LocalDate.class, root.get("dataCriacao"));
+                .function("date", LocalDate.class, functionConvertTzDataCriacao);
 
         final CompoundSelection<VendaDiaria> selection = builder.construct(
                 VendaDiaria.class,
