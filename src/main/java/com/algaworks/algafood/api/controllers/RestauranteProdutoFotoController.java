@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ public class RestauranteProdutoFotoController {
     public ResponseEntity<Void> atualizarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
-            final FotoProdutoInputDTO fotoProdutoInput
+            @Valid final FotoProdutoInputDTO fotoProdutoInput
             ) {
 
         final String nomeArquivo = UUID.randomUUID() + "_"
