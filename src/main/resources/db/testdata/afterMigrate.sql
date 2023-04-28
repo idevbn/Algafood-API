@@ -15,6 +15,7 @@ DELETE FROM tb_usuario_grupo;
 DELETE FROM tb_restaurante_usuario_responsavel;
 DELETE FROM tb_pedido;
 DELETE FROM tb_item_pedido;
+DELETE FROM tb_foto_produto;
 
 SET foreign_key_checks = 1;
 
