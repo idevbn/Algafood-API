@@ -29,9 +29,9 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQuery {
 
     @Override
     public List<Restaurante> find(
-            String nome,
-            BigDecimal taxaFreteInicial,
-            BigDecimal taxaFreteFinal
+            final String nome,
+            final BigDecimal taxaFreteInicial,
+            final BigDecimal taxaFreteFinal
     ) {
         var builder = manager.getCriteriaBuilder();
 
@@ -60,8 +60,8 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQuery {
     }
 
     @Override
-    public List<Restaurante> findComFreteGratis(String nome) {
-        List<Restaurante> restaurantes = this.restauranteRepository
+    public List<Restaurante> findComFreteGratis(final String nome) {
+        final List<Restaurante> restaurantes = this.restauranteRepository
                 .findAll(comFreteGratis().and(comNomeSemelhante(nome)));
 
         return restaurantes;
