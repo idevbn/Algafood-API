@@ -1,6 +1,13 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.assembler.FotoProdutoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.FotoProdutoInputDTO;
+import com.algaworks.algafood.api.model.out.FotoProdutoOuputDTO;
+import com.algaworks.algafood.domain.model.FotoProduto;
+import com.algaworks.algafood.domain.model.Produto;
+import com.algaworks.algafood.domain.service.CadastroProdutoService;
+import com.algaworks.algafood.domain.service.CatalogoFotoProdutoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,42 +15,56 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.nio.file.Path;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
 public class RestauranteProdutoFotoController {
 
+    private final CatalogoFotoProdutoService fotoProdutoService;
+
+    private final CadastroProdutoService produtoService;
+
+    private final FotoProdutoOutputDTOAssembler assembler;
+
+    @Autowired
+    public RestauranteProdutoFotoController(final CatalogoFotoProdutoService fotoProdutoService,
+                                            final CadastroProdutoService produtoService,
+                                            final FotoProdutoOutputDTOAssembler assembler) {
+        this.fotoProdutoService = fotoProdutoService;
+        this.produtoService = produtoService;
+        this.assembler = assembler;
+    }
+
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> atualizarFoto(
+    public ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
             @Valid final FotoProdutoInputDTO fotoProdutoInput
             ) {
 
-        final String nomeArquivo = UUID.randomUUID() + "_"
-                + fotoProdutoInput.getArquivo().getOriginalFilename();
+        final MultipartFile arquivo = fotoProdutoInput.getArquivo();
 
-        final Path arquivoFoto = Path
-                .of("/home/idevaldo/Documentos/Java/Algaworks/projeto/catalogo",
-                nomeArquivo);
+        final Produto produto = this.produtoService
+                .buscarOuFalhar(restauranteId, produtoId);
 
-        System.out.println(fotoProdutoInput.getDescricao());
-        System.out.println(arquivoFoto);
-        System.out.println(fotoProdutoInput.getArquivo().getContentType());
+        final FotoProduto foto = new FotoProduto();
+        foto.setProduto(produto);
+        foto.setDescricao(fotoProdutoInput.getDescricao());
+        foto.setContentType(arquivo.getContentType());
+        foto.setTamanho(arquivo.getSize());
+        foto.setNomeArquivo(arquivo.getOriginalFilename());
 
-        try {
-            fotoProdutoInput.getArquivo().transferTo(arquivoFoto);
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
+        final FotoProduto fotoSalva = this.fotoProdutoService.salvar(foto);
 
-        final ResponseEntity<Void> response = ResponseEntity
+        final FotoProdutoOuputDTO fotoProdutoOuputDTO = this.assembler
+                .toModel(fotoSalva);
+
+        final ResponseEntity<FotoProdutoOuputDTO> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .build();
+                .body(fotoProdutoOuputDTO);
 
         return response;
     }
