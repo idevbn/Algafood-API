@@ -22,4 +22,11 @@ public class ProdutoRepositoryImpl implements ProdutoRepositoryQuery {
 
         return fotoProduto;
     }
+
+    @Override
+    @Transactional
+    public void delete(final FotoProduto foto) {
+        this.manager.remove(foto);
+    }
+
 }

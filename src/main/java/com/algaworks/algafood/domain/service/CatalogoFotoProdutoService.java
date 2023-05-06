@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class CatalogoFotoProdutoService {
 
@@ -18,6 +20,15 @@ public class CatalogoFotoProdutoService {
 
     @Transactional
     public FotoProduto salvar(final FotoProduto foto) {
+        final Long restauranteId = foto.getRestauranteId();
+
+        final Long produtoId = foto.getProduto().getId();
+
+        final Optional<FotoProduto> fotoProdutoOpt = this.repository
+                .findFotoById(restauranteId, produtoId);
+
+        fotoProdutoOpt.ifPresent(this.repository::delete);
+
         final FotoProduto fotoProduto = this.repository.save(foto);
 
         return fotoProduto;
