@@ -57,7 +57,8 @@ public class RestauranteProdutoFotoController {
         foto.setTamanho(arquivo.getSize());
         foto.setNomeArquivo(arquivo.getOriginalFilename());
 
-        final FotoProduto fotoSalva = this.fotoProdutoService.salvar(foto);
+        final FotoProduto fotoSalva = this.fotoProdutoService
+                .salvar(foto, foto.getI);
 
         final FotoProdutoOuputDTO fotoProdutoOuputDTO = this.assembler
                 .toModel(fotoSalva);
