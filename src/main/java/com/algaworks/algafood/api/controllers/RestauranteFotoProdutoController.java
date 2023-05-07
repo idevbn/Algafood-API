@@ -18,10 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
-public class RestauranteProdutoFotoController {
+public class RestauranteFotoProdutoController {
 
     private final CatalogoFotoProdutoService fotoProdutoService;
 
@@ -30,7 +31,7 @@ public class RestauranteProdutoFotoController {
     private final FotoProdutoOutputDTOAssembler assembler;
 
     @Autowired
-    public RestauranteProdutoFotoController(final CatalogoFotoProdutoService fotoProdutoService,
+    public RestauranteFotoProdutoController(final CatalogoFotoProdutoService fotoProdutoService,
                                             final CadastroProdutoService produtoService,
                                             final FotoProdutoOutputDTOAssembler assembler) {
         this.fotoProdutoService = fotoProdutoService;
@@ -43,7 +44,7 @@ public class RestauranteProdutoFotoController {
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
             @Valid final FotoProdutoInputDTO fotoProdutoInput
-            ) {
+            ) throws IOException {
 
         final MultipartFile arquivo = fotoProdutoInput.getArquivo();
 
@@ -58,7 +59,7 @@ public class RestauranteProdutoFotoController {
         foto.setNomeArquivo(arquivo.getOriginalFilename());
 
         final FotoProduto fotoSalva = this.fotoProdutoService
-                .salvar(foto, foto.getI);
+                .salvar(foto, arquivo.getInputStream());
 
         final FotoProdutoOuputDTO fotoProdutoOuputDTO = this.assembler
                 .toModel(fotoSalva);
