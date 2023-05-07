@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.service;
 
+import com.algaworks.algafood.domain.exception.FotoProdutoNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,16 @@ public class CatalogoFotoProdutoService {
                 .build();
 
         this.fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
+
+        return fotoProduto;
+    }
+
+    public FotoProduto buscarOuFalhar(final Long restauranteId,
+                                      final Long produtoId) {
+        final FotoProduto fotoProduto = this.repository.findFotoById(restauranteId, produtoId)
+                .orElseThrow(() ->
+                        new FotoProdutoNaoEncontradaException(restauranteId, produtoId)
+                );
 
         return fotoProduto;
     }

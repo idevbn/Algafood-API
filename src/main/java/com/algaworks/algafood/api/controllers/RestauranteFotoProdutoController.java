@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -37,6 +34,24 @@ public class RestauranteFotoProdutoController {
         this.fotoProdutoService = fotoProdutoService;
         this.produtoService = produtoService;
         this.assembler = assembler;
+    }
+
+    @GetMapping
+    public ResponseEntity<FotoProdutoOuputDTO> recuperarFoto(
+            @PathVariable("restauranteId") final Long restauranteId,
+            @PathVariable("produtoId") final Long produtoId
+    ) {
+        final FotoProduto foto = this.fotoProdutoService
+                .buscarOuFalhar(restauranteId, produtoId);
+
+        final FotoProdutoOuputDTO fotoProdutoOuputDTO = this.assembler
+                .toModel(foto);
+
+        final ResponseEntity<FotoProdutoOuputDTO> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(fotoProdutoOuputDTO);
+
+        return response;
     }
 
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
