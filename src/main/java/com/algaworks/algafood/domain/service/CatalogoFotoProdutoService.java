@@ -26,6 +26,8 @@ public class CatalogoFotoProdutoService {
 
     @Transactional
     public FotoProduto salvar(final FotoProduto foto, final InputStream dadosArquivo) {
+        String nomeArquivoExistente = null;
+
         final Long restauranteId = foto.getRestauranteId();
 
         final Long produtoId = foto.getProduto().getId();
@@ -36,7 +38,10 @@ public class CatalogoFotoProdutoService {
         final Optional<FotoProduto> fotoProdutoOpt = this.repository
                 .findFotoById(restauranteId, produtoId);
 
-        fotoProdutoOpt.ifPresent(this.repository::delete);
+        if (fotoProdutoOpt.isPresent()) {
+            nomeArquivoExistente = fotoProdutoOpt.get().getNomeArquivo();
+            this.repository.delete(fotoProdutoOpt.get());
+        }
 
         foto.setNomeArquivo(novoNomeArquivo);
 
@@ -52,7 +57,7 @@ public class CatalogoFotoProdutoService {
                 .inputStream(dadosArquivo)
                 .build();
 
-        this.fotoStorageService.armazenar(novaFoto);
+        this.fotoStorageService.substituir(nomeArquivoExistente, novaFoto);
 
         return fotoProduto;
     }
