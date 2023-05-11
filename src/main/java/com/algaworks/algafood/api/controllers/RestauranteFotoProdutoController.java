@@ -14,12 +14,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto")
@@ -94,14 +96,23 @@ public class RestauranteFotoProdutoController {
         return response;
     }
 
-    @GetMapping(produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping
     public ResponseEntity<InputStreamResource> servirFoto(
             @PathVariable("restauranteId") final Long restauranteId,
-            @PathVariable("produtoId") final Long produtoId
-    ) {
+            @PathVariable("produtoId") final Long produtoId,
+            @RequestHeader(name = "accept") final String acceptHeader
+    ) throws HttpMediaTypeNotAcceptableException {
         try {
             final FotoProduto fotoProduto = this.fotoProdutoService
                     .buscarOuFalhar(restauranteId, produtoId);
+
+            final MediaType mediaTypeFoto = MediaType
+                    .parseMediaType(fotoProduto.getContentType());
+
+            final List<MediaType> mediaTypesAceitas = MediaType
+                    .parseMediaTypes(acceptHeader);
+
+            this.verificarCompatibilidadeMediaType(mediaTypeFoto, mediaTypesAceitas);
 
             final String nomeArquivo = fotoProduto.getNomeArquivo();
 
@@ -112,7 +123,7 @@ public class RestauranteFotoProdutoController {
 
             final ResponseEntity<InputStreamResource> response = ResponseEntity
                     .status(HttpStatus.OK)
-                    .contentType(MediaType.IMAGE_JPEG)
+                    .contentType(mediaTypeFoto)
                     .body(inputStreamResource);
 
             return response;
@@ -122,6 +133,21 @@ public class RestauranteFotoProdutoController {
                     .build();
 
             return response;
+        }
+    }
+
+    private void verificarCompatibilidadeMediaType(final MediaType mediaTypeFoto,
+                                                   final List<MediaType> mediaTypesAceitas)
+            throws HttpMediaTypeNotAcceptableException {
+
+        final boolean compativel = mediaTypesAceitas
+                .stream()
+                .anyMatch(mediaTypesAceita ->
+                        mediaTypesAceita.isCompatibleWith(mediaTypeFoto)
+                );
+
+        if (!compativel) {
+            throw new HttpMediaTypeNotAcceptableException(mediaTypesAceitas);
         }
     }
 
