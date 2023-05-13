@@ -69,7 +69,7 @@ public class RestauranteFotoProdutoController {
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
             @Valid final FotoProdutoInputDTO fotoProdutoInput
-            ) throws IOException {
+    ) throws IOException {
 
         final MultipartFile arquivo = fotoProdutoInput.getArquivo();
 
@@ -134,6 +134,20 @@ public class RestauranteFotoProdutoController {
 
             return response;
         }
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> removerFoto(
+            @PathVariable("restauranteId") final Long restauranteId,
+            @PathVariable("produtoId") final Long produtoId
+    ) {
+        this.fotoProdutoService.excluir(restauranteId, produtoId);
+
+        final ResponseEntity<Void> response = ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+
+        return response;
     }
 
     private void verificarCompatibilidadeMediaType(final MediaType mediaTypeFoto,

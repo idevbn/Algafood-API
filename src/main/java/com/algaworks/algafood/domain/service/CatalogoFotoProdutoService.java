@@ -63,6 +63,19 @@ public class CatalogoFotoProdutoService {
         return fotoProduto;
     }
 
+    @Transactional
+    public void excluir(final Long restauranteId,
+                        final Long produtoId) {
+        final FotoProduto fotoProduto = this.buscarOuFalhar(restauranteId, produtoId);
+
+        this.repository.delete(fotoProduto);
+        this.repository.flush();
+
+        final String nomeArquivo = fotoProduto.getNomeArquivo();
+
+        this.fotoStorageService.remover(nomeArquivo);
+    }
+
     public FotoProduto buscarOuFalhar(final Long restauranteId,
                                       final Long produtoId) {
         final FotoProduto fotoProduto = this.repository.findFotoById(restauranteId, produtoId)
