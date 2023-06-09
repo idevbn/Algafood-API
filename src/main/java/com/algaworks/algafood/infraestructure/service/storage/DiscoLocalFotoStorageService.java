@@ -1,7 +1,8 @@
 package com.algaworks.algafood.infraestructure.service.storage;
 
+import com.algaworks.algafood.core.storage.StorageProperties;
 import com.algaworks.algafood.domain.service.FotoStorageService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 
@@ -13,8 +14,12 @@ import java.nio.file.Path;
 @Service
 public class DiscoLocalFotoStorageService implements FotoStorageService {
 
-    @Value(value = "${algafood.storage.local.diretorio-foto}")
-    private Path diretorioFotos;
+    private final StorageProperties storageProperties;
+
+    @Autowired
+    public DiscoLocalFotoStorageService(final StorageProperties storageProperties) {
+        this.storageProperties = storageProperties;
+    }
 
     @Override
     public void armazenar(final NovaFoto novaFoto) {
@@ -56,7 +61,8 @@ public class DiscoLocalFotoStorageService implements FotoStorageService {
     }
 
     private Path getArquivoPath(final String nomeArquivo) {
-        final Path path = this.diretorioFotos.resolve(nomeArquivo);
+        final Path path = this.storageProperties.getLocal().getDiretorioFotos()
+                .resolve(nomeArquivo);
 
         return path;
     }
