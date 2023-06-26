@@ -11,7 +11,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-//@Service
+@Service
 public class DiscoLocalFotoStorageService implements FotoStorageService {
 
     private final StorageProperties storageProperties;
@@ -48,13 +48,18 @@ public class DiscoLocalFotoStorageService implements FotoStorageService {
     }
 
     @Override
-    public InputStream recuperar(final String nomeArquivo) {
+    public FotoRecuperada recuperar(final String nomeArquivo) {
         try {
             final Path arquivoPath = this.getArquivoPath(nomeArquivo);
 
             final InputStream inputStream = Files.newInputStream(arquivoPath);
 
-            return inputStream;
+            final FotoRecuperada fotoRecuperada = FotoRecuperada
+                    .builder()
+                    .inputStream(inputStream)
+                    .build();
+
+            return fotoRecuperada;
         } catch (final Exception e) {
             throw new FotoStorageException("Não foi possível recuperar o arquivo.", e);
         }

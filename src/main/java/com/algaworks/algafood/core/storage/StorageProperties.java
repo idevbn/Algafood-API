@@ -13,7 +13,7 @@ import java.nio.file.Path;
 @ConfigurationProperties(prefix = "algafood.storage")
 public class StorageProperties {
 
-    private Local local= new Local();
+    private Local local = new Local();
     private S3 s3 = new S3();
 
     @Getter

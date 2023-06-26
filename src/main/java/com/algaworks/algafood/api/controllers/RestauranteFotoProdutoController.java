@@ -11,6 +11,7 @@ import com.algaworks.algafood.domain.service.CatalogoFotoProdutoService;
 import com.algaworks.algafood.domain.service.FotoStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -97,7 +98,7 @@ public class RestauranteFotoProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<InputStreamResource> servirFoto(
+    public ResponseEntity<?> servirFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
             @RequestHeader(name = "accept") final String acceptHeader
@@ -116,17 +117,29 @@ public class RestauranteFotoProdutoController {
 
             final String nomeArquivo = fotoProduto.getNomeArquivo();
 
-            final InputStream inputStream = this.storageService
+            final FotoStorageService.FotoRecuperada fotoRecuperada = this.storageService
                     .recuperar(nomeArquivo);
 
-            final InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+            if (fotoRecuperada.temUrl()) {
+                final ResponseEntity<Object> response = ResponseEntity
+                        .status(HttpStatus.FOUND)
+                        .header(HttpHeaders.LOCATION, fotoRecuperada.getUrl())
+                        .build();
 
-            final ResponseEntity<InputStreamResource> response = ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(mediaTypeFoto)
-                    .body(inputStreamResource);
+                return response;
+            } else {
 
-            return response;
+                final InputStream inputStream = fotoRecuperada.getInputStream();
+
+                final InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
+
+                final ResponseEntity<InputStreamResource> response = ResponseEntity
+                        .status(HttpStatus.OK)
+                        .contentType(mediaTypeFoto)
+                        .body(inputStreamResource);
+
+                return response;
+            }
         } catch (final EntidadeNaoEncontradaException e) {
             final ResponseEntity<InputStreamResource> response = ResponseEntity
                     .status(HttpStatus.NOT_FOUND)

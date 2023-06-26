@@ -10,9 +10,9 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
+import java.net.URL;
 
-@Service
+//@Service
 public class S3FotoStorageService implements FotoStorageService {
 
     private final AmazonS3 amazonS3;
@@ -26,8 +26,19 @@ public class S3FotoStorageService implements FotoStorageService {
     }
 
     @Override
-    public InputStream recuperar(final String nomeArquivo) {
-        return null;
+    public FotoRecuperada recuperar(final String nomeArquivo) {
+        final String caminhoArquivo = this.getCaminhoArquivo(nomeArquivo);
+
+        final URL url = this.amazonS3.getUrl(
+                this.storageProperties.getS3().getBucket(),
+                caminhoArquivo
+        );
+
+        final FotoRecuperada fotoRecuperada = FotoRecuperada.builder()
+                .url(url.toString())
+                .build();
+
+        return fotoRecuperada;
     }
 
     @Override
@@ -54,14 +65,6 @@ public class S3FotoStorageService implements FotoStorageService {
         }
     }
 
-    private String getCaminhoArquivo(final String nomeArquivo) {
-
-        final String caminhoArquivo = String
-                .format("%s/%s", storageProperties.getS3().getDiretorioFotos(), nomeArquivo);
-
-        return caminhoArquivo;
-    }
-
     @Override
     public void remover(final String nomeArquivo) {
 
@@ -78,5 +81,13 @@ public class S3FotoStorageService implements FotoStorageService {
             throw new FotoStorageException("Não foi possível excluir arquivo na Amazon S3", ex);
         }
     }
-    
+
+    private String getCaminhoArquivo(final String nomeArquivo) {
+
+        final String caminhoArquivo = String
+                .format("%s/%s", storageProperties.getS3().getDiretorioFotos(), nomeArquivo);
+
+        return caminhoArquivo;
+    }
+
 }
