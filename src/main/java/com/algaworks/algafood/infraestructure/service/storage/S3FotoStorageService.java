@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URL;
 
-//@Service
+@Service
 public class S3FotoStorageService implements FotoStorageService {
 
     private final AmazonS3 amazonS3;
