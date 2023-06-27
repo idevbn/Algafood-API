@@ -10,15 +10,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-//@Service
 public class DiscoLocalFotoStorageService implements FotoStorageService {
 
-    private final StorageProperties storageProperties;
-
     @Autowired
-    public DiscoLocalFotoStorageService(final StorageProperties storageProperties) {
-        this.storageProperties = storageProperties;
-    }
+    private StorageProperties storageProperties;
 
     @Override
     public void armazenar(final NovaFoto novaFoto) {

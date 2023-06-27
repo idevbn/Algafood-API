@@ -1,5 +1,8 @@
 package com.algaworks.algafood.core.storage;
 
+import com.algaworks.algafood.domain.service.FotoStorageService;
+import com.algaworks.algafood.infraestructure.service.storage.DiscoLocalFotoStorageService;
+import com.algaworks.algafood.infraestructure.service.storage.S3FotoStorageService;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
@@ -9,12 +12,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AmazonS3Config {
+public class StorageConfig {
 
     private final StorageProperties storageProperties;
 
     @Autowired
-    public AmazonS3Config(final StorageProperties storageProperties) {
+    public StorageConfig(final StorageProperties storageProperties) {
         this.storageProperties = storageProperties;
     }
 
@@ -33,6 +36,17 @@ public class AmazonS3Config {
                 .build();
 
         return build;
+    }
+
+    @Bean
+    public FotoStorageService fotoStorageService() {
+
+        if (StorageProperties.TipoStorage.S3.equals(this.storageProperties.getTipo())) {
+            return new S3FotoStorageService();
+        } else {
+            return new DiscoLocalFotoStorageService();
+        }
+
     }
 
 }
