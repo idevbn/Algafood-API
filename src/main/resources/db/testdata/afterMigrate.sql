@@ -70,10 +70,11 @@ INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('José Peres'
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Fernanda Cavalcanti', 'nanda_cavalcanti@email.com', '12345678', utc_timestamp);
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Julio Macedo', 'macedojulio@email.com', 'aeiou123', utc_timestamp);
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Mariana Neves', 'mari.neves@email.com', 'mn123vc', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Pessoa Teste', 'idevbn@gmail.com', '123456', utc_timestamp);
 
 INSERT INTO tb_grupo_permissao (grupo_id, permissao_id) VALUES (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
-INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1), (2, 4), (3, 2), (3, 3), (4, 1), (4, 4);
+INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1), (2, 4), (3, 2), (3, 3), (4, 1), (4, 4), (5, 1);
 
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '123456', utc_timestamp);
 
@@ -85,3 +86,7 @@ INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitari
 
 INSERT INTO tb_pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) VALUES (2, '5ef9ddf5-cef1-4572-86bd-bd6455ce1752', 4, 1, 2, 1, '38400-111', 'Rua Acre', '300', 'Casa 2', 'Centro', 'CRIADO', utc_timestamp, 79, 0, 79);
 INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (3, 2, 3, 1, 79, 79, 'Ao ponto');
+
+INSERT INTO tb_pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) VALUES (3, '4b13595b-1580-4e6f-98a5-888ae491062a', 3, 5, 4, 3, '49200-000', 'Rua ABC', '1000', 'Casa', 'das Flores', 'CRIADO', utc_timestamp, 170.90, 5, 175.90);
+INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (4, 3, 1, 1, 78.9, 78.9, 'Mais molho');
+INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (5, 3, 2, 2, 78.9, 157.8, 'Menos picante, por favor');
