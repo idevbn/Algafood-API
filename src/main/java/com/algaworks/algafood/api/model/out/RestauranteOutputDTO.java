@@ -18,7 +18,7 @@ public class RestauranteOutputDTO {
     private String nome;
 
     @JsonView(RestauranteView.Resumo.class)
-    private BigDecimal precoFrete;
+    private BigDecimal taxaFrete;
 
     @JsonView(RestauranteView.Resumo.class)
     private CozinhaOutputDTO cozinha;
