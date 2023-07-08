@@ -19,7 +19,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -36,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:8000")
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
@@ -71,7 +71,6 @@ public class RestauranteController {
 
         final ResponseEntity<List<RestauranteOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:8000")
                 .body(restauranteOutputDTO);
 
         return response;
