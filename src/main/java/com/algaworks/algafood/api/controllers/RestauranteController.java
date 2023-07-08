@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -59,6 +60,21 @@ public class RestauranteController {
         this.validator = validator;
         this.assembler = assembler;
         this.disassembler = disassembler;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RestauranteOutputDTO>> listar(){
+        final List<Restaurante> restaurantes = this.repository.findAll();
+
+        final List<RestauranteOutputDTO> restauranteOutputDTO = this.assembler
+                .toCollectionModel(restaurantes);
+
+        final ResponseEntity<List<RestauranteOutputDTO>> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .header(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:8000")
+                .body(restauranteOutputDTO);
+
+        return response;
     }
 
     /**
