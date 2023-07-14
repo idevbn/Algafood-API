@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8000", maxAge = 10)
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
