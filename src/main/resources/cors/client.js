@@ -1,24 +1,28 @@
-function consultarRestaurantes() {
+function consultar() {
   $.ajax({
-    url: "http://localhost:8080/restaurantes",
+    url: "http://localhost:8080/restaurantes/1/formas-pagamento",
     type: "get",
 
     success: function(response) {
-      $("#conteudo").text(JSON.stringify(response));
+      preencherTabela(response);
     }
   });
 }
 
+function preencherTabela(formasPagamento) {
+  $("#tabela tbody tr").remove();
 
-function fecharRestaurante() {
-  $.ajax({
-    url: "http://localhost:8080/restaurantes/1/fechamento",
-    type: "put",
+  $.each(formasPagamento, function(i, formaPagamento) {
+    var linha = $("<tr>");
 
-    success: function(response) {
-      alert("Restaurante foi fechado!");
-    }
+    linha.append(
+      $("<td>").text(formaPagamento.id),
+      $("<td>").text(formaPagamento.descricao)
+    );
+
+    linha.appendTo("#tabela");
   });
 }
 
-$("#botao").click(consultarRestaurantes);
+
+$("#btn-consultar").click(consultar);
