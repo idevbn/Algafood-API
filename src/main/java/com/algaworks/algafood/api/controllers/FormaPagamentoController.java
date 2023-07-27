@@ -59,6 +59,7 @@ public class FormaPagamentoController {
 
         final ResponseEntity<FormaPagamentoOutputDTO> response = ResponseEntity
                 .status(HttpStatus.OK)
+                .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
                 .body(formaPagamentoOutputDTO);
 
         return response;
