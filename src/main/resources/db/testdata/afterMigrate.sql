@@ -38,10 +38,10 @@ INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, dat
 INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto) VALUES (2, 'Bistrô Vadapav', 9.80, 2, utc_timestamp, utc_timestamp, true, true);
 INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, data_cadastro, data_atualizacao, ativo, aberto) VALUES (3, 'Namaskar', 7.39, 2, utc_timestamp, utc_timestamp, true, true);
 
-INSERT INTO tb_forma_pagamento (id, descricao) VALUES (1, 'Dinheiro');
-INSERT INTO tb_forma_pagamento (id, descricao) VALUES (2, 'Cartão de crédito');
-INSERT INTO tb_forma_pagamento (id, descricao) VALUES (3, 'Cartão de débito');
-INSERT INTO tb_forma_pagamento (id, descricao) VALUES (4, 'Pix');
+INSERT INTO tb_forma_pagamento (id, descricao, data_atualizacao) VALUES (1, 'Dinheiro', utc_timestamp);
+INSERT INTO tb_forma_pagamento (id, descricao, data_atualizacao) VALUES (2, 'Cartão de crédito', utc_timestamp);
+INSERT INTO tb_forma_pagamento (id, descricao, data_atualizacao) VALUES (3, 'Cartão de débito', utc_timestamp);
+INSERT INTO tb_forma_pagamento (id, descricao, data_atualizacao) VALUES (4, 'Pix', utc_timestamp);
 
 INSERT INTO tb_estado (id, nome) VALUES (1, 'PB');
 INSERT INTO tb_estado (id, nome) VALUES (2, 'RN');
