@@ -11,8 +11,11 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
 import javax.validation.Valid;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +39,24 @@ public class FormaPagamentoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoOutputDTO>> listar() {
+    public ResponseEntity<List<FormaPagamentoOutputDTO>> listar(final ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        final OffsetDateTime ultimaDataAtualizacao = this.repository.getUltimaDataAtualizacao();
+
+        if (ultimaDataAtualizacao != null) {
+            eTag = String.valueOf(ultimaDataAtualizacao.toEpochSecond());
+        }
+
+        /**
+         * Já temos condições de saber se haverá ou não o processamento
+         */
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+
         final List<FormaPagamento> formasPagamento = this.repository.findAll();
 
         final List<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this
@@ -45,6 +65,7 @@ public class FormaPagamentoController {
         final ResponseEntity<List<FormaPagamentoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
+                .eTag(eTag)
                 .body(formasPagamentoOutputDTOS);
 
         return response;
