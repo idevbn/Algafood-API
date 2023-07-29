@@ -72,7 +72,25 @@ public class FormaPagamentoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FormaPagamentoOutputDTO> buscar(@PathVariable("id") final Long id) {
+    public ResponseEntity<FormaPagamentoOutputDTO> buscar(@PathVariable("id") final Long id,
+                                                          final ServletWebRequest request) {
+        ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
+
+        String eTag = "0";
+
+        final OffsetDateTime ultimaDataAtualizacao = this.repository.getUltimaDataAtualizacao();
+
+        if (ultimaDataAtualizacao != null) {
+            eTag = String.valueOf(ultimaDataAtualizacao.toEpochSecond());
+        }
+
+        /**
+         * Já temos condições de saber se haverá ou não o processamento
+         */
+        if (request.checkNotModified(eTag)) {
+            return null;
+        }
+
         final FormaPagamento formaPagamento = this.service.buscarOuFalhar(id);
 
         final FormaPagamentoOutputDTO formaPagamentoOutputDTO = this
