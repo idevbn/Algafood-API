@@ -11,6 +11,7 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,10 @@ public class CidadeController {
 
     @GetMapping(value = "/{id}")
     @ApiOperation("Busca uma cidade por ID")
-    public ResponseEntity<CidadeOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<CidadeOutputDTO> buscar(
+            @ApiParam(value = "ID de uma cidade", example = "1")
+            @PathVariable(value = "id") final Long id
+    ) {
         final Cidade cidadeEncontrada = this.service.buscarOuFalhar(id);
 
         final CidadeOutputDTO cidadeOutputDTO = this.outputDTOAssembler
@@ -74,6 +78,7 @@ public class CidadeController {
     @ApiOperation("Cadastra uma cidade")
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<CidadeOutputDTO> adicionar(
+            @ApiParam(name = "corpo", value = "Representação de uma nova cidade")
             @RequestBody @Valid final CidadeInputDTO cidadeInputDTO
     ) {
         try {
@@ -98,7 +103,9 @@ public class CidadeController {
     @PutMapping(value = "/{id}")
     @ApiOperation("Atualiza uma cidade por ID")
     public ResponseEntity<CidadeOutputDTO> atualizar(
+            @ApiParam(value = "ID de uma cidade", example = "1")
             @PathVariable(value = "id") final Long id,
+            @ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados")
             @RequestBody @Valid final CidadeInputDTO cidadeInputDTO
     ) {
         final Cidade cidadeAtual = this.service.buscarOuFalhar(id);
@@ -123,7 +130,10 @@ public class CidadeController {
 
     @DeleteMapping(value = "/{id}")
     @ApiOperation("Exclui uma cidade por ID")
-    public ResponseEntity<Void> remover(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<Void> remover(
+            @ApiParam(value = "ID de uma cidade", example = "1")
+            @PathVariable(value = "id") Long id
+    ) {
         this.service.excluir(id);
 
         final ResponseEntity<Void> response = ResponseEntity
