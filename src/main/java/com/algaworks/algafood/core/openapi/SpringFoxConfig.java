@@ -17,7 +17,6 @@ import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +33,9 @@ public class SpringFoxConfig {
                 .build()
                 .useDefaultResponseMessages(false)
                 .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
                 .apiInfo(this.apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as cidades"));
 
@@ -63,6 +65,58 @@ public class SpringFoxConfig {
 
         final List<Response> responses = Arrays
                 .asList(responseStatusInternalServerError, responseStatusNotAcceptable);
+
+        return responses;
+    }
+
+    private List<Response> globalPostPutResponseMessages() {
+
+        final Response responseStatusBadRequest = new ResponseBuilder()
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .description("Requisição inválida (erro do cliente)")
+                .build();
+
+        final Response responseStatusInternalServerError = new ResponseBuilder()
+                .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .description("Erro interno no servidor")
+                .build();
+
+        final Response responseStatusNotAcceptable = new ResponseBuilder()
+                .code(String.valueOf(HttpStatus.NOT_ACCEPTABLE.value()))
+                .description("Recurso não possui representação que poderia ser aceita pelo consumidor")
+                .build();
+
+        final Response responseStatusUnsupportedMediaType = new ResponseBuilder()
+                .code(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()))
+                .description("Requisição recusada porque o corpo está em um formato não suportado")
+                .build();
+
+        final List<Response> responses = Arrays.asList(
+                responseStatusBadRequest,
+                responseStatusInternalServerError,
+                responseStatusNotAcceptable,
+                responseStatusUnsupportedMediaType
+        );
+
+        return responses;
+    }
+
+    private List<Response> globalDeleteResponseMessages() {
+
+        final Response responseStatusBadRequest = new ResponseBuilder()
+                .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .description("Requisição inválida (erro do cliente)")
+                .build();
+
+        final Response responseStatusInternalServerError = new ResponseBuilder()
+                .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .description("Erro interno no servidor")
+                .build();
+
+        final List<Response> responses = Arrays.asList(
+                responseStatusBadRequest,
+                responseStatusInternalServerError
+        );
 
         return responses;
     }
