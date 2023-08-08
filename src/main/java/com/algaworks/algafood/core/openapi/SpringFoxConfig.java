@@ -8,11 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.builders.ResponseBuilder;
+import springfox.documentation.builders.*;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.service.Response;
@@ -23,6 +21,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Configuration
 @Import(BeanValidatorPluginsConfiguration.class)
@@ -62,11 +61,19 @@ public class SpringFoxConfig {
     public JacksonModuleRegistrar springFoxJacksonConfig() {
         return objectMapper -> objectMapper.registerModule(new JavaTimeModule());
     }
+    private Consumer<RepresentationBuilder> getProblemaModelReference() {
+        return r -> r.model(m -> m.name("ApiError")
+                .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
+                        q -> q.name("ApiError").namespace("com.algaworks.algafood.api.exceptionhandler")))));
+    }
+
 
     private List<Response> globalGetResponseMessages() {
 
         final Response responseStatusInternalServerError = new ResponseBuilder()
                 .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .representation(MediaType.APPLICATION_JSON)
+                .apply(getProblemaModelReference())
                 .description("Erro interno do Servidor")
                 .build();
 
@@ -85,11 +92,15 @@ public class SpringFoxConfig {
 
         final Response responseStatusBadRequest = new ResponseBuilder()
                 .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .representation(MediaType.APPLICATION_JSON)
+                .apply(getProblemaModelReference())
                 .description("Requisição inválida (erro do cliente)")
                 .build();
 
         final Response responseStatusInternalServerError = new ResponseBuilder()
                 .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .representation(MediaType.APPLICATION_JSON)
+                .apply(getProblemaModelReference())
                 .description("Erro interno no servidor")
                 .build();
 
@@ -100,6 +111,8 @@ public class SpringFoxConfig {
 
         final Response responseStatusUnsupportedMediaType = new ResponseBuilder()
                 .code(String.valueOf(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()))
+                .representation(MediaType.APPLICATION_JSON)
+                .apply(getProblemaModelReference())
                 .description("Requisição recusada porque o corpo está em um formato não suportado")
                 .build();
 
@@ -117,11 +130,15 @@ public class SpringFoxConfig {
 
         final Response responseStatusBadRequest = new ResponseBuilder()
                 .code(String.valueOf(HttpStatus.BAD_REQUEST.value()))
+                .representation(MediaType.APPLICATION_JSON)
+                .apply(getProblemaModelReference())
                 .description("Requisição inválida (erro do cliente)")
                 .build();
 
         final Response responseStatusInternalServerError = new ResponseBuilder()
                 .code(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()))
+                .representation(MediaType.APPLICATION_JSON)
+                .apply(getProblemaModelReference())
                 .description("Erro interno no servidor")
                 .build();
 
