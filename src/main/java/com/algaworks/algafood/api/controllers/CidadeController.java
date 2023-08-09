@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.CidadeInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.CidadeOutputDTOAssembler;
+import com.algaworks.algafood.api.exceptionhandler.ApiError;
 import com.algaworks.algafood.api.model.in.CidadeInputDTO;
 import com.algaworks.algafood.api.model.out.CidadeOutputDTO;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
@@ -12,6 +13,10 @@ import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +63,16 @@ public class CidadeController {
 
     @GetMapping(value = "/{id}")
     @ApiOperation("Busca uma cidade por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+                    content = {
+                            @Content(schema = @Schema(implementation = ApiError.class))
+                    }),
+            @ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+                    content = {
+                            @Content(schema = @Schema(implementation = ApiError.class))
+                    })
+    })
     public ResponseEntity<CidadeOutputDTO> buscar(
             @ApiParam(value = "ID de uma cidade", example = "1")
             @PathVariable(value = "id") final Long id
@@ -102,6 +117,12 @@ public class CidadeController {
 
     @PutMapping(value = "/{id}")
     @ApiOperation("Atualiza uma cidade por ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+                    content = {
+                            @Content(schema = @Schema(implementation = ApiError.class))
+                    })
+    })
     public ResponseEntity<CidadeOutputDTO> atualizar(
             @ApiParam(value = "ID de uma cidade", example = "1")
             @PathVariable(value = "id") final Long id,
@@ -130,17 +151,18 @@ public class CidadeController {
 
     @DeleteMapping(value = "/{id}")
     @ApiOperation("Exclui uma cidade por ID")
-    public ResponseEntity<Void> remover(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses({
+            @ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+                    content = {
+                            @Content(schema = @Schema(implementation = ApiError.class))
+                    })
+    })
+    public void remover(
             @ApiParam(value = "ID de uma cidade", example = "1")
             @PathVariable(value = "id") Long id
     ) {
         this.service.excluir(id);
-
-        final ResponseEntity<Void> response = ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
-
-        return response;
     }
 
 }
