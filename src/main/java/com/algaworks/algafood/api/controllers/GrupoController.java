@@ -2,6 +2,7 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.GrupoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.GrupoOutputDTOAssembler;
+import com.algaworks.algafood.api.controllers.openapi.GrupoControllerOpenApi;
 import com.algaworks.algafood.api.model.in.GrupoInputDTO;
 import com.algaworks.algafood.api.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.domain.model.Grupo;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/grupos")
-public class GrupoController {
+public class GrupoController implements GrupoControllerOpenApi {
 
     private final GrupoRepository repository;
     private final CadastroGrupoService service;
@@ -63,7 +64,7 @@ public class GrupoController {
 
     @PostMapping
     public ResponseEntity<GrupoOutputDTO> adicionar(
-            @RequestBody @Valid GrupoInputDTO grupoInputDTO
+            @RequestBody @Valid final GrupoInputDTO grupoInputDTO
     ) {
         final Grupo grupo = this.inputDTODisassembler.toDomainObject(grupoInputDTO);
 
@@ -81,8 +82,8 @@ public class GrupoController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity<GrupoOutputDTO> atualizar(
-            @RequestBody @Valid final GrupoInputDTO grupoInputDTO,
-            @PathVariable("id") final Long id
+            @PathVariable("id") final Long id,
+            @RequestBody @Valid final GrupoInputDTO grupoInputDTO
     ) {
         final Grupo grupoAtual = this.service.buscarOuFalhar(id);
 
@@ -101,6 +102,7 @@ public class GrupoController {
     }
 
     @DeleteMapping(value = "/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> excluir(@PathVariable("id") final Long id) {
         this.service.excluir(id);
 
