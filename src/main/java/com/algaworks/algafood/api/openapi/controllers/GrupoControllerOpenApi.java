@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.controllers.openapi;
+package com.algaworks.algafood.api.openapi.controllers;
 
 import com.algaworks.algafood.api.exceptionhandler.ApiError;
 import com.algaworks.algafood.api.model.in.GrupoInputDTO;

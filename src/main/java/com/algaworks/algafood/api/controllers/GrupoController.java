@@ -2,7 +2,7 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.GrupoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.GrupoOutputDTOAssembler;
-import com.algaworks.algafood.api.controllers.openapi.GrupoControllerOpenApi;
+import com.algaworks.algafood.api.openapi.controllers.GrupoControllerOpenApi;
 import com.algaworks.algafood.api.model.in.GrupoInputDTO;
 import com.algaworks.algafood.api.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.domain.model.Grupo;
