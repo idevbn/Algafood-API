@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.assembler.CozinhaInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.CozinhaOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.CozinhaInputDTO;
 import com.algaworks.algafood.api.model.out.CozinhaOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.CozinhaControllerOpenApi;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -20,8 +21,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/cozinhas", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CozinhaController {
+@RequestMapping(path = "/cozinhas")
+public class CozinhaController implements CozinhaControllerOpenApi {
 
     private final CozinhaRepository repository;
     private final CadastroCozinhaService service;
@@ -39,7 +40,7 @@ public class CozinhaController {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Page<CozinhaOutputDTO>> listar(final Pageable pageable) {
         final Page<Cozinha> cozinhas = this.repository.findAll(pageable);
 
@@ -56,7 +57,7 @@ public class CozinhaController {
         return response;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Cozinha cozinha = this.service.buscarOuFalhar(id);
 
@@ -69,7 +70,7 @@ public class CozinhaController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> adicionar(
             @RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO
     ) {
@@ -88,7 +89,7 @@ public class CozinhaController {
         return response;
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> atualizar(
             @PathVariable("id") Long id,
             @RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO
@@ -109,7 +110,7 @@ public class CozinhaController {
         return response;
     }
 
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}", produces = {})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable("id") Long id) {
         this.service.excluir(id);
