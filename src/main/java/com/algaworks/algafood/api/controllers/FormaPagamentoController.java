@@ -4,11 +4,13 @@ import com.algaworks.algafood.api.assembler.FormaPagamentoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.FormaPagamentoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.FormaPagamentoInputDTO;
 import com.algaworks.algafood.api.model.out.FormaPagamentoOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.FormasPagamentoControllerOpenApi;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -20,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping(value = "/formas-pagamento")
-public class FormaPagamentoController {
+@RequestMapping(path = "/formas-pagamento")
+public class FormaPagamentoController implements FormasPagamentoControllerOpenApi {
 
     private final CadastroFormaPagamentoService service;
     private final FormaPagamentoRepository repository;
@@ -38,7 +40,7 @@ public class FormaPagamentoController {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<FormaPagamentoOutputDTO>> listar(final ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 
@@ -71,7 +73,7 @@ public class FormaPagamentoController {
         return response;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoOutputDTO> buscar(@PathVariable("id") final Long id,
                                                           final ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -104,7 +106,7 @@ public class FormaPagamentoController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoOutputDTO> adicionar(
             @RequestBody @Valid final FormaPagamentoInputDTO formaPagamentoInputDTO
     ) {
@@ -123,7 +125,7 @@ public class FormaPagamentoController {
         return response;
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoOutputDTO>  atualizar(
             @PathVariable("id") final Long id,
             @RequestBody @Valid final FormaPagamentoInputDTO formaPagamentoInputDTO
@@ -145,7 +147,7 @@ public class FormaPagamentoController {
         return response;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> remover(@PathVariable("id") final Long id) {
         this.service.excluir(id);
 
