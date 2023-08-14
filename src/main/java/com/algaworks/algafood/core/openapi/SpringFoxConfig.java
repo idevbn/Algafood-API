@@ -2,8 +2,10 @@ package com.algaworks.algafood.core.openapi;
 
 import com.algaworks.algafood.api.exceptionhandler.ApiError;
 import com.algaworks.algafood.api.model.out.CozinhaOutputDTO;
+import com.algaworks.algafood.api.model.out.PedidoResumoOutputDTO;
 import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
 import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.openapi.model.PedidosResumoModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -18,14 +20,15 @@ import org.springframework.web.context.request.ServletWebRequest;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.AlternateTypeRules;
-import springfox.documentation.schema.ScalarType;
-import springfox.documentation.service.*;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.service.Response;
+import springfox.documentation.service.Tag;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -47,15 +50,6 @@ public class SpringFoxConfig {
                 .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
-//                .globalRequestParameters(Collections.singletonList(
-//                        new RequestParameterBuilder()
-//                                .name("campos")
-//                                .description("Nomes das propriedades para filtrar na resposta, separados por vírgula")
-//                                .in(ParameterType.QUERY)
-//                                .required(true)
-//                                .query(q -> q.model(m -> m.scalarModel(ScalarType.STRING)))
-//                                .build())
-//                )
                 .additionalModels(typeResolver.resolve(ApiError.class))
                 .ignoredParameterTypes(ServletWebRequest.class)
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
@@ -63,11 +57,15 @@ public class SpringFoxConfig {
                         typeResolver.resolve(Page.class, CozinhaOutputDTO.class),
                         CozinhasModelOpenApi.class
                 ))
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(Page.class, PedidoResumoOutputDTO.class),
+                        PedidosResumoModelOpenApi.class))
                 .apiInfo(this.apiInfo())
                 .tags(new Tag("Cidades", "Gerencia as cidades"))
                 .tags(new Tag("Grupos", "Gerencia os grupos"))
                 .tags(new Tag("Cozinhas", "Gerencia as cozinhas"))
-                .tags(new Tag("Formas de pagamento", "Gerencia as formas de pagamento"));
+                .tags(new Tag("Formas de pagamento", "Gerencia as formas de pagamento"))
+                .tags(new Tag("Pedidos", "Gerencia os pedidos"));
 
         return docket;
     }
@@ -91,7 +89,6 @@ public class SpringFoxConfig {
                 .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
                         q -> q.name("ApiError").namespace("com.algaworks.algafood.api.exceptionhandler")))));
     }
-
 
     private List<Response> globalGetResponseMessages() {
 
