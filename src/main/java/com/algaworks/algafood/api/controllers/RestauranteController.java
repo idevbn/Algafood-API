@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.api.model.out.view.RestauranteView;
+import com.algaworks.algafood.api.openapi.model.RestauranteBasicoModelOpenApi;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -17,6 +18,9 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -62,6 +66,16 @@ public class RestauranteController {
     }
 
     @GetMapping
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    value = "Nome da projeção de pedidos",
+                    name = "projecao",
+                    paramType = "query",
+                    dataType = "java.lang.String",
+                    allowableValues = "apenas-nome"
+            )
+    })
+    @ApiOperation(value = "Lista restaurantes", response = RestauranteBasicoModelOpenApi.class)
     public ResponseEntity<List<RestauranteOutputDTO>> listar(){
         final List<Restaurante> restaurantes = this.repository.findAll();
 
@@ -81,6 +95,7 @@ public class RestauranteController {
      */
     @JsonView(RestauranteView.Resumo.class)
     @GetMapping(params = "projecao=resumo")
+    @ApiOperation(value = "Lista restaurantes", hidden = true)
     public ResponseEntity<List<RestauranteOutputDTO>> listarResumido() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
@@ -100,6 +115,7 @@ public class RestauranteController {
      */
     @JsonView(RestauranteView.ApenasNome.class)
     @GetMapping(params = "projecao=apenas-nome")
+    @ApiOperation(value = "Lista restaurantes", hidden = true)
     public ResponseEntity<List<RestauranteOutputDTO>> listarApenasNomes() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
