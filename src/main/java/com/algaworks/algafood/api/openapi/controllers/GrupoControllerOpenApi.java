@@ -32,7 +32,7 @@ public interface GrupoControllerOpenApi {
                     })
     })
     ResponseEntity<GrupoOutputDTO> buscar(
-            @ApiParam(value = "ID de um grupo", example = "1")
+            @ApiParam(value = "ID de um grupo", example = "1", required = true)
             final Long id
     );
 
@@ -41,7 +41,7 @@ public interface GrupoControllerOpenApi {
             @ApiResponse(responseCode = "201", description = "Grupo cadastrado")
     })
     ResponseEntity<GrupoOutputDTO> adicionar(
-            @ApiParam(name = "corpo", value = "Representação de uma nova cidade")
+            @ApiParam(name = "corpo", value = "Representação de uma nova cidade", required = true)
             final GrupoInputDTO grupoInputDTO
     );
 
@@ -54,9 +54,13 @@ public interface GrupoControllerOpenApi {
             })
     })
     ResponseEntity<GrupoOutputDTO> atualizar(
-            @ApiParam(value = "ID de um grupo", example = "1")
+            @ApiParam(value = "ID de um grupo", example = "1", required = true)
             final Long id,
-            @ApiParam(name = "corpo", value = "Representação de um grupo com os novos dados")
+            @ApiParam(
+                    name = "corpo",
+                    value = "Representação de um grupo com os novos dados",
+                    required = true
+            )
             final GrupoInputDTO grupoInputDTO
     );
 
@@ -68,6 +72,9 @@ public interface GrupoControllerOpenApi {
                             @Content(schema = @Schema(implementation = ApiError.class))
                     })
     })
-    ResponseEntity<Void> excluir(@ApiParam(value = "ID de um grupo", example = "1") final Long id);
+    ResponseEntity<Void> excluir(
+            @ApiParam(value = "ID de um grupo", example = "1", required = true)
+            final Long id
+    );
 
 }

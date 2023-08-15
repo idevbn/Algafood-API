@@ -34,7 +34,7 @@ public interface PedidoControllerOpenApi {
             @ApiResponse(responseCode = "201", description = "Pedido registrado"),
     })
     ResponseEntity<PedidoOutputDTO> adicionar(
-            @ApiParam(name = "corpo", value = "Representação de um novo pedido")
+            @ApiParam(name = "corpo", value = "Representação de um novo pedido", required = true)
             final PedidoInputDTO pedidoInput
     );
 
@@ -55,7 +55,9 @@ public interface PedidoControllerOpenApi {
     ResponseEntity<PedidoOutputDTO> buscar(
             @ApiParam(
                     value = "Código de um pedido",
-                    example = "f9981ca4-5a5e-4da3-af04-933861df3e55")
+                    example = "f9981ca4-5a5e-4da3-af04-933861df3e55",
+                    required = true
+            )
             final String codigoPedido
     );
 

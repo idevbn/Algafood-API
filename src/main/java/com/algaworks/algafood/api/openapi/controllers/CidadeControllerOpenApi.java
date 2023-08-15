@@ -37,12 +37,13 @@ public interface CidadeControllerOpenApi {
                             @Content(schema = @Schema(implementation = ApiError.class))
                     })
     })
-    ResponseEntity<CidadeOutputDTO> buscar(@ApiParam(value = "ID de uma cidade", example = "1")
-                                           final Long id);
+    ResponseEntity<CidadeOutputDTO> buscar(
+            @ApiParam(value = "ID de uma cidade", example = "1", required = true) final Long id
+    );
 
     @ApiOperation("Cadastra uma cidade")
     ResponseEntity<CidadeOutputDTO> adicionar(
-            @ApiParam(name = "corpo", value = "Representação de uma nova cidade")
+            @ApiParam(name = "corpo", value = "Representação de uma nova cidade", required = true)
             final CidadeInputDTO cidadeInputDTO
     );
 
@@ -54,7 +55,7 @@ public interface CidadeControllerOpenApi {
                     })
     })
     ResponseEntity<CidadeOutputDTO> atualizar(
-            @ApiParam(value = "ID de uma cidade", example = "1")
+            @ApiParam(value = "ID de uma cidade", example = "1", required = true)
             final Long id,
             @ApiParam(name = "corpo", value = "Representação de uma cidade com os novos dados")
             final CidadeInputDTO cidadeInputDTO
@@ -68,7 +69,7 @@ public interface CidadeControllerOpenApi {
                     })
     })
     ResponseEntity<Void> remover(
-            @ApiParam(value = "ID de uma cidade", example = "1")
+            @ApiParam(value = "ID de uma cidade", example = "1", required = true)
             final Long id
     );
 

@@ -30,7 +30,7 @@ public interface CozinhaControllerOpenApi {
             })
     })
     ResponseEntity<CozinhaOutputDTO> buscar(
-            @ApiParam(value = "ID de uma cozinha", example = "1")
+            @ApiParam(value = "ID de uma cozinha", example = "1", required = true)
             final Long cozinhaId);
 
     @ApiOperation("Cadastra uma cozinha")
@@ -38,7 +38,7 @@ public interface CozinhaControllerOpenApi {
             @ApiResponse(responseCode = "201", description = "Cozinha cadastrada"),
     })
     ResponseEntity<CozinhaOutputDTO> adicionar(
-            @ApiParam(name = "corpo", value = "Representação de uma nova cozinha")
+            @ApiParam(name = "corpo", value = "Representação de uma nova cozinha", required = true)
             final CozinhaInputDTO cozinhaInput);
 
     @ApiOperation("Atualiza uma cozinha por ID")
@@ -49,7 +49,7 @@ public interface CozinhaControllerOpenApi {
             })
     })
     ResponseEntity<CozinhaOutputDTO> atualizar(
-            @ApiParam(value = "ID de uma cozinha", example = "1")
+            @ApiParam(value = "ID de uma cozinha", example = "1", required = true)
             final Long cozinhaId,
 
             @ApiParam(name = "corpo", value = "Representação de uma cozinha com os novos dados")
@@ -63,7 +63,7 @@ public interface CozinhaControllerOpenApi {
             })
     })
     ResponseEntity<Void> remover(
-            @ApiParam(value = "ID de uma cozinha", example = "1")
+            @ApiParam(value = "ID de uma cozinha", example = "1", required = true)
             final Long cozinhaId);
 
 }
