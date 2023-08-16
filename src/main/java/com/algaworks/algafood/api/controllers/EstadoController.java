@@ -4,11 +4,13 @@ import com.algaworks.algafood.api.assembler.EstadoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.EstadoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.EstadoInputDTO;
 import com.algaworks.algafood.api.model.out.EstadoOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.EstadoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/estados")
-public class EstadoController {
+@RequestMapping(path = "/estados", produces = MediaType.APPLICATION_JSON_VALUE)
+public class EstadoController implements EstadoControllerOpenApi {
 
     private final EstadoRepository repository;
     private final CadastroEstadoService service;
@@ -35,7 +37,7 @@ public class EstadoController {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<EstadoOutputDTO>> listar() {
         final List<Estado> estados = this.repository.findAll();
 
@@ -49,7 +51,7 @@ public class EstadoController {
         return response;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstadoOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
 
         final Estado estadoEncontrado = this.service.buscarOuFalhar(id);
@@ -64,7 +66,7 @@ public class EstadoController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstadoOutputDTO> adicionar(
             @RequestBody @Valid final EstadoInputDTO estadoInputDTO
     ) {
@@ -83,7 +85,7 @@ public class EstadoController {
         return response;
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstadoOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final EstadoInputDTO estadoInputDTO
