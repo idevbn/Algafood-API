@@ -6,7 +6,7 @@ import com.algaworks.algafood.api.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.api.model.out.view.RestauranteView;
-import com.algaworks.algafood.api.openapi.model.RestauranteBasicoModelOpenApi;
+import com.algaworks.algafood.api.openapi.controllers.RestauranteControllerOpenApi;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradaException;
@@ -18,12 +18,10 @@ import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
@@ -39,8 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/restaurantes")
-public class RestauranteController {
+@RequestMapping(path = "/restaurantes", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteController  implements RestauranteControllerOpenApi {
 
     private final RestauranteRepository repository;
 
@@ -65,17 +63,7 @@ public class RestauranteController {
         this.disassembler = disassembler;
     }
 
-    @GetMapping
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    value = "Nome da projeção de pedidos",
-                    name = "projecao",
-                    paramType = "query",
-                    dataType = "java.lang.String",
-                    allowableValues = "apenas-nome"
-            )
-    })
-    @ApiOperation(value = "Lista restaurantes", response = RestauranteBasicoModelOpenApi.class)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RestauranteOutputDTO>> listar(){
         final List<Restaurante> restaurantes = this.repository.findAll();
 
@@ -94,8 +82,7 @@ public class RestauranteController {
      * no @JsonView (uma lista resumida).
      */
     @JsonView(RestauranteView.Resumo.class)
-    @GetMapping(params = "projecao=resumo")
-    @ApiOperation(value = "Lista restaurantes", hidden = true)
+    @GetMapping(params = "projecao=resumo", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RestauranteOutputDTO>> listarResumido() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
@@ -114,8 +101,7 @@ public class RestauranteController {
      * no @JsonView (nome e id).
      */
     @JsonView(RestauranteView.ApenasNome.class)
-    @GetMapping(params = "projecao=apenas-nome")
-    @ApiOperation(value = "Lista restaurantes", hidden = true)
+    @GetMapping(params = "projecao=apenas-nome", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<RestauranteOutputDTO>> listarApenasNomes() {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
@@ -129,7 +115,7 @@ public class RestauranteController {
         return response;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestauranteOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Restaurante restauranteEncontrado = this.service.buscarOuFalhar(id);
 
@@ -143,7 +129,7 @@ public class RestauranteController {
         return response;
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestauranteOutputDTO> adicionar(
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
@@ -166,7 +152,7 @@ public class RestauranteController {
         }
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestauranteOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
