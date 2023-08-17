@@ -2,11 +2,13 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.FormaPagamentoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.FormaPagamentoOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.RestauranteFormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +16,8 @@ import java.util.Collection;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/restaurantes/{id}/formas-pagamento")
-public class RestauranteFormaPagamentoController {
+@RequestMapping(path = "/restaurantes/{id}/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteFormaPagamentoController implements RestauranteFormaPagamentoControllerOpenApi {
 
     private final CadastroRestauranteService service;
     private final FormaPagamentoOutputDTOAssembler assembler;
