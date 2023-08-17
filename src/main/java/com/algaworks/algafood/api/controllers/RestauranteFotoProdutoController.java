@@ -27,7 +27,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/restaurantes/{restauranteId}/produtos/{produtoId}/foto",
-produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteFotoProdutoController implements RestauranteFotoProdutoControllerOpenApi {
 
     private final CatalogoFotoProdutoService fotoProdutoService;
@@ -50,7 +50,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
     }
 
     @GetMapping
-    public ResponseEntity<FotoProdutoOuputDTO> recuperarFoto(
+    public ResponseEntity<?> recuperarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId
     ) {
@@ -71,10 +71,9 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
     public ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
-            @Valid final FotoProdutoInputDTO fotoProdutoInput
+            @Valid final FotoProdutoInputDTO fotoProdutoInput,
+            @RequestPart(required = true) final MultipartFile arquivo
     ) throws IOException {
-
-        final MultipartFile arquivo = fotoProdutoInput.getArquivo();
 
         final Produto produto = this.produtoService
                 .buscarOuFalhar(restauranteId, produtoId);
@@ -99,12 +98,21 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
         return response;
     }
 
-    @GetMapping(produces = MediaType.ALL_VALUE)
+    @GetMapping(produces = {
+            MediaType.IMAGE_JPEG_VALUE,
+            MediaType.IMAGE_PNG_VALUE,
+            MediaType.APPLICATION_JSON_VALUE
+    })
     public ResponseEntity<?> servirFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
             @RequestHeader(name = "accept") final String acceptHeader
     ) throws HttpMediaTypeNotAcceptableException {
+
+        if (acceptHeader.equals(MediaType.APPLICATION_JSON_VALUE)) {
+            return this.recuperarFoto(restauranteId, produtoId);
+        }
+
         try {
             final FotoProduto fotoProduto = this.fotoProdutoService
                     .buscarOuFalhar(restauranteId, produtoId);

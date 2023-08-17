@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -36,7 +37,13 @@ public interface RestauranteFotoProdutoControllerOpenApi {
             @ApiParam(value = "ID do produto", example = "1", required = true)
             final Long produtoId,
 
-            final FotoProdutoInputDTO fotoProdutoInput
+            final FotoProdutoInputDTO fotoProdutoInput,
+
+            @ApiParam(
+                    value = "Arquivo da foto do produto (máximo 500KB, apenas JPG e PNG)",
+                    required = true
+            )
+            final MultipartFile arquivo
     ) throws IOException;
 
     @ApiOperation("Exclui a foto do produto de um restaurante")
@@ -65,36 +72,45 @@ public interface RestauranteFotoProdutoControllerOpenApi {
             final Long produtoId
     );
 
-    @ApiOperation(value = "Busca a foto do produto de um restaurante",
-            produces = "application/json, image/jpeg, image/png")
+    @ApiOperation(
+            value = "Busca a foto do produto de um restaurante",
+            produces = "image/jpeg, image/png, application/json"
+    )
     @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content =
+                    @Content(
+                            schema = @Schema(implementation = FotoProdutoOuputDTO.class),
+                            mediaType = "application/json"
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content = @Content(mediaType = "image/png")),
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "OK",
+                    content = @Content(mediaType = "image/jpeg")),
             @ApiResponse(
                     responseCode = "400",
                     description = "ID do restaurante ou produto inválido",
-                    content = {
-                            @Content(schema = @Schema(implementation = ApiError.class))
-                    }
-            ),
+                    content = @Content(schema = @Schema(implementation = ApiError.class))),
             @ApiResponse(
                     responseCode = "404",
                     description = "Foto de produto não encontrada",
-                    content = {
-                            @Content(schema = @Schema(implementation = ApiError.class))
-                    }
-            )
+                    content = @Content(schema = @Schema(implementation = ApiError.class)))
     })
-    ResponseEntity<FotoProdutoOuputDTO> recuperarFoto(
+    ResponseEntity<?> servirFoto(
             @ApiParam(value = "ID do restaurante", example = "1", required = true)
             final Long restauranteId,
 
             @ApiParam(value = "ID do produto", example = "1", required = true)
-            final Long produtoId
-    );
-
-    @ApiOperation(value = "Busca a foto do produto de um restaurante", hidden = true)
-    ResponseEntity<?> servirFoto(
-            final Long restauranteId,
             final Long produtoId,
+
+            @ApiParam(hidden = true, required = false)
             final String acceptHeader
     ) throws HttpMediaTypeNotAcceptableException;
 
