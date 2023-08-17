@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.assembler.ProdutoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.ProdutoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.ProdutoInputDTO;
 import com.algaworks.algafood.api.model.out.ProdutoOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.RestauranteProdutoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
@@ -11,6 +12,7 @@ import com.algaworks.algafood.domain.service.CadastroProdutoService;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +20,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/restaurantes/{id}/produtos")
-public class RestauranteProdutoController {
+@RequestMapping(path = "/restaurantes/{id}/produtos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class RestauranteProdutoController implements RestauranteProdutoControllerOpenApi {
 
     private final ProdutoRepository repository;
     private final CadastroProdutoService produtoService;
