@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.openapi.controllers.EstatisticasControllerOpenApi;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 import com.algaworks.algafood.domain.service.VendaQueryService;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/estatisticas")
-public class EstatisticasController {
+@RequestMapping(path = "/estatisticas")
+public class EstatisticasController implements EstatisticasControllerOpenApi {
 
     private static final String DEFAULT_VALUE_UTC = "+00:00";
 
