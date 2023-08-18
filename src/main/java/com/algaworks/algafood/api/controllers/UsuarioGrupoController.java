@@ -2,11 +2,13 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.GrupoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.GrupoOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.UsuarioGrupoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping(value = "/usuarios/{id}/grupos")
-public class UsuarioGrupoController {
+@RequestMapping(path = "/usuarios/{id}/grupos", produces = MediaType.APPLICATION_JSON_VALUE)
+public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
     private final GrupoOutputDTOAssembler assembler;
     private final CadastroUsuarioService service;
