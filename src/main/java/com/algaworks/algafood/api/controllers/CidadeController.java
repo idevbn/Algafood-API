@@ -1,10 +1,11 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.assembler.CidadeInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.CidadeOutputDTOAssembler;
-import com.algaworks.algafood.api.openapi.controllers.CidadeControllerOpenApi;
 import com.algaworks.algafood.api.model.in.CidadeInputDTO;
 import com.algaworks.algafood.api.model.out.CidadeOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.CidadeControllerOpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -86,6 +87,14 @@ public class CidadeController implements CidadeControllerOpenApi {
             final ResponseEntity<CidadeOutputDTO> response = ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(cidadeOutputDTO);
+
+            /**
+              Adiciona o cabeçalho 'Location' na reposta.
+              Obs.: O cabeçalho também poderia ser adicio-
+              nado no ResponseEntity, no lugar de utilizar
+              este método.
+             */
+            ResourceUriHelper.addUriInReponseHeader(cidadeOutputDTO.getId());
 
             return response;
         } catch (final EstadoNaoEncontradoException e) {
