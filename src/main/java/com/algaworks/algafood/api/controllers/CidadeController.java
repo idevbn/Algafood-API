@@ -12,7 +12,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -68,14 +68,19 @@ public class CidadeController implements CidadeControllerOpenApi {
                 .status(HttpStatus.OK)
                 .body(cidadeOutputDTO);
 
-        cidadeOutputDTO.add(Link.of("http://api.algafood.local:8080/cidades/1"));
-//		cidadeOutPutDTO.add(Link.of("http://api.algafood.local:8080/cidades/1", IanaLinkRelations.SELF));
+        cidadeOutputDTO.add(WebMvcLinkBuilder
+                .linkTo(CidadeController.class)
+                .slash(cidadeOutputDTO.getId())
+                .withSelfRel()
+        );
 
-//		cidadeOutputDTO
-//		.add(Link.of("http://api.algafood.local:8080/cidades", IanaLinkRelations.COLLECTION));
-        cidadeOutputDTO.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
+        cidadeOutputDTO.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withRel("cidades"));
 
-        cidadeOutputDTO.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
+        cidadeOutputDTO.add(WebMvcLinkBuilder
+                .linkTo(EstadoController.class)
+                .slash(cidadeOutputDTO.getEstado().getId())
+                .withSelfRel()
+        );
 
         return response;
     }
