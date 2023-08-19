@@ -12,6 +12,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,15 @@ public class CidadeController implements CidadeControllerOpenApi {
         final ResponseEntity<CidadeOutputDTO> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cidadeOutputDTO);
+
+        cidadeOutputDTO.add(Link.of("http://api.algafood.local:8080/cidades/1"));
+//		cidadeOutPutDTO.add(Link.of("http://api.algafood.local:8080/cidades/1", IanaLinkRelations.SELF));
+
+//		cidadeOutputDTO
+//		.add(Link.of("http://api.algafood.local:8080/cidades", IanaLinkRelations.COLLECTION));
+        cidadeOutputDTO.add(Link.of("http://api.algafood.local:8080/cidades", "cidades"));
+
+        cidadeOutputDTO.getEstado().add(Link.of("http://api.algafood.local:8080/estados/1"));
 
         return response;
     }
