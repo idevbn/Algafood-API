@@ -12,7 +12,9 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.mediatype.hal.CollectionModelMixin;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,15 +48,37 @@ public class CidadeController implements CidadeControllerOpenApi {
     }
 
     @GetMapping
-    public ResponseEntity<List<CidadeOutputDTO>> listar() {
+    public ResponseEntity<CollectionModel<CidadeOutputDTO>> listar() {
         final List<Cidade> cidades = this.repository.findAll();
 
         final List<CidadeOutputDTO> cidadesOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(cidades);
 
-        final ResponseEntity<List<CidadeOutputDTO>> response = ResponseEntity
+        final CollectionModel<CidadeOutputDTO> cidadesCollectionModel =
+                CollectionModel.of(cidadesOutputDTOS);
+
+        final ResponseEntity<CollectionModel<CidadeOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(cidadesOutputDTOS);
+                .body(cidadesCollectionModel);
+
+        cidadesOutputDTOS.forEach(cidadeOutputDTO -> {
+            cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
+                    .buscar(cidadeOutputDTO.getId()))
+                    .withSelfRel());
+
+            cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
+                    .listar())
+                    .withRel("cidades"));
+
+            cidadeOutputDTO.add(linkTo(methodOn(EstadoController.class)
+                    .buscar(cidadeOutputDTO.getEstado().getId()))
+                    .withSelfRel());
+
+        });
+
+        cidadesCollectionModel.add(linkTo(methodOn(CidadeController.class)
+                .listar())
+                .withSelfRel());
 
         return response;
     }

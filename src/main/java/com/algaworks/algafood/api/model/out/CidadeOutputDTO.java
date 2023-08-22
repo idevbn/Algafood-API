@@ -5,10 +5,12 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 @Getter
 @Setter
 @ApiModel(value = "Cidade")
+@Relation(collectionRelation = "cidades")
 public class CidadeOutputDTO extends RepresentationModel<CidadeOutputDTO> {
 
     @ApiModelProperty(example = "1")
