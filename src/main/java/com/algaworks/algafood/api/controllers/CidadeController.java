@@ -12,6 +12,7 @@ import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,19 +72,17 @@ public class CidadeController implements CidadeControllerOpenApi {
                 .status(HttpStatus.OK)
                 .body(cidadeOutputDTO);
 
-        cidadeOutputDTO.add(WebMvcLinkBuilder
-                .linkTo(CidadeController.class)
-                .slash(cidadeOutputDTO.getId())
-                .withSelfRel()
-        );
+        cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
+                .buscar(cidadeEncontrada.getId()))
+                .withSelfRel());
 
-        cidadeOutputDTO.add(WebMvcLinkBuilder.linkTo(CidadeController.class).withRel("cidades"));
+        cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
+                .listar())
+                .withRel("cidades"));
 
-        cidadeOutputDTO.add(WebMvcLinkBuilder
-                .linkTo(EstadoController.class)
-                .slash(cidadeOutputDTO.getEstado().getId())
-                .withSelfRel()
-        );
+        cidadeOutputDTO.add(linkTo(methodOn(EstadoController.class)
+                .buscar(cidadeOutputDTO.getEstado().getId()))
+                .withSelfRel());
 
         return response;
     }
