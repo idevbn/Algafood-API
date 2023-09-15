@@ -9,9 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Api(tags = "Restaurantes")
 public interface RestauranteUsuarioResponsavelControllerOpenApi {
@@ -26,7 +25,7 @@ public interface RestauranteUsuarioResponsavelControllerOpenApi {
                     }
             )
     })
-    ResponseEntity<List<UsuarioOutputDTO>> listar(
+    ResponseEntity<CollectionModel<UsuarioOutputDTO>> listar(
             @ApiParam(value = "ID do restaurante", example = "1", required = true)
             final Long restauranteId
     );

@@ -7,12 +7,12 @@ import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -31,15 +31,15 @@ public class RestauranteUsuarioResponsavelController
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioOutputDTO>> listar(@PathVariable("id") final Long id) {
+    public ResponseEntity<CollectionModel<UsuarioOutputDTO>> listar(@PathVariable("id") final Long id) {
         final Restaurante restaurante = this.restauranteService.buscarOuFalhar(id);
 
         final Set<Usuario> responsaveis = restaurante.getResponsaveis();
 
-        final List<UsuarioOutputDTO> usuariosOutputDTOS = this.assembler
+        final CollectionModel<UsuarioOutputDTO> usuariosOutputDTOS = this.assembler
                 .toCollectionModel(responsaveis);
 
-        final ResponseEntity<List<UsuarioOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<UsuarioOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(usuariosOutputDTOS);
 
