@@ -13,9 +13,6 @@ import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mediatype.hal.CollectionModelMixin;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,34 +48,12 @@ public class CidadeController implements CidadeControllerOpenApi {
     public ResponseEntity<CollectionModel<CidadeOutputDTO>> listar() {
         final List<Cidade> cidades = this.repository.findAll();
 
-        final List<CidadeOutputDTO> cidadesOutputDTOS = this.outputDTOAssembler
+        final CollectionModel<CidadeOutputDTO> cidadesOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(cidades);
-
-        final CollectionModel<CidadeOutputDTO> cidadesCollectionModel =
-                CollectionModel.of(cidadesOutputDTOS);
 
         final ResponseEntity<CollectionModel<CidadeOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(cidadesCollectionModel);
-
-        cidadesOutputDTOS.forEach(cidadeOutputDTO -> {
-            cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
-                    .buscar(cidadeOutputDTO.getId()))
-                    .withSelfRel());
-
-            cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
-                    .listar())
-                    .withRel("cidades"));
-
-            cidadeOutputDTO.add(linkTo(methodOn(EstadoController.class)
-                    .buscar(cidadeOutputDTO.getEstado().getId()))
-                    .withSelfRel());
-
-        });
-
-        cidadesCollectionModel.add(linkTo(methodOn(CidadeController.class)
-                .listar())
-                .withSelfRel());
+                .body(cidadesOutputDTOS);
 
         return response;
     }
@@ -95,18 +70,6 @@ public class CidadeController implements CidadeControllerOpenApi {
         final ResponseEntity<CidadeOutputDTO> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(cidadeOutputDTO);
-
-        cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
-                .buscar(cidadeEncontrada.getId()))
-                .withSelfRel());
-
-        cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
-                .listar())
-                .withRel("cidades"));
-
-        cidadeOutputDTO.add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeOutputDTO.getEstado().getId()))
-                .withSelfRel());
 
         return response;
     }
