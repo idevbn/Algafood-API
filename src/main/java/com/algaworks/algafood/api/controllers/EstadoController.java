@@ -9,6 +9,7 @@ import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +39,13 @@ public class EstadoController implements EstadoControllerOpenApi {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<EstadoOutputDTO>> listar() {
+    public ResponseEntity<CollectionModel<EstadoOutputDTO>> listar() {
         final List<Estado> estados = this.repository.findAll();
 
-        final List<EstadoOutputDTO> estadosOutputDTOS = this.outputDTOAssembler
+        final CollectionModel<EstadoOutputDTO> estadosOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(estados);
 
-        final ResponseEntity<List<EstadoOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<EstadoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(estadosOutputDTOS);
 

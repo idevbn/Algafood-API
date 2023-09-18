@@ -10,15 +10,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Api(tags = "Estados")
 public interface EstadoControllerOpenApi {
 
     @ApiOperation("Lista os estados")
-    ResponseEntity<List<EstadoOutputDTO>> listar();
+    ResponseEntity<CollectionModel<EstadoOutputDTO>> listar();
 
     @ApiOperation("Busca uma cozinha por ID")
     @ApiResponses({
