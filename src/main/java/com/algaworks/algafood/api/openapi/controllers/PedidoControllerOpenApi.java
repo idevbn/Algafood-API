@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Pedidos")
@@ -26,8 +27,8 @@ public interface PedidoControllerOpenApi {
             )
     })
     @ApiOperation("Pesquisa os pedidos")
-    ResponseEntity<Page<PedidoResumoOutputDTO>> pesquisar(final Pageable pageable,
-                                                          final PedidoFilter filtro);
+    ResponseEntity<PagedModel<PedidoResumoOutputDTO>> pesquisar(final Pageable pageable,
+                                                                final PedidoFilter filtro);
 
     @ApiOperation("Registra um pedido")
     @ApiResponses({
