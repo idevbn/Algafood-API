@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping(path = "/restaurantes/{id}/responsaveis", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteUsuarioResponsavelController
@@ -37,7 +40,10 @@ public class RestauranteUsuarioResponsavelController
         final Set<Usuario> responsaveis = restaurante.getResponsaveis();
 
         final CollectionModel<UsuarioOutputDTO> usuariosOutputDTOS = this.assembler
-                .toCollectionModel(responsaveis);
+                .toCollectionModel(responsaveis)
+                .removeLinks()
+                .add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
+                        .listar(id)).withSelfRel());
 
         final ResponseEntity<CollectionModel<UsuarioOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
