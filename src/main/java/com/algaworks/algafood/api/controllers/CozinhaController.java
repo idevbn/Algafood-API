@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,31 +31,31 @@ public class CozinhaController implements CozinhaControllerOpenApi {
     private final CadastroCozinhaService service;
     private final CozinhaInputDTODisassembler inputDTODisassembler;
     private final CozinhaOutputDTOAssembler outputDTOAssembler;
+    private final PagedResourcesAssembler<Cozinha> pagedResourcesAssembler;
 
     @Autowired
     public CozinhaController(final CozinhaRepository repository,
                              final CadastroCozinhaService service,
                              final CozinhaInputDTODisassembler inputDTODisassembler,
-                             final CozinhaOutputDTOAssembler outputDTOAssembler) {
+                             final CozinhaOutputDTOAssembler outputDTOAssembler,
+                             final PagedResourcesAssembler<Cozinha> pagedResourcesAssembler) {
         this.repository = repository;
         this.service = service;
         this.inputDTODisassembler = inputDTODisassembler;
         this.outputDTOAssembler = outputDTOAssembler;
+        this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Page<CozinhaOutputDTO>> listar(final Pageable pageable) {
+    public ResponseEntity<PagedModel<CozinhaOutputDTO>> listar(final Pageable pageable) {
         final Page<Cozinha> cozinhas = this.repository.findAll(pageable);
 
-        final List<CozinhaOutputDTO> cozinhasOutputDTOS = this.outputDTOAssembler
-                .toCollectionModel(cozinhas.getContent());
+        final PagedModel<CozinhaOutputDTO> cozinhasModelPage = this.pagedResourcesAssembler
+                .toModel(cozinhas, this.outputDTOAssembler);
 
-        final Page<CozinhaOutputDTO> cozinhasPageResponse =
-                new PageImpl<>(cozinhasOutputDTOS, pageable, cozinhas.getTotalElements());
-
-        final ResponseEntity<Page<CozinhaOutputDTO>> response = ResponseEntity
+        final ResponseEntity<PagedModel<CozinhaOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(cozinhasPageResponse);
+                .body(cozinhasModelPage);
 
         return response;
     }

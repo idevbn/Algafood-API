@@ -10,15 +10,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Cozinhas")
 public interface CozinhaControllerOpenApi {
 
     @ApiOperation("Lista as cozinhas com paginação")
-    ResponseEntity<Page<CozinhaOutputDTO>> listar(final Pageable pageable);
+    ResponseEntity<PagedModel<CozinhaOutputDTO>> listar(final Pageable pageable);
 
     @ApiOperation("Busca uma cozinha por ID")
     @ApiResponses({
