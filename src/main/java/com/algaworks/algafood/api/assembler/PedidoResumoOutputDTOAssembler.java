@@ -6,6 +6,10 @@ import com.algaworks.algafood.api.controllers.UsuarioController;
 import com.algaworks.algafood.api.model.out.PedidoResumoOutputDTO;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.TemplateVariables;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +33,23 @@ public class PedidoResumoOutputDTOAssembler
                 .createModelWithId(pedido.getId(), pedido);
         this.modelMapper.map(pedido, pedidoResumoOutputDTO);
 
-        pedidoResumoOutputDTO.add(linkTo(PedidoController.class).withRel("pedidos"));
+        final TemplateVariables pageVariables = new TemplateVariables(
+                new TemplateVariable("page", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("sort", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("size", TemplateVariable.VariableType.REQUEST_PARAM)
+        );
+
+        final TemplateVariables filtroVariables = new TemplateVariables(
+                new TemplateVariable("codigo", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("nomerestaurante", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("nomeCliente", TemplateVariable.VariableType.REQUEST_PARAM),
+                new TemplateVariable("valorTotal", TemplateVariable.VariableType.REQUEST_PARAM)
+        );
+
+        final String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
+
+        pedidoResumoOutputDTO.add(Link.of(UriTemplate.of(pedidosUrl,
+                pageVariables.concat(filtroVariables)), "pedidos"));
 
         pedidoResumoOutputDTO.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
                 .buscar(pedido.getRestaurante().getId())).withSelfRel());
