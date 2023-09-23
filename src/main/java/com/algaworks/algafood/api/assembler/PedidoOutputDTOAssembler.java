@@ -4,9 +4,14 @@ import com.algaworks.algafood.api.controllers.*;
 import com.algaworks.algafood.api.model.out.PedidoOutputDTO;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.TemplateVariable;
+import org.springframework.hateoas.TemplateVariables;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.hateoas.TemplateVariable.VariableType;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -26,7 +31,16 @@ public class PedidoOutputDTOAssembler
         final PedidoOutputDTO pedidoOutputDTO = this.createModelWithId(pedido.getId(), pedido);
         this.modelMapper.map(pedido, pedidoOutputDTO);
 
-        pedidoOutputDTO.add(linkTo(PedidoController.class).withRel("pedidos"));
+        final TemplateVariables pageVariables = new TemplateVariables(
+                new TemplateVariable("page", VariableType.REQUEST_PARAM),
+                new TemplateVariable("sort", VariableType.REQUEST_PARAM),
+                new TemplateVariable("size", VariableType.REQUEST_PARAM)
+        );
+
+        final String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
+
+        pedidoOutputDTO.add(Link.of(UriTemplate
+                .of(pedidosUrl, pageVariables), "pedidos"));
 
         pedidoOutputDTO.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
                 .buscar(pedido.getRestaurante().getId())).withSelfRel());
