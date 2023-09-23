@@ -7,6 +7,7 @@ import com.algaworks.algafood.api.model.in.PedidoInputDTO;
 import com.algaworks.algafood.api.model.out.PedidoOutputDTO;
 import com.algaworks.algafood.api.model.out.PedidoResumoOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.PedidoControllerOpenApi;
+import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -72,10 +73,12 @@ public class PedidoController implements PedidoControllerOpenApi {
             @PageableDefault() Pageable pageable,
             final PedidoFilter filtro
     ) {
-        pageable = this.traduzirPageable(pageable);
+        final Pageable pageableTraduzido = this.traduzirPageable(pageable);
 
-        final Page<Pedido> pedidos = this.repository
-                .findAll(PedidoSpecs.usandoFiltro(filtro), pageable);
+        Page<Pedido> pedidos = this.repository
+                .findAll(PedidoSpecs.usandoFiltro(filtro), pageableTraduzido);
+
+        pedidos = new PageWrapper<>(pedidos, pageable);
 
         final PagedModel<PedidoResumoOutputDTO> pedidosPage = this.pagedResourcesAssembler
                 .toModel(pedidos, this.assemblerPedidoResumo);
@@ -135,7 +138,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     private Pageable traduzirPageable(final Pageable pageable) {
         final ImmutableMap<String, String> mapeamento = ImmutableMap.of(
                 "codigo", "codigo",
-                "restaurante.nome", "restaurante.nome",
+                "nomerestaurante", "restaurante.nome",
                 "nomeCliente", "cliente.nome",
                 "valorTotal", "valorTotal"
         );
