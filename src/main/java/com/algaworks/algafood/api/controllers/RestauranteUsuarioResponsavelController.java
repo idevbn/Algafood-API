@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.UsuarioOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.UsuarioOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.RestauranteUsuarioResponsavelControllerOpenApi;
@@ -15,9 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping(path = "/restaurantes/{id}/responsaveis", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestauranteUsuarioResponsavelController
@@ -25,12 +23,15 @@ public class RestauranteUsuarioResponsavelController
 
     private final CadastroRestauranteService restauranteService;
     private final UsuarioOutputDTOAssembler assembler;
+    private final AlgaLinks algaLinks;
 
     @Autowired
     public RestauranteUsuarioResponsavelController(final CadastroRestauranteService restauranteService,
-                                                   final UsuarioOutputDTOAssembler assembler) {
+                                                   final UsuarioOutputDTOAssembler assembler,
+                                                   final AlgaLinks algaLinks) {
         this.restauranteService = restauranteService;
         this.assembler = assembler;
+        this.algaLinks = algaLinks;
     }
 
     @GetMapping
@@ -42,8 +43,7 @@ public class RestauranteUsuarioResponsavelController
         final CollectionModel<UsuarioOutputDTO> usuariosOutputDTOS = this.assembler
                 .toCollectionModel(responsaveis)
                 .removeLinks()
-                .add(linkTo(methodOn(RestauranteUsuarioResponsavelController.class)
-                        .listar(id)).withSelfRel());
+                .add(this.algaLinks.linkToResponsaveisRestaurante(id));
 
         final ResponseEntity<CollectionModel<UsuarioOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)

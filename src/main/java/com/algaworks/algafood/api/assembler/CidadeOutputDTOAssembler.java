@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controllers.CidadeController;
-import com.algaworks.algafood.api.controllers.EstadoController;
 import com.algaworks.algafood.api.model.out.CidadeOutputDTO;
 import com.algaworks.algafood.domain.model.Cidade;
 import org.modelmapper.ModelMapper;
@@ -13,13 +13,17 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class CidadeOutputDTOAssembler extends RepresentationModelAssemblerSupport<Cidade, CidadeOutputDTO> {
+public class CidadeOutputDTOAssembler
+        extends RepresentationModelAssemblerSupport<Cidade, CidadeOutputDTO> {
 
     private final ModelMapper modelMapper;
+    private final AlgaLinks algaLinks;
 
-    public CidadeOutputDTOAssembler(final ModelMapper modelMapper) {
+    public CidadeOutputDTOAssembler(final ModelMapper modelMapper,
+                                    final AlgaLinks algaLinks) {
         super(CidadeController.class, CidadeOutputDTO.class);
         this.modelMapper = modelMapper;
+        this.algaLinks = algaLinks;
     }
 
     @Override
@@ -27,17 +31,10 @@ public class CidadeOutputDTOAssembler extends RepresentationModelAssemblerSuppor
         final CidadeOutputDTO cidadeOutputDTO = this.modelMapper
                 .map(cidade, CidadeOutputDTO.class);
 
-        cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
-                .buscar(cidadeOutputDTO.getId()))
-                .withSelfRel());
+        cidadeOutputDTO.add(this.algaLinks.linkToCidades("cidades"));
 
-        cidadeOutputDTO.add(linkTo(methodOn(CidadeController.class)
-                .listar())
-                .withRel("cidades"));
-
-        cidadeOutputDTO.add(linkTo(methodOn(EstadoController.class)
-                .buscar(cidadeOutputDTO.getEstado().getId()))
-                .withSelfRel());
+        cidadeOutputDTO.getEstado()
+                .add(this.algaLinks.linkToEstado(cidadeOutputDTO.getEstado().getId()));
 
         return cidadeOutputDTO;
     }

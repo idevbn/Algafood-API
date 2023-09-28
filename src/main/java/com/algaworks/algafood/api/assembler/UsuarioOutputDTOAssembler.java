@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.controllers.UsuarioController;
-import com.algaworks.algafood.api.controllers.UsuarioGrupoController;
 import com.algaworks.algafood.api.model.out.UsuarioOutputDTO;
 import com.algaworks.algafood.domain.model.Usuario;
 import org.modelmapper.ModelMapper;
@@ -10,34 +10,30 @@ import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSuppor
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class UsuarioOutputDTOAssembler extends RepresentationModelAssemblerSupport<Usuario, UsuarioOutputDTO> {
 
     private final ModelMapper modelMapper;
+    private final AlgaLinks algaLinks;
 
-    public UsuarioOutputDTOAssembler(final ModelMapper modelMapper) {
+    public UsuarioOutputDTOAssembler(final ModelMapper modelMapper, final AlgaLinks algaLinks) {
         super(UsuarioController.class, UsuarioOutputDTO.class);
         this.modelMapper = modelMapper;
+        this.algaLinks = algaLinks;
     }
 
     @Override
     public UsuarioOutputDTO toModel(final Usuario usuario) {
-        final UsuarioOutputDTO usuarioOutputDTO = this.modelMapper
-                .map(usuario, UsuarioOutputDTO.class);
+        final UsuarioOutputDTO usuarioOutputDTO = this
+                .createModelWithId(usuario.getId(), usuario);
 
-        usuarioOutputDTO.add(linkTo(methodOn(UsuarioController.class)
-                .buscar(usuarioOutputDTO.getId()))
-                .withSelfRel());
+        this.modelMapper.map(usuario, usuarioOutputDTO);
 
-        usuarioOutputDTO.add(linkTo(methodOn(UsuarioController.class)
-                .listar())
-                .withRel("usuarios"));
+        usuarioOutputDTO.add(this.algaLinks.linkToUsuarios("usuarios"));
 
-        usuarioOutputDTO.add(linkTo(methodOn(UsuarioGrupoController.class)
-                .listar(usuarioOutputDTO.getId()))
-                .withRel("grupos-usuario"));
+        usuarioOutputDTO
+                .add(this.algaLinks.linkToGruposUsuario(usuario.getId(), "grupos-usuario"));
 
         return usuarioOutputDTO;
     }

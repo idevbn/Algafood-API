@@ -1,29 +1,25 @@
 package com.algaworks.algafood.api.assembler;
 
-import com.algaworks.algafood.api.controllers.*;
+import com.algaworks.algafood.api.AlgaLinks;
+import com.algaworks.algafood.api.controllers.PedidoController;
 import com.algaworks.algafood.api.model.out.PedidoOutputDTO;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.TemplateVariable;
-import org.springframework.hateoas.TemplateVariables;
-import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
-
-import static org.springframework.hateoas.TemplateVariable.VariableType;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class PedidoOutputDTOAssembler
         extends RepresentationModelAssemblerSupport<Pedido, PedidoOutputDTO> {
 
     private final ModelMapper modelMapper;
+    private final AlgaLinks algaLinks;
 
-    public PedidoOutputDTOAssembler(final ModelMapper modelMapper) {
+    public PedidoOutputDTOAssembler(final ModelMapper modelMapper,
+                                    final AlgaLinks algaLinks) {
         super(PedidoController.class, PedidoOutputDTO.class);
         this.modelMapper = modelMapper;
+        this.algaLinks = algaLinks;
     }
 
     @Override
@@ -31,36 +27,23 @@ public class PedidoOutputDTOAssembler
         final PedidoOutputDTO pedidoOutputDTO = this.createModelWithId(pedido.getId(), pedido);
         this.modelMapper.map(pedido, pedidoOutputDTO);
 
-        final TemplateVariables pageVariables = new TemplateVariables(
-                new TemplateVariable("page", VariableType.REQUEST_PARAM),
-                new TemplateVariable("sort", VariableType.REQUEST_PARAM),
-                new TemplateVariable("size", VariableType.REQUEST_PARAM)
-        );
+        pedidoOutputDTO.add(this.algaLinks.linkToPedidos());
 
-        final String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
+        pedidoOutputDTO.getRestaurante().add(
+                this.algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
 
-        pedidoOutputDTO.add(Link.of(UriTemplate
-                .of(pedidosUrl, pageVariables), "pedidos"));
+        pedidoOutputDTO.getCliente().add(
+                this.algaLinks.linkToUsuario(pedido.getCliente().getId()));
 
-        pedidoOutputDTO.getRestaurante().add(linkTo(methodOn(RestauranteController.class)
-                .buscar(pedido.getRestaurante().getId())).withSelfRel());
+        pedidoOutputDTO.getFormaPagamento().add(
+                this.algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
 
-        pedidoOutputDTO.getCliente().add(linkTo(methodOn(UsuarioController.class)
-                .buscar(pedido.getCliente().getId())).withSelfRel());
-
-        /** Passamos null no segundo argumento, porque é indiferente para a
-         * construção da URL do recurso de forma de pagamento.
-         */
-        pedidoOutputDTO.getFormaPagamento().add(linkTo(methodOn(FormaPagamentoController.class)
-                .buscar(pedido.getFormaPagamento().getId(), null)).withSelfRel());
-
-        pedidoOutputDTO.getEnderecoEntrega().getCidade().add(linkTo(methodOn(CidadeController.class)
-                .buscar(pedido.getEnderecoEntrega().getCidade().getId())).withSelfRel());
+        pedidoOutputDTO.getEnderecoEntrega().getCidade().add(
+                this.algaLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
 
         pedidoOutputDTO.getItens().forEach(item -> {
-            item.add(linkTo(methodOn(RestauranteProdutoController.class)
-                    .buscar(pedidoOutputDTO.getRestaurante().getId(), item.getProdutoId()))
-                    .withRel("produto"));
+            item.add(this.algaLinks.linkToProduto(
+                    pedidoOutputDTO.getRestaurante().getId(), item.getProdutoId(), "produto"));
         });
 
         return pedidoOutputDTO;
