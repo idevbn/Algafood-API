@@ -30,6 +30,21 @@ public class AlgaLinks {
                 PAGINACAO_VARIABLES.concat(filtroVariables)), "pedidos");
     }
 
+    public Link linkToConfirmacaoPedido(final String codigoPedido, final String rel) {
+        return linkTo(methodOn(FluxoPedidoController.class).confirmar(codigoPedido))
+                .withRel(rel);
+    }
+
+    public Link linkToEntregaPedido(final String codigoPedido, final String rel) {
+        return linkTo(methodOn(FluxoPedidoController.class).entregar(codigoPedido))
+                .withRel(rel);
+    }
+
+    public Link linkToCancelamentoPedido(final String codigoPedido, final String rel) {
+        return linkTo(methodOn(FluxoPedidoController.class).cancelar(codigoPedido))
+                .withRel(rel);
+    }
+
     public Link linkToRestaurante(final Long restauranteId, final String rel) {
         return linkTo(methodOn(RestauranteController.class)
                 .buscar(restauranteId)).withRel(rel);
