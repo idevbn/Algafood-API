@@ -29,14 +29,23 @@ public class PedidoOutputDTOAssembler
 
         pedidoOutputDTO.add(this.algaLinks.linkToPedidos());
 
-        pedidoOutputDTO.add(
-                this.algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+        if (pedido.podeSerConfirmado()) {
+            pedidoOutputDTO.add(
+                    this.algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar")
+            );
+        }
 
-        pedidoOutputDTO.add(
-                this.algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
+        if (pedido.podeSerEntregue()) {
+            pedidoOutputDTO.add(
+                    this.algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar")
+            );
+        }
 
-        pedidoOutputDTO.add(
-                this.algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+        if (pedido.podeSerCancelado()) {
+            pedidoOutputDTO.add(
+                    this.algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar")
+            );
+        }
 
         pedidoOutputDTO.getRestaurante().add(
                 this.algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
