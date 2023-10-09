@@ -28,4 +28,8 @@ public enum StatusPedido {
         return contains;
     }
 
+    public boolean podeAlterarPara(final StatusPedido novoStatus) {
+        return !this.naoPodeAlterarPara(novoStatus);
+    }
+
 }
