@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.model.out;
 
+
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,15 +9,14 @@ import org.springframework.hateoas.server.core.Relation;
 
 @Getter
 @Setter
-@Relation(collectionRelation = "cozinhas")
-public class CozinhaOutputDTO extends RepresentationModel<CozinhaOutputDTO> {
+@Relation(collectionRelation = "restaurantes")
+public class RestauranteApenasNomeOutputDTO
+        extends RepresentationModel<RestauranteApenasNomeOutputDTO> {
 
     @ApiModelProperty(example = "1")
-//    @JsonView(RestauranteView.Resumo.class)
     private Long id;
 
-    @ApiModelProperty(example = "Indiana")
-//    @JsonView(RestauranteView.Resumo.class)
+    @ApiModelProperty(example = "Thai Gourmet")
     private String nome;
 
 }

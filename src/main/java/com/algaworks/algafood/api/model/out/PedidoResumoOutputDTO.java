@@ -32,7 +32,7 @@ public class PedidoResumoOutputDTO extends RepresentationModel<PedidoResumoOutpu
     @ApiModelProperty(example = "2019-12-01T20:34:04Z")
     private OffsetDateTime dataCriacao;
 
-    private RestauranteResumoOutputDTO restaurante;
+    private RestauranteApenasNomeOutputDTO restaurante;
 
     private UsuarioOutputDTO cliente;
 

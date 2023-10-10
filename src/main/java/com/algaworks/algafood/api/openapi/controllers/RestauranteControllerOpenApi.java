@@ -2,15 +2,15 @@ package com.algaworks.algafood.api.openapi.controllers;
 
 import com.algaworks.algafood.api.exceptionhandler.ApiError;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
-import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
-import com.algaworks.algafood.api.model.out.view.RestauranteView;
+import com.algaworks.algafood.api.model.out.RestauranteApenasNomeOutputDTO;
+import com.algaworks.algafood.api.model.out.RestauranteBasicoOutputDTO;
 import com.algaworks.algafood.api.openapi.model.RestauranteBasicoModelOpenApi;
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -28,14 +28,14 @@ public interface RestauranteControllerOpenApi {
             )
     })
     @ApiOperation(value = "Lista restaurantes", response = RestauranteBasicoModelOpenApi.class)
-    ResponseEntity<List<RestauranteOutputDTO>> listar();
+    ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> listar();
 
-    @JsonView(RestauranteView.Resumo.class)
-    @ApiOperation(value = "Lista restaurantes", hidden = true)
-    public ResponseEntity<List<RestauranteOutputDTO>> listarResumido();
+//    @JsonView(RestauranteView.Resumo.class)
+//    @ApiOperation(value = "Lista restaurantes", hidden = true)
+//    public ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> listarResumido();
 
     @ApiOperation(value = "Lista restaurantes", hidden = true)
-    ResponseEntity<List<RestauranteOutputDTO>> listarApenasNomes();
+    ResponseEntity<CollectionModel<RestauranteApenasNomeOutputDTO>> listarApenasNomes();
 
     @ApiOperation("Busca um restaurante por ID")
     @ApiResponses({
@@ -54,18 +54,16 @@ public interface RestauranteControllerOpenApi {
                     }
             )
     })
-    ResponseEntity<RestauranteOutputDTO> buscar(
-            @ApiParam(value = "ID de um restaurante", example = "1", required = true)
-            final Long restauranteId
+    ResponseEntity<RestauranteBasicoOutputDTO> buscar(
+            @ApiParam(value = "ID de um restaurante", example = "1", required = true) final Long restauranteId
     );
 
     @ApiOperation("Cadastra um restaurante")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Restaurante cadastrado"),
     })
-    ResponseEntity<RestauranteOutputDTO> adicionar(
-            @ApiParam(name = "corpo", value = "Representação de um novo restaurante", required = true)
-            final RestauranteInputDTO restauranteInputDTO
+    ResponseEntity<RestauranteBasicoOutputDTO> adicionar(
+            @ApiParam(name = "corpo", value = "Representação de um novo restaurante", required = true) final RestauranteInputDTO restauranteInputDTO
     );
 
     @ApiOperation("Atualiza um restaurante por ID")
@@ -79,7 +77,7 @@ public interface RestauranteControllerOpenApi {
                     }
             )
     })
-    ResponseEntity<RestauranteOutputDTO> atualizar(
+    ResponseEntity<RestauranteBasicoOutputDTO> atualizar(
             @ApiParam(value = "ID de um restaurante", example = "1", required = true)
             Long restauranteId,
 
@@ -87,8 +85,7 @@ public interface RestauranteControllerOpenApi {
                     name = "corpo",
                     value = "Representação de um restaurante com os novos dados",
                     required = true
-            )
-            final RestauranteInputDTO restauranteInputDTO
+            ) final RestauranteInputDTO restauranteInputDTO
     );
 
     @ApiOperation("Ativa um restaurante por ID")
@@ -103,8 +100,7 @@ public interface RestauranteControllerOpenApi {
             )
     })
     ResponseEntity<Void> ativar(
-            @ApiParam(value = "ID de um restaurante", example = "1", required = true)
-            final Long restauranteId
+            @ApiParam(value = "ID de um restaurante", example = "1", required = true) final Long restauranteId
     );
 
     @ApiOperation("Inativa um restaurante por ID")
@@ -119,8 +115,7 @@ public interface RestauranteControllerOpenApi {
             )
     })
     ResponseEntity<Void> inativar(
-            @ApiParam(value = "ID de um restaurante", example = "1", required = true)
-            final Long restauranteId
+            @ApiParam(value = "ID de um restaurante", example = "1", required = true) final Long restauranteId
     );
 
     @ApiOperation("Ativa múltiplos restaurantes")
@@ -128,8 +123,7 @@ public interface RestauranteControllerOpenApi {
             @ApiResponse(responseCode = "204", description = "Restaurantes ativados com sucesso")
     })
     ResponseEntity<Void> ativarMultiplos(
-            @ApiParam(name = "corpo", value = "IDs de restaurantes", required = true)
-            final List<Long> restauranteIds
+            @ApiParam(name = "corpo", value = "IDs de restaurantes", required = true) final List<Long> restauranteIds
     );
 
     @ApiOperation("Inativa múltiplos restaurantes")
@@ -137,8 +131,7 @@ public interface RestauranteControllerOpenApi {
             @ApiResponse(responseCode = "204", description = "Restaurantes ativados com sucesso")
     })
     ResponseEntity<Void> inativarMultiplos(
-            @ApiParam(name = "corpo", value = "IDs de restaurantes", required = true)
-            final List<Long> restauranteIds
+            @ApiParam(name = "corpo", value = "IDs de restaurantes", required = true) final List<Long> restauranteIds
     );
 
     @ApiOperation("Abre um restaurante por ID")
@@ -153,8 +146,7 @@ public interface RestauranteControllerOpenApi {
             )
     })
     ResponseEntity<Void> abrir(
-            @ApiParam(value = "ID de um restaurante", example = "1", required = true)
-            final Long restauranteId
+            @ApiParam(value = "ID de um restaurante", example = "1", required = true) final Long restauranteId
     );
 
     @ApiOperation("Fecha um restaurante por ID")
@@ -168,8 +160,7 @@ public interface RestauranteControllerOpenApi {
                     })
     })
     ResponseEntity<Void> fechar(
-            @ApiParam(value = "ID de um restaurante", example = "1", required = true)
-            final Long restauranteId
+            @ApiParam(value = "ID de um restaurante", example = "1", required = true) final Long restauranteId
     );
 
 }
