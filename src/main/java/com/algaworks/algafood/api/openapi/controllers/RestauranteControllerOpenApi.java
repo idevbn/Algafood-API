@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.exceptionhandler.ApiError;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteApenasNomeOutputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteBasicoOutputDTO;
+import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.api.openapi.model.RestauranteBasicoModelOpenApi;
 import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,7 +55,7 @@ public interface RestauranteControllerOpenApi {
                     }
             )
     })
-    ResponseEntity<RestauranteBasicoOutputDTO> buscar(
+    ResponseEntity<RestauranteOutputDTO> buscar(
             @ApiParam(value = "ID de um restaurante", example = "1", required = true) final Long restauranteId
     );
 
@@ -62,7 +63,7 @@ public interface RestauranteControllerOpenApi {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "Restaurante cadastrado"),
     })
-    ResponseEntity<RestauranteBasicoOutputDTO> adicionar(
+    ResponseEntity<RestauranteOutputDTO> adicionar(
             @ApiParam(name = "corpo", value = "Representação de um novo restaurante", required = true) final RestauranteInputDTO restauranteInputDTO
     );
 
@@ -77,7 +78,7 @@ public interface RestauranteControllerOpenApi {
                     }
             )
     })
-    ResponseEntity<RestauranteBasicoOutputDTO> atualizar(
+    ResponseEntity<RestauranteOutputDTO> atualizar(
             @ApiParam(value = "ID de um restaurante", example = "1", required = true)
             Long restauranteId,
 

@@ -3,10 +3,12 @@ package com.algaworks.algafood.api.controllers;
 import com.algaworks.algafood.api.assembler.RestauranteApenasNomeOutputDTOAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteBasicoOutputDTOAssembler;
 import com.algaworks.algafood.api.assembler.RestauranteInputDTODisassembler;
+import com.algaworks.algafood.api.assembler.RestauranteOutputDTOAssembler;
 import com.algaworks.algafood.api.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteApenasNomeOutputDTO;
 import com.algaworks.algafood.api.model.out.RestauranteBasicoOutputDTO;
+import com.algaworks.algafood.api.model.out.RestauranteOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.RestauranteControllerOpenApi;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradaException;
@@ -47,7 +49,9 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
     private final SmartValidator validator;
 
-    private final RestauranteBasicoOutputDTOAssembler assembler;
+    private final RestauranteOutputDTOAssembler assembler;
+
+    private final RestauranteBasicoOutputDTOAssembler restauranteBasicoOutputDTOAssembler;
 
     private final RestauranteApenasNomeOutputDTOAssembler apenasNomeOutputDTOAssembler;
 
@@ -57,13 +61,15 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     public RestauranteController(final RestauranteRepository repository,
                                  final CadastroRestauranteService service,
                                  final SmartValidator validator,
-                                 final RestauranteBasicoOutputDTOAssembler assembler,
+                                 final RestauranteOutputDTOAssembler assembler,
+                                 final RestauranteBasicoOutputDTOAssembler restauranteBasicoOutputDTOAssembler,
                                  final RestauranteApenasNomeOutputDTOAssembler apenasNomeOutputDTOAssembler,
                                  final RestauranteInputDTODisassembler disassembler) {
         this.repository = repository;
         this.service = service;
         this.validator = validator;
         this.assembler = assembler;
+        this.restauranteBasicoOutputDTOAssembler = restauranteBasicoOutputDTOAssembler;
         this.apenasNomeOutputDTOAssembler = apenasNomeOutputDTOAssembler;
         this.disassembler = disassembler;
     }
@@ -73,7 +79,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
         final CollectionModel<RestauranteBasicoOutputDTO> restauranteBasicoOutputDTO
-                = this.assembler.toCollectionModel(restaurantes);
+                = this.restauranteBasicoOutputDTOAssembler.toCollectionModel(restaurantes);
 
         final ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
@@ -92,7 +98,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         final List<Restaurante> restaurantes = this.repository.findAll();
 
         final CollectionModel<RestauranteBasicoOutputDTO> restauranteBasicoOutputDTOS
-                = this.assembler.toCollectionModel(restaurantes);
+                = this.restauranteBasicoOutputDTOAssembler.toCollectionModel(restaurantes);
 
         final ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
@@ -121,21 +127,21 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RestauranteBasicoOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
+    public ResponseEntity<RestauranteOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Restaurante restauranteEncontrado = this.service.buscarOuFalhar(id);
 
-        final RestauranteBasicoOutputDTO restauranteBasicoOutputDTO = this.assembler
-                .toModel(restauranteEncontrado);
+        final RestauranteOutputDTO restauranteOutputDTO
+                = this.assembler.toModel(restauranteEncontrado);
 
-        final ResponseEntity<RestauranteBasicoOutputDTO> response = ResponseEntity
+        final ResponseEntity<RestauranteOutputDTO> response = ResponseEntity
                 .status(HttpStatus.OK)
-                .body(restauranteBasicoOutputDTO);
+                .body(restauranteOutputDTO);
 
         return response;
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RestauranteBasicoOutputDTO> adicionar(
+    public ResponseEntity<RestauranteOutputDTO> adicionar(
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
         try {
@@ -144,12 +150,12 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
             final Restaurante restauranteSalvo = this.service.salvar(restaurante);
 
-            final RestauranteBasicoOutputDTO restauranteBasicoOutputDTO = this.assembler
+            final RestauranteOutputDTO restauranteOutputDTO = this.assembler
                     .toModel(restauranteSalvo);
 
-            final ResponseEntity<RestauranteBasicoOutputDTO> response = ResponseEntity
+            final ResponseEntity<RestauranteOutputDTO> response = ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(restauranteBasicoOutputDTO);
+                    .body(restauranteOutputDTO);
 
             return response;
         } catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
@@ -158,7 +164,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RestauranteBasicoOutputDTO> atualizar(
+    public ResponseEntity<RestauranteOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
     ) {
@@ -170,10 +176,10 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         try {
             final Restaurante restauranteSalvo = this.service.salvar(restauranteAtual);
 
-            final RestauranteBasicoOutputDTO restauranteOutputDTO = this.assembler
+            final RestauranteOutputDTO restauranteOutputDTO = this.assembler
                     .toModel(restauranteSalvo);
 
-            final ResponseEntity<RestauranteBasicoOutputDTO> response = ResponseEntity
+            final ResponseEntity<RestauranteOutputDTO> response = ResponseEntity
                     .status(HttpStatus.OK)
                     .body(restauranteOutputDTO);
 
@@ -184,7 +190,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @PatchMapping(value = "/{id}")
-    public ResponseEntity<RestauranteBasicoOutputDTO> atualizarParcialmente(
+    public ResponseEntity<RestauranteOutputDTO> atualizarParcialmente(
             @PathVariable("id") final Long id,
             @RequestBody final Map<String, Object> campos,
             final HttpServletRequest request
@@ -195,7 +201,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
 
         validate(restauranteAtual, "restaurante");
 
-        final ResponseEntity<RestauranteBasicoOutputDTO> atualizar = this
+        final ResponseEntity<RestauranteOutputDTO> atualizar = this
                 .atualizar(id, this.toInputObject(restauranteAtual));
 
         return atualizar;
