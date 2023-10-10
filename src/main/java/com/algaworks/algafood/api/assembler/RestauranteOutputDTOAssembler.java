@@ -60,9 +60,10 @@ public class RestauranteOutputDTOAssembler
         restauranteOutputDTO.getCozinha().add(
                 this.algaLinks.linkToCozinha(restaurante.getCozinha().getId()));
 
-        restauranteOutputDTO.getEndereco().getCidade().add(
-                this.algaLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
-
+        if (restaurante.getEndereco() != null) {
+            restauranteOutputDTO.getEndereco().getCidade().add(
+                    this.algaLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
+        }
         restauranteOutputDTO
                 .add(this.algaLinks.linkToRestauranteFormasPagamento(restaurante.getId(),
                         "formas-pagamento"));
