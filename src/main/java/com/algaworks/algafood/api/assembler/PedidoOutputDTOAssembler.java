@@ -27,7 +27,7 @@ public class PedidoOutputDTOAssembler
         final PedidoOutputDTO pedidoOutputDTO = this.createModelWithId(pedido.getId(), pedido);
         this.modelMapper.map(pedido, pedidoOutputDTO);
 
-        pedidoOutputDTO.add(this.algaLinks.linkToPedidos());
+        pedidoOutputDTO.add(this.algaLinks.linkToPedidos("pedidos"));
 
         if (pedido.podeSerConfirmado()) {
             pedidoOutputDTO.add(

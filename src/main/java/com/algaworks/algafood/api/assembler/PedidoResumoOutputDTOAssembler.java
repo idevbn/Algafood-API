@@ -27,7 +27,7 @@ public class PedidoResumoOutputDTOAssembler
                 .createModelWithId(pedido.getId(), pedido);
         this.modelMapper.map(pedido, pedidoResumoOutputDTO);
 
-        pedidoResumoOutputDTO.add(this.algaLinks.linkToPedidos());
+        pedidoResumoOutputDTO.add(this.algaLinks.linkToPedidos("pedidos"));
 
         pedidoResumoOutputDTO.getRestaurante()
                 .add(this.algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
