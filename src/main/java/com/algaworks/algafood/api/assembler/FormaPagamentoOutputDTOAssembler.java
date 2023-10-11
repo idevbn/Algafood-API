@@ -1,43 +1,46 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.AlgaLinks;
+import com.algaworks.algafood.api.controllers.FormaPagamentoController;
 import com.algaworks.algafood.api.model.out.FormaPagamentoOutputDTO;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 @Component
-public class FormaPagamentoOutputDTOAssembler {
+public class FormaPagamentoOutputDTOAssembler
+        extends RepresentationModelAssemblerSupport<FormaPagamento, FormaPagamentoOutputDTO> {
 
     private final ModelMapper modelMapper;
+    private final AlgaLinks algaLinks;
 
-    public FormaPagamentoOutputDTOAssembler(final ModelMapper modelMapper) {
+    public FormaPagamentoOutputDTOAssembler(final ModelMapper modelMapper,
+                                            final AlgaLinks algaLinks) {
+        super(FormaPagamentoController.class, FormaPagamentoOutputDTO.class);
         this.modelMapper = modelMapper;
+        this.algaLinks = algaLinks;
     }
 
+    @Override
     public FormaPagamentoOutputDTO toModel(final FormaPagamento formaPagamento) {
-        final FormaPagamentoOutputDTO formaPagamentoOutputDTO = this.modelMapper
-                .map(formaPagamento, FormaPagamentoOutputDTO.class);
+        final FormaPagamentoOutputDTO formaPagamentoOutputDTO =
+                createModelWithId(formaPagamento.getId(), formaPagamento);
+
+        this.modelMapper.map(formaPagamento, formaPagamentoOutputDTO);
+
+        formaPagamentoOutputDTO.add(algaLinks.linkToFormasPagamento("formasPagamento"));
 
         return formaPagamentoOutputDTO;
     }
 
-    public List<FormaPagamentoOutputDTO> toCollectionModel(
-            final Collection<FormaPagamento> formasPagamento
+    @Override
+    public CollectionModel<FormaPagamentoOutputDTO> toCollectionModel(
+            final Iterable<? extends FormaPagamento> entities
     ) {
-        final List<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = new ArrayList<>();
-
-        for (final FormaPagamento formaPagamento : formasPagamento) {
-            final FormaPagamentoOutputDTO formaPagamentoOutputDTO = this
-                    .toModel(formaPagamento);
-
-            formasPagamentoOutputDTOS.add(formaPagamentoOutputDTO);
-        }
-
-        return formasPagamentoOutputDTOS;
+        return super.toCollectionModel(entities)
+                .add(this.algaLinks.linkToFormasPagamento());
     }
 
 }

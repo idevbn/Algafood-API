@@ -8,6 +8,7 @@ import com.algaworks.algafood.api.openapi.controllers.FormasPagamentoControllerO
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +42,7 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<FormaPagamentoOutputDTO>> listar(final ServletWebRequest request) {
+    public ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> listar(final ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 
         String eTag = "0";
@@ -61,10 +62,10 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
 
         final List<FormaPagamento> formasPagamento = this.repository.findAll();
 
-        final List<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this
+        final CollectionModel<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this
                 .outputDTOAssembler.toCollectionModel(formasPagamento);
 
-        final ResponseEntity<List<FormaPagamentoOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .cacheControl(CacheControl.maxAge(10, TimeUnit.SECONDS))
                 .eTag(eTag)

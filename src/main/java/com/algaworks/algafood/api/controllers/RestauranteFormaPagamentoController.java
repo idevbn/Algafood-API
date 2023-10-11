@@ -7,13 +7,13 @@ import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/restaurantes/{id}/formas-pagamento", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -30,7 +30,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
     }
     
     @GetMapping
-    public ResponseEntity<List<FormaPagamentoOutputDTO>> listar(
+    public ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> listar(
             @PathVariable("id") final Long id
     ) {
         final Restaurante restauranteEncontrado = this.service.buscarOuFalhar(id);
@@ -38,10 +38,10 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         final Collection<FormaPagamento> formasPagamento = restauranteEncontrado
                 .getFormasPagamento();
 
-        final List<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this.assembler
+        final CollectionModel<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this.assembler
                 .toCollectionModel(formasPagamento);
 
-        final ResponseEntity<List<FormaPagamentoOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(formasPagamentoOutputDTOS);
 

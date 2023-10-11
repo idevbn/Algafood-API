@@ -73,6 +73,18 @@ public class AlgaLinks {
                 .listar(restauranteId)).withRel(rel);
     }
 
+    public Link linkToRestauranteFormasPagamento(final Long restauranteId) {
+        return linkToRestauranteFormasPagamento(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToFormasPagamento(final String rel) {
+        return linkTo(FormaPagamentoController.class).withRel(rel);
+    }
+
+    public Link linkToFormasPagamento() {
+        return linkToFormasPagamento(IanaLinkRelations.SELF.value());
+    }
+
     public Link linkToCozinha(final Long cozinhaId, final String rel) {
         return linkTo(methodOn(CozinhaController.class)
                 .buscar(cozinhaId)).withRel(rel);
