@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.FormaPagamentoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.FormaPagamentoOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.RestauranteFormaPagamentoControllerOpenApi;
@@ -21,14 +22,17 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
 
     private final CadastroRestauranteService service;
     private final FormaPagamentoOutputDTOAssembler assembler;
+    private final AlgaLinks algaLinks;
 
     @Autowired
     public RestauranteFormaPagamentoController(final CadastroRestauranteService service,
-                                               final FormaPagamentoOutputDTOAssembler assembler) {
+                                               final FormaPagamentoOutputDTOAssembler assembler,
+                                               final AlgaLinks algaLinks) {
         this.service = service;
         this.assembler = assembler;
+        this.algaLinks = algaLinks;
     }
-    
+
     @GetMapping
     public ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> listar(
             @PathVariable("id") final Long id
@@ -39,7 +43,18 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
                 .getFormasPagamento();
 
         final CollectionModel<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this.assembler
-                .toCollectionModel(formasPagamento);
+                .toCollectionModel(formasPagamento)
+                .removeLinks()
+                .add(this.algaLinks.linkToRestauranteFormasPagamento(id));
+
+        formasPagamentoOutputDTOS.getContent().forEach(formaPagamentoOutputDTO -> {
+            formaPagamentoOutputDTO.add(this.algaLinks.linkToRestauranteFormaPagamentoDesassociacao(
+                            id,
+                            formaPagamentoOutputDTO.getId(),
+                            "desassociar"
+                    )
+            );
+        });
 
         final ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
@@ -67,7 +82,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
             @PathVariable("id") final Long id,
             @PathVariable("formaPagamentoId") final Long formaPagamentoId
     ) {
-       this.service.desassociarFormaPagamento(id, formaPagamentoId);
+        this.service.desassociarFormaPagamento(id, formaPagamentoId);
 
         final ResponseEntity<Void> response = ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
