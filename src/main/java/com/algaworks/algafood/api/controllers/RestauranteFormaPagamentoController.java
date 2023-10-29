@@ -45,7 +45,8 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         final CollectionModel<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this.assembler
                 .toCollectionModel(formasPagamento)
                 .removeLinks()
-                .add(this.algaLinks.linkToRestauranteFormasPagamento(id));
+                .add(this.algaLinks.linkToRestauranteFormasPagamento(id))
+                .add(this.algaLinks.linkToRestauranteFormaPagamentoAssociacao(id, "associar"));
 
         formasPagamentoOutputDTOS.getContent().forEach(formaPagamentoOutputDTO -> {
             formaPagamentoOutputDTO.add(this.algaLinks.linkToRestauranteFormaPagamentoDesassociacao(
