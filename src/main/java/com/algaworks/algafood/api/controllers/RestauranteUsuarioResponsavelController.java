@@ -43,7 +43,18 @@ public class RestauranteUsuarioResponsavelController
         final CollectionModel<UsuarioOutputDTO> usuariosOutputDTOS = this.assembler
                 .toCollectionModel(responsaveis)
                 .removeLinks()
-                .add(this.algaLinks.linkToResponsaveisRestaurante(id));
+                .add(this.algaLinks.linkToResponsaveisRestaurante(id))
+                .add(this.algaLinks.linkToRestauranteUsuarioResponsavelAssociacao(id, "associar"));
+
+        usuariosOutputDTOS.getContent().forEach(usuarioOutputDTO -> {
+            usuarioOutputDTO.add(this.algaLinks.linkToRestauranteUsuarioResponsavelDesassociacao(
+                            id,
+                            usuarioOutputDTO.getId(),
+                            "desassociar"
+                    )
+            );
+        });
+
 
         final ResponseEntity<CollectionModel<UsuarioOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
