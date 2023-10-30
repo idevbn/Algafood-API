@@ -208,6 +208,15 @@ public class AlgaLinks {
                 .withRel(rel);
     }
 
+    public Link linkToProdutos(final Long restauranteId, final String rel) {
+        return linkTo(methodOn(RestauranteProdutoController.class)
+                .listar(restauranteId, null)).withRel(rel);
+    }
+
+    public Link linkToProdutos(final Long restauranteId) {
+        return linkToProdutos(restauranteId, IanaLinkRelations.SELF.value());
+    }
+
     public Link linkToProduto(final Long restauranteId, final Long produtoId) {
         return linkToProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
     }

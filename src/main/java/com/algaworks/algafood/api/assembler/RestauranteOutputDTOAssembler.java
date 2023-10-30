@@ -57,10 +57,12 @@ public class RestauranteOutputDTOAssembler
                     algaLinks.linkToRestauranteFechamento(restaurante.getId(), "fechar"));
         }
 
+        restauranteOutputDTO.add(this.algaLinks.linkToProdutos(restaurante.getId(), "produtos"));
+
         restauranteOutputDTO.getCozinha().add(
                 this.algaLinks.linkToCozinha(restaurante.getCozinha().getId()));
 
-        if (restaurante.getEndereco() != null) {
+        if (restaurante.getEndereco() != null && restaurante.getEndereco().getCidade() != null) {
             restauranteOutputDTO.getEndereco().getCidade().add(
                     this.algaLinks.linkToCidade(restaurante.getEndereco().getCidade().getId()));
         }

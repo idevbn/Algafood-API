@@ -10,9 +10,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Api(tags = "Produtos")
 public interface RestauranteProdutoControllerOpenApi {
@@ -34,7 +33,7 @@ public interface RestauranteProdutoControllerOpenApi {
                     }
             )
     })
-    ResponseEntity<List<ProdutoOutputDTO>> listar(
+    ResponseEntity<CollectionModel<ProdutoOutputDTO>> listar(
             @ApiParam(value = "ID do restaurante", example = "1", required = true)
             final Long restauranteId,
 
@@ -43,7 +42,7 @@ public interface RestauranteProdutoControllerOpenApi {
                     example = "false",
                     defaultValue = "false"
             )
-            final boolean incluirInativos
+            final Boolean incluirInativos
     );
 
     @ApiOperation("Busca um produto de um restaurante")

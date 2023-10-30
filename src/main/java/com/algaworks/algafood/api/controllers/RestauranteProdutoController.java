@@ -11,6 +11,7 @@ import com.algaworks.algafood.domain.repository.ProdutoRepository;
 import com.algaworks.algafood.domain.service.CadastroProdutoService;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -43,24 +44,24 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoOutputDTO>> listar(
+    public ResponseEntity<CollectionModel<ProdutoOutputDTO>> listar(
             @PathVariable("id") final Long id,
-            @RequestParam(required = false) final boolean inativos
+            @RequestParam(required = false) final Boolean incluirInativos
     ) {
         final Restaurante restaurante = this.restauranteService.buscarOuFalhar(id);
 
         List<Produto> produtos;
 
-        if (inativos) {
+        if (incluirInativos) {
             produtos = this.repository.findByRestaurante(restaurante);
         } else {
             produtos = this.repository.findAtivosByRestaurante(restaurante);
         }
 
-        final List<ProdutoOutputDTO> produtosOutputDTOS = this
+        final CollectionModel<ProdutoOutputDTO> produtosOutputDTOS = this
                 .assembler.toCollectionModel(produtos);
 
-        final ResponseEntity<List<ProdutoOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<ProdutoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(produtosOutputDTOS);
 
