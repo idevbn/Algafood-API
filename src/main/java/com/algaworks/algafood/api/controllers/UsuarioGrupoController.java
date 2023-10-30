@@ -7,12 +7,12 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -30,17 +30,17 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     }
 
     @GetMapping
-    public ResponseEntity<List<GrupoOutputDTO>> listar(
+    public ResponseEntity<CollectionModel<GrupoOutputDTO>> listar(
             @PathVariable("id") final Long id
     ) {
         final Usuario usuario = this.service.buscarOuFalhar(id);
 
         final Set<Grupo> grupos = usuario.getGrupos();
 
-        final List<GrupoOutputDTO> gruposOutputDTOS = this.assembler
+        final CollectionModel<GrupoOutputDTO> gruposOutputDTOS = this.assembler
                 .toCollectionModel(grupos);
 
-        final ResponseEntity<List<GrupoOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<GrupoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(gruposOutputDTOS);
 

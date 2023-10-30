@@ -1,40 +1,46 @@
 package com.algaworks.algafood.api.assembler;
 
+import com.algaworks.algafood.api.AlgaLinks;
+import com.algaworks.algafood.api.controllers.GrupoController;
 import com.algaworks.algafood.api.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.domain.model.Grupo;
 import org.modelmapper.ModelMapper;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 @Component
-public class GrupoOutputDTOAssembler {
+public class GrupoOutputDTOAssembler
+        extends RepresentationModelAssemblerSupport<Grupo, GrupoOutputDTO> {
 
     private final ModelMapper modelMapper;
+    private final AlgaLinks algaLinks;
 
-    public GrupoOutputDTOAssembler(final ModelMapper modelMapper) {
+    public GrupoOutputDTOAssembler(final ModelMapper modelMapper,
+                                   final AlgaLinks algaLinks) {
+        super(GrupoController.class, GrupoOutputDTO.class);
         this.modelMapper = modelMapper;
+        this.algaLinks = algaLinks;
     }
 
+    @Override
     public GrupoOutputDTO toModel(final Grupo grupo) {
-        final GrupoOutputDTO grupoOutputDTO = this.modelMapper
-                .map(grupo, GrupoOutputDTO.class);
+        final GrupoOutputDTO grupoOutputDTO = createModelWithId(grupo.getId(), grupo);
+        this.modelMapper.map(grupo, grupoOutputDTO);
+
+        grupoOutputDTO.add(this.algaLinks.linkToGrupos("grupos"));
+
+        grupoOutputDTO.add(this.algaLinks.linkToGrupoPermissoes(grupo.getId(), "permissoes"));
 
         return grupoOutputDTO;
     }
 
-    public List<GrupoOutputDTO> toCollectionModel(final Collection<Grupo> grupos) {
-        final ArrayList<GrupoOutputDTO> gruposOutputDTO = new ArrayList<>();
-
-        for (final Grupo grupo : grupos) {
-            final GrupoOutputDTO grupoOutputDTO = this.toModel(grupo);
-
-            gruposOutputDTO.add(grupoOutputDTO);
-        }
-
-        return gruposOutputDTO;
+    @Override
+    public CollectionModel<GrupoOutputDTO> toCollectionModel(
+            final Iterable<? extends Grupo> entities
+    ) {
+        return super.toCollectionModel(entities)
+                .add(this.algaLinks.linkToGrupos());
     }
 
 }

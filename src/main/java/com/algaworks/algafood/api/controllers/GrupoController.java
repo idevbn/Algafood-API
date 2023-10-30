@@ -2,12 +2,13 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.GrupoInputDTODisassembler;
 import com.algaworks.algafood.api.assembler.GrupoOutputDTOAssembler;
-import com.algaworks.algafood.api.openapi.controllers.GrupoControllerOpenApi;
 import com.algaworks.algafood.api.model.in.GrupoInputDTO;
 import com.algaworks.algafood.api.model.out.GrupoOutputDTO;
+import com.algaworks.algafood.api.openapi.controllers.GrupoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -36,13 +37,13 @@ public class GrupoController implements GrupoControllerOpenApi {
     }
 
     @GetMapping
-    public ResponseEntity<List<GrupoOutputDTO>> listar() {
+    public ResponseEntity<CollectionModel<GrupoOutputDTO>> listar() {
         final List<Grupo> grupos = this.repository.findAll();
 
-        final List<GrupoOutputDTO> gruposOutputDTOS = this.outputDTOAssembler
+        final CollectionModel<GrupoOutputDTO> gruposOutputDTOS = this.outputDTOAssembler
                 .toCollectionModel(grupos);
 
-        final ResponseEntity<List<GrupoOutputDTO>> response = ResponseEntity
+        final ResponseEntity<CollectionModel<GrupoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(gruposOutputDTOS);
 
