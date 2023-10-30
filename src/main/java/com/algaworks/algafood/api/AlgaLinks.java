@@ -221,6 +221,17 @@ public class AlgaLinks {
         return linkToProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
     }
 
+    public Link linkToFotoProduto(final Long restauranteId,
+                                  final Long produtoId,
+                                  final String rel) {
+        return linkTo(methodOn(RestauranteFotoProdutoController.class)
+                .recuperarFoto(restauranteId, produtoId)).withRel(rel);
+    }
+
+    public Link linkToFotoProduto(final Long restauranteId, final Long produtoId) {
+        return linkToFotoProduto(restauranteId, produtoId, IanaLinkRelations.SELF.value());
+    }
+
     public Link linkToCozinhas(final String rel) {
         return linkTo(CozinhaController.class).withRel(rel);
     }

@@ -34,6 +34,9 @@ public class ProdutoOutputDTOAssembler
                 produto.getRestaurante().getId(), "produtos")
         );
 
+        produtoOutputDTO.add(this.algaLinks.linkToFotoProduto(
+                produto.getRestaurante().getId(), produto.getId(), "foto"));
+
         return produtoOutputDTO;
     }
 
