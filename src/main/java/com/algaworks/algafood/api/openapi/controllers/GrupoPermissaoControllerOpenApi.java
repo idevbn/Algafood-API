@@ -9,9 +9,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @Api(tags = "Grupos")
 public interface GrupoPermissaoControllerOpenApi {
@@ -29,7 +28,7 @@ public interface GrupoPermissaoControllerOpenApi {
                     content = @Content(schema = @Schema(implementation = ApiError.class))
             )
     })
-    ResponseEntity<List<PermissaoOutputDTO>> listar(
+    ResponseEntity<CollectionModel<PermissaoOutputDTO>> listar(
             @ApiParam(value = "ID do grupo", example = "1", required = true)
             Long grupoId);
 
@@ -43,11 +42,9 @@ public interface GrupoPermissaoControllerOpenApi {
             )
     })
     ResponseEntity<Void> desassociar(
-            @ApiParam(value = "ID do grupo", example = "1", required = true)
-            final Long grupoId,
+            @ApiParam(value = "ID do grupo", example = "1", required = true) final Long grupoId,
 
-            @ApiParam(value = "ID da permissão", example = "1", required = true)
-            final Long permissaoId);
+            @ApiParam(value = "ID da permissão", example = "1", required = true) final Long permissaoId);
 
     @ApiOperation("Associação de permissão com grupo")
     @ApiResponses({
@@ -59,11 +56,9 @@ public interface GrupoPermissaoControllerOpenApi {
             )
     })
     ResponseEntity<Void> associar(
-            @ApiParam(value = "ID do grupo", example = "1", required = true)
-            final Long grupoId,
+            @ApiParam(value = "ID do grupo", example = "1", required = true) final Long grupoId,
 
-            @ApiParam(value = "ID da permissão", example = "1", required = true)
-            final Long permissaoId
+            @ApiParam(value = "ID da permissão", example = "1", required = true) final Long permissaoId
     );
 
 }

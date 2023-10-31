@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.PermissaoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.PermissaoOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.GrupoPermissaoControllerOpenApi;
@@ -7,13 +8,13 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "/grupos/{id}/permissoes", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -21,27 +22,39 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
 
     private final CadastroGrupoService service;
     private final PermissaoOutputDTOAssembler assembler;
+    private final AlgaLinks algaLinks;
+
 
     @Autowired
     public GrupoPermissaoController(final CadastroGrupoService service,
-                                    final PermissaoOutputDTOAssembler assembler) {
+                                    final PermissaoOutputDTOAssembler assembler,
+                                    final AlgaLinks algaLinks) {
         this.service = service;
         this.assembler = assembler;
+        this.algaLinks = algaLinks;
     }
 
     @GetMapping
-    public ResponseEntity<List<PermissaoOutputDTO>> listar(
-            @PathVariable("id") final Long id
+    public ResponseEntity<CollectionModel<PermissaoOutputDTO>> listar(
+            @PathVariable("id") final Long grupoId
     ) {
-        final Grupo grupo = this.service.buscarOuFalhar(id);
+        final Grupo grupo = this.service.buscarOuFalhar(grupoId);
 
         final Collection<Permissao> permissoes = grupo
                 .getPermissoes();
 
-        final List<PermissaoOutputDTO> permissoesOutputDTOS = this.assembler
-                .toCollectionModel(permissoes);
+        final CollectionModel<PermissaoOutputDTO> permissoesOutputDTOS = this.assembler
+                .toCollectionModel(permissoes)
+                .removeLinks()
+                .add(algaLinks.linkToGrupoPermissoes(grupoId))
+                .add(algaLinks.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
 
-        final ResponseEntity<List<PermissaoOutputDTO>> response = ResponseEntity
+        permissoesOutputDTOS.getContent().forEach(permissaoOutputDTO -> {
+            permissaoOutputDTO.add(this.algaLinks.linkToGrupoPermissaoDesassociacao(
+                    grupoId, permissaoOutputDTO.getId(), "desassociar"));
+        });
+
+        final ResponseEntity<CollectionModel<PermissaoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
                 .body(permissoesOutputDTOS);
 
