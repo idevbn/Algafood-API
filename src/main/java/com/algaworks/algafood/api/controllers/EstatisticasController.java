@@ -1,11 +1,14 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.AlgaLinks;
+import com.algaworks.algafood.api.model.out.EstadoOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.EstatisticasControllerOpenApi;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import com.algaworks.algafood.domain.service.VendaReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,18 +30,23 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
 
     private final VendaReportService vendaReportService;
 
+    private final AlgaLinks algaLinks;
+
     @Autowired
     public EstatisticasController(final VendaQueryService vendaQueryService,
-                                  final VendaReportService vendaReportService) {
+                                  final VendaReportService vendaReportService,
+                                  final AlgaLinks algaLinks) {
         this.vendaQueryService = vendaQueryService;
         this.vendaReportService = vendaReportService;
+        this.algaLinks = algaLinks;
     }
 
+
+    @Override
     @GetMapping(value = "/vendas-diarias", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<VendaDiaria>> consultarVendasDiarias(
             final VendaDiariaFilter filter,
-            @RequestParam(required = false, defaultValue = DEFAULT_VALUE_UTC)
-            final String timeOffset) {
+            @RequestParam(required = false, defaultValue = DEFAULT_VALUE_UTC) final String timeOffset) {
 
         final List<VendaDiaria> vendasDiarias = this.vendaQueryService
                 .consultarVendasDiarias(filter, timeOffset);
@@ -50,11 +58,26 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
         return response;
     }
 
+    @Override
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<EstatisticasModel> estatisticas() {
+        final EstatisticasModel estatisticasModel = new EstatisticasModel();
+
+        estatisticasModel
+                .add(this.algaLinks.linkToEstatisticasVendasDiarias("vendas-diarias"));
+
+        final ResponseEntity<EstatisticasModel> response = ResponseEntity
+                .status(HttpStatus.OK)
+                .body(estatisticasModel);
+
+        return response;
+    }
+
+    @Override
     @GetMapping(value = "/vendas-diarias", produces = MediaType.APPLICATION_PDF_VALUE)
     public ResponseEntity<byte[]> consultarVendasDiariasPdf(
             final VendaDiariaFilter filter,
-            @RequestParam(required = false, defaultValue = DEFAULT_VALUE_UTC)
-            final String timeOffset) {
+            @RequestParam(required = false, defaultValue = DEFAULT_VALUE_UTC) final String timeOffset) {
 
         final byte[] bytesPdf = this.vendaReportService
                 .emitirVendasDiarias(filter, timeOffset);
@@ -71,6 +94,9 @@ public class EstatisticasController implements EstatisticasControllerOpenApi {
                 .body(bytesPdf);
 
         return response;
+    }
+
+    public static class EstatisticasModel extends RepresentationModel<EstadoOutputDTO> {
     }
 
 }

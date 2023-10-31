@@ -32,7 +32,8 @@ public class RootEntryPointController {
                 .add(this.algaLinks.linkToPermissoes("permissoes"))
                 .add(this.algaLinks.linkToFormasPagamento("formas-pagamento"))
                 .add(this.algaLinks.linkToEstados("estados"))
-                .add(this.algaLinks.linkToCidades("cidades"));
+                .add(this.algaLinks.linkToCidades("cidades"))
+                .add(this.algaLinks.linkToEstatisticas("estatisticas"));
 
         return rootEntryPointModel;
     }

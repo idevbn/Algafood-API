@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.openapi.controllers;
 
+import com.algaworks.algafood.api.controllers.EstatisticasController.EstatisticasModel;
 import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
 import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 import io.swagger.annotations.*;
@@ -26,6 +27,9 @@ public interface EstatisticasControllerOpenApi {
                     defaultValue = "+00:00")
             final String timeOffset
     );
+
+    @ApiOperation(value = "Estatísticas", hidden = true)
+    ResponseEntity<EstatisticasModel> estatisticas();
 
     ResponseEntity<byte[]> consultarVendasDiariasPdf(
             final VendaDiariaFilter filtro,
