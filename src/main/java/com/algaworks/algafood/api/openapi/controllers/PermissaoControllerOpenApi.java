@@ -7,7 +7,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 
 @Api(tags = "Permissões")
-public interface PermissaoControllerOpenAPI {
+public interface PermissaoControllerOpenApi {
     @ApiOperation("Lista as permissões")
     ResponseEntity<CollectionModel<PermissaoOutputDTO>> listar();
 

@@ -2,7 +2,7 @@ package com.algaworks.algafood.api.controllers;
 
 import com.algaworks.algafood.api.assembler.PermissaoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.PermissaoOutputDTO;
-import com.algaworks.algafood.api.openapi.controllers.PermissaoControllerOpenAPI;
+import com.algaworks.algafood.api.openapi.controllers.PermissaoControllerOpenApi;
 import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/permissoes", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PermissaoController implements PermissaoControllerOpenAPI {
+public class PermissaoController implements PermissaoControllerOpenApi {
 
     private final PermissaoRepository repository;
     private final PermissaoOutputDTOAssembler assembler;
