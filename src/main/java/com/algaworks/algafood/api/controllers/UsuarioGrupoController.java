@@ -1,5 +1,6 @@
 package com.algaworks.algafood.api.controllers;
 
+import com.algaworks.algafood.api.AlgaLinks;
 import com.algaworks.algafood.api.assembler.GrupoOutputDTOAssembler;
 import com.algaworks.algafood.api.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.api.openapi.controllers.UsuarioGrupoControllerOpenApi;
@@ -21,24 +22,34 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
     private final GrupoOutputDTOAssembler assembler;
     private final CadastroUsuarioService service;
+    private final AlgaLinks algaLinks;
 
     @Autowired
     public UsuarioGrupoController(final GrupoOutputDTOAssembler assembler,
-                                  final CadastroUsuarioService service) {
+                                  final CadastroUsuarioService service,
+                                  final AlgaLinks algaLinks) {
         this.assembler = assembler;
         this.service = service;
+        this.algaLinks = algaLinks;
     }
 
     @GetMapping
     public ResponseEntity<CollectionModel<GrupoOutputDTO>> listar(
-            @PathVariable("id") final Long id
+            @PathVariable("id") final Long usuarioId
     ) {
-        final Usuario usuario = this.service.buscarOuFalhar(id);
+        final Usuario usuario = this.service.buscarOuFalhar(usuarioId);
 
         final Set<Grupo> grupos = usuario.getGrupos();
 
         final CollectionModel<GrupoOutputDTO> gruposOutputDTOS = this.assembler
-                .toCollectionModel(grupos);
+                .toCollectionModel(grupos)
+                .removeLinks()
+                .add(this.algaLinks.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+
+        gruposOutputDTOS.getContent().forEach(grupoOutputDTO -> {
+            grupoOutputDTO.add(this.algaLinks.linkToUsuarioGrupoDesassociacao(
+                    usuarioId, grupoOutputDTO.getId(), "desassociar"));
+        });
 
         final ResponseEntity<CollectionModel<GrupoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)
