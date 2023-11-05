@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public interface RestauranteControllerOpenApi {
 //    @ApiOperation(value = "Lista restaurantes", hidden = true)
 //    public ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> listarResumido();
 
+    @ApiIgnore
     @ApiOperation(value = "Lista restaurantes", hidden = true)
     ResponseEntity<CollectionModel<RestauranteApenasNomeOutputDTO>> listarApenasNomes();
 
