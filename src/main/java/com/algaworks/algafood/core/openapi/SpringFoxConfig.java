@@ -1,12 +1,12 @@
 package com.algaworks.algafood.core.openapi;
 
 import com.algaworks.algafood.api.exceptionhandler.ApiError;
-import com.algaworks.algafood.api.model.out.CozinhaOutputDTO;
-import com.algaworks.algafood.api.model.out.PedidoResumoOutputDTO;
-import com.algaworks.algafood.api.openapi.model.CozinhasModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.LinksModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PageableModelOpenApi;
-import com.algaworks.algafood.api.openapi.model.PedidosResumoModelOpenApi;
+import com.algaworks.algafood.api.v1.model.out.CozinhaOutputDTO;
+import com.algaworks.algafood.api.v1.model.out.PedidoResumoOutputDTO;
+import com.algaworks.algafood.api.v1.openapi.model.CozinhasModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.LinksModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PageableModelOpenApi;
+import com.algaworks.algafood.api.v1.openapi.model.PedidosResumoModelOpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;

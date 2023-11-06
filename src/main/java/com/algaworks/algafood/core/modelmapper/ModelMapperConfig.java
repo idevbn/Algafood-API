@@ -1,7 +1,7 @@
 package com.algaworks.algafood.core.modelmapper;
 
-import com.algaworks.algafood.api.model.in.ItemPedidoInputDTO;
-import com.algaworks.algafood.api.model.out.EnderecoOutputDTO;
+import com.algaworks.algafood.api.v1.model.in.ItemPedidoInputDTO;
+import com.algaworks.algafood.api.v1.model.out.EnderecoOutputDTO;
 import com.algaworks.algafood.domain.model.Endereco;
 import com.algaworks.algafood.domain.model.ItemPedido;
 import org.modelmapper.ModelMapper;
