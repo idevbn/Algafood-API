@@ -7,6 +7,10 @@ import com.algaworks.algafood.api.v1.openapi.model.CozinhasModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.LinksModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.PageableModelOpenApi;
 import com.algaworks.algafood.api.v1.openapi.model.PedidosResumoModelOpenApi;
+import com.algaworks.algafood.api.v2.model.CidadeOutputDTOV2;
+import com.algaworks.algafood.api.v2.model.CozinhaOutputDTOV2;
+import com.algaworks.algafood.api.v2.openapi.CidadesModelV2OpenApi;
+import com.algaworks.algafood.api.v2.openapi.CozinhasModelV2OpenApi;
 import com.fasterxml.classmate.TypeResolver;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -120,10 +125,17 @@ public class SpringFoxConfig {
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
                 .alternateTypeRules(AlternateTypeRules.newRule(
-                        typeResolver.resolve(Page.class, CozinhaOutputDTO.class),
-                        CozinhasModelOpenApi.class
+                        typeResolver.resolve(Page.class, CozinhaOutputDTOV2.class),
+                        CozinhasModelV2OpenApi.class
                 ))
-                .apiInfo(this.apiInfoV2());
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(CollectionModel.class, CidadeOutputDTOV2.class),
+                        CidadesModelV2OpenApi.class))
+                .apiInfo(apiInfoV2())
+                .tags(
+                        new Tag("Cidades", "Gerencia as cidades"),
+                        new Tag("Cozinhas", "Gerencia as cozinhas")
+                );
 
         return docketV2;
     }
