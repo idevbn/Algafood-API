@@ -40,13 +40,14 @@ import java.util.function.Consumer;
 public class SpringFoxConfig {
 
     @Bean
-    public Docket apiDocket() {
+    public Docket apiDocketV1() {
         final TypeResolver typeResolver = new TypeResolver();
 
-        final Docket docket = new Docket(DocumentationType.OAS_30)
+        final Docket docketV1 = new Docket(DocumentationType.OAS_30)
+                .groupName("V1")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
-                .paths(PathSelectors.any())
+                .paths(PathSelectors.ant("/v1/**"))
                 .build()
                 .useDefaultResponseMessages(false)
                 .globalResponses(HttpMethod.GET, globalGetResponseMessages())
@@ -68,7 +69,7 @@ public class SpringFoxConfig {
                 .alternateTypeRules(AlternateTypeRules.newRule(
                         typeResolver.resolve(Page.class, PedidoResumoOutputDTO.class),
                         PedidosResumoModelOpenApi.class))
-                .apiInfo(this.apiInfo())
+                .apiInfo(this.apiInfoV1())
                 .tags(
                         new Tag("Cidades", "Gerencia as cidades"),
                         new Tag("Grupos", "Gerencia os grupos"),
@@ -83,14 +84,55 @@ public class SpringFoxConfig {
                         new Tag("Permissões", "Gerencia as permissões")
                 );
 
-        return docket;
+        return docketV1;
     }
 
-    public ApiInfo apiInfo() {
+    public ApiInfo apiInfoV1() {
         return new ApiInfoBuilder()
                 .title("AlgaFood API")
                 .description("API aberta para clientes e restaurantes")
                 .version("1")
+                .contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
+                .build();
+    }
+
+    @Bean
+    public Docket apiDocketV2() {
+        final TypeResolver typeResolver = new TypeResolver();
+
+        final Docket docketV2 = new Docket(DocumentationType.OAS_30)
+                .groupName("V2")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.algaworks.algafood.api"))
+                .paths(PathSelectors.ant("/v2/**"))
+                .build()
+                .useDefaultResponseMessages(false)
+                .globalResponses(HttpMethod.GET, globalGetResponseMessages())
+                .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
+                .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .additionalModels(typeResolver.resolve(ApiError.class))
+                .ignoredParameterTypes(
+                        ServletWebRequest.class,
+                        Pageable.class,
+                        Sort.class
+                )
+                .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
+                .directModelSubstitute(Links.class, LinksModelOpenApi.class)
+                .alternateTypeRules(AlternateTypeRules.newRule(
+                        typeResolver.resolve(Page.class, CozinhaOutputDTO.class),
+                        CozinhasModelOpenApi.class
+                ))
+                .apiInfo(this.apiInfoV2());
+
+        return docketV2;
+    }
+
+    public ApiInfo apiInfoV2() {
+        return new ApiInfoBuilder()
+                .title("AlgaFood API")
+                .description("API aberta para clientes e restaurantes")
+                .version("2")
                 .contact(new Contact("AlgaWorks", "https://www.algaworks.com", "contato@algaworks.com"))
                 .build();
     }
