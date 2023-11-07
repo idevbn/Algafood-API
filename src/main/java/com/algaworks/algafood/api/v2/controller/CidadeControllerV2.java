@@ -5,7 +5,6 @@ import com.algaworks.algafood.api.v2.assembler.CidadeInputDTODisassemblerV2;
 import com.algaworks.algafood.api.v2.assembler.CidadeOutputDTOAssemblerV2;
 import com.algaworks.algafood.api.v2.model.CidadeOutputDTOV2;
 import com.algaworks.algafood.api.v2.model.in.CidadeInputDTOV2;
-import com.algaworks.algafood.core.web.AlgaMediaTypes;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -14,6 +13,7 @@ import com.algaworks.algafood.domain.service.CadastroCidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/cidades", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/v2/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeControllerV2 {
 
     private final CidadeRepository repository;
@@ -40,7 +40,7 @@ public class CidadeControllerV2 {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
-    @GetMapping(produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<CidadeOutputDTOV2>> listar() {
         final List<Cidade> cidades = this.repository.findAll();
 
@@ -54,7 +54,7 @@ public class CidadeControllerV2 {
         return response;
     }
 
-    @GetMapping(value = "/{id}", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTOV2> buscar(
             @PathVariable(value = "id") final Long id
     ) {
@@ -70,7 +70,7 @@ public class CidadeControllerV2 {
         return response;
     }
 
-    @PostMapping(produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<CidadeOutputDTOV2> adicionar(
             @RequestBody @Valid final CidadeInputDTOV2 cidadeInputDTO
@@ -102,7 +102,7 @@ public class CidadeControllerV2 {
         }
     }
 
-    @PutMapping(value = "/{id}", produces = AlgaMediaTypes.V2_APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTOV2> atualizar(
             @PathVariable(value = "id") final Long id,
             @RequestBody @Valid final CidadeInputDTOV2 cidadeInputDTO
