@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v2.assembler.CidadeInputDTODisassemblerV2;
 import com.algaworks.algafood.api.v2.assembler.CidadeOutputDTOAssemblerV2;
 import com.algaworks.algafood.api.v2.model.CidadeOutputDTOV2;
 import com.algaworks.algafood.api.v2.model.in.CidadeInputDTOV2;
+import com.algaworks.algafood.api.v2.openapi.controllers.CidadeControllerV2OpenApi;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -22,7 +23,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/v2/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
-public class CidadeControllerV2 {
+public class CidadeControllerV2 implements CidadeControllerV2OpenApi {
 
     private final CidadeRepository repository;
     private final CadastroCidadeService service;
@@ -40,6 +41,7 @@ public class CidadeControllerV2 {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<CidadeOutputDTOV2>> listar() {
         final List<Cidade> cidades = this.repository.findAll();
@@ -54,6 +56,7 @@ public class CidadeControllerV2 {
         return response;
     }
 
+    @Override
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTOV2> buscar(
             @PathVariable(value = "id") final Long id
@@ -70,6 +73,7 @@ public class CidadeControllerV2 {
         return response;
     }
 
+    @Override
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<CidadeOutputDTOV2> adicionar(
@@ -102,6 +106,7 @@ public class CidadeControllerV2 {
         }
     }
 
+    @Override
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTOV2> atualizar(
             @PathVariable(value = "id") final Long id,
@@ -127,6 +132,7 @@ public class CidadeControllerV2 {
         }
     }
 
+    @Override
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable(value = "id") final Long id) {
