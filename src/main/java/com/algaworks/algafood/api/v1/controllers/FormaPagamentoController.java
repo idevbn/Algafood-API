@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @RestController
-@RequestMapping(path = "/formas-pagamento")
+@RequestMapping(path = "/v1/formas-pagamento")
 public class FormaPagamentoController implements FormasPagamentoControllerOpenApi {
 
     private final CadastroFormaPagamentoService service;
