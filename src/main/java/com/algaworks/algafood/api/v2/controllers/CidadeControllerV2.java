@@ -1,4 +1,4 @@
-package com.algaworks.algafood.api.v2.controller;
+package com.algaworks.algafood.api.v2.controllers;
 
 import com.algaworks.algafood.api.ResourceUriHelper;
 import com.algaworks.algafood.api.v2.assembler.CidadeInputDTODisassemblerV2;

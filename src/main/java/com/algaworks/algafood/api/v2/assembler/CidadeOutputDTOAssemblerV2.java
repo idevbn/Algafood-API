@@ -1,7 +1,7 @@
 package com.algaworks.algafood.api.v2.assembler;
 
 import com.algaworks.algafood.api.v2.AlgaLinksV2;
-import com.algaworks.algafood.api.v2.controller.CidadeControllerV2;
+import com.algaworks.algafood.api.v2.controllers.CidadeControllerV2;
 import com.algaworks.algafood.api.v2.model.CidadeOutputDTOV2;
 import com.algaworks.algafood.domain.model.Cidade;
 import org.modelmapper.ModelMapper;
