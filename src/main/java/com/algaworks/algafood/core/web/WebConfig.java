@@ -29,10 +29,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods("*");
     }
 
-    @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(this.apiRetirementHandler);
-    }
+//    @Override
+//    public void addInterceptors(final InterceptorRegistry registry) {
+//        registry.addInterceptor(this.apiRetirementHandler);
+//    }
 
     /**
      * Recebe uma requisição HTTP e momento de informar a resposta HTTP,
