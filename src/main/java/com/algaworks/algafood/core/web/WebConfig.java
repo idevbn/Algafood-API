@@ -16,11 +16,11 @@ import javax.servlet.Filter;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    private final ApiDeprecationHandler apiDeprecationHandler;
+    private final ApiRetirementHandler apiRetirementHandler;
 
     @Autowired
-    public WebConfig(final ApiDeprecationHandler apiDeprecationHandler) {
-        this.apiDeprecationHandler = apiDeprecationHandler;
+    public WebConfig(final ApiRetirementHandler apiRetirementHandler) {
+        this.apiRetirementHandler = apiRetirementHandler;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(this.apiDeprecationHandler);
+        registry.addInterceptor(this.apiRetirementHandler);
     }
 
     /**

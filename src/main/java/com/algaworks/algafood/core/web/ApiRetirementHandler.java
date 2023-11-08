@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.web;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -7,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Classe que adiciona na resposta um header com informações customizadas da versão
- * depreciada.
+ * Classe que adiciona o status http 410 informando a versão desligada/
+ * descontinuada do software.
  *
  * @author Idevaldo Neto <idevbn@gmail.com>
  */
@@ -20,9 +21,8 @@ public class ApiRetirementHandler implements HandlerInterceptor {
                              final HttpServletResponse response,
                              final Object handler) throws Exception {
         if (request.getRequestURI().startsWith("/v1/")) {
-            response.addHeader("X-AlgaFood-Deprecated",
-                    "Essa versão da API está depreciada e deixará de existir a partir de 01/01/2025."
-                            + "Use a versão mais atual da API.");
+            response.setStatus(HttpStatus.GONE.value());
+            return false;
         }
 
         return true;
