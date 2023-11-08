@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Idevaldo Neto <idevbn@gmail.com>
  */
 @Component
-public class ApiDeprecationHandler implements HandlerInterceptor {
+public class ApiRetirementHandler implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(final HttpServletRequest request,
