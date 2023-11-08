@@ -8,6 +8,9 @@ import com.algaworks.algafood.api.v1.openapi.controllers.CozinhaControllerOpenAp
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 @RequestMapping(path = "/v1/cozinhas")
 public class CozinhaController implements CozinhaControllerOpenApi {
@@ -45,6 +49,8 @@ public class CozinhaController implements CozinhaControllerOpenApi {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedModel<CozinhaOutputDTO>> listar(final Pageable pageable) {
+        log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
+
         final Page<Cozinha> cozinhas = this.repository.findAll(pageable);
 
         final PagedModel<CozinhaOutputDTO> cozinhasModelPage = this.pagedResourcesAssembler
