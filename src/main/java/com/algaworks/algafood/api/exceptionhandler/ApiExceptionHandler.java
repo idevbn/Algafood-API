@@ -7,6 +7,7 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
  * Ver mais sobre a especificação RFC-7807 em:
  * <a href="https://www.rfc-editor.org/rfc/rfc7807">...</a>}
  */
+@Slf4j
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -153,7 +155,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 + "Tente novamente e se o problema persistir, "
                 + "entre em contato com o administrador do sistema.";
 
-        ex.printStackTrace();
+        log.error(ex.getMessage(), ex);
 
         final ApiError apiError = this.createApiErrorBuilder(status, erroDeSistema, detail)
                 .userMessage(detail)
