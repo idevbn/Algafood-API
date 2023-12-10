@@ -43,12 +43,8 @@ public class Usuario {
     )
     private Set<Grupo> grupos = new HashSet<>();
 
-    public boolean senhaCoincideCom(final String senha) {
-        return this.getSenha().equals(senha);
-    }
-
-    public boolean senhaNaoCoincideCom(final String senha) {
-        return !this.senhaCoincideCom(senha);
+    public boolean isNovo() {
+        return getId() == null;
     }
 
     public boolean adicionarGrupo(final Grupo grupo) {

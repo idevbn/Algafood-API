@@ -6,6 +6,7 @@ import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,12 +17,15 @@ public class CadastroUsuarioService {
 
     private final UsuarioRepository repository;
     private final CadastroGrupoService grupoService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public CadastroUsuarioService(final UsuarioRepository repository,
-                                  final CadastroGrupoService grupoService) {
+                                  final CadastroGrupoService grupoService,
+                                  final PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.grupoService = grupoService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public Usuario buscarOuFalhar(final Long id) {
@@ -44,6 +48,10 @@ public class CadastroUsuarioService {
             );
         }
 
+        if (usuario.isNovo()) {
+            usuario.setSenha(this.passwordEncoder.encode(usuario.getSenha()));
+        }
+
         final Usuario usuarioSalvo = this.repository.save(usuario);
 
         return usuarioSalvo;
@@ -53,11 +61,11 @@ public class CadastroUsuarioService {
     public void alterarSenha(final Long id, final String senhaAtual, final String novaSenha) {
         final Usuario usuarioEncontrado = this.buscarOuFalhar(id);
 
-        if (usuarioEncontrado.senhaNaoCoincideCom(senhaAtual)) {
+        if (!this.passwordEncoder.matches(senhaAtual, usuarioEncontrado.getSenha())) {
             throw new NegocioException("Senha atual informada não coincide com a senha do usuário.");
         }
 
-        usuarioEncontrado.setSenha(novaSenha);
+        usuarioEncontrado.setSenha(this.passwordEncoder.encode(novaSenha));
     }
 
     @Transactional
