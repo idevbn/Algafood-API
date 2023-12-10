@@ -66,17 +66,17 @@ INSERT INTO tb_grupo (nome) VALUES ('Gerente'), ('Vendedor'), ('Secretária'), (
 
 INSERT INTO tb_restaurante (id, nome, taxa_frete, cozinha_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_bairro, data_cadastro, data_atualizacao, ativo) VALUES (4, 'Thai PB', 8.75, 1, 1, '58123100', 'Rua da Parahyba', '1936', 'Varadouro', utc_timestamp, utc_timestamp, true);
 
-INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('José Peres', 'jose.peres@email.com', 'abc123', utc_timestamp);
-INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Fernanda Cavalcanti', 'nanda_cavalcanti@email.com', '12345678', utc_timestamp);
-INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Julio Macedo', 'macedojulio@email.com', 'aeiou123', utc_timestamp);
-INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Mariana Neves', 'mari.neves@email.com', 'mn123vc', utc_timestamp);
-INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Pessoa Teste', 'idevbn@gmail.com', '123456', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('José Peres', 'jose.peres@email.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Fernanda Cavalcanti', 'nanda_cavalcanti@email.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Julio Macedo', 'macedojulio@email.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Mariana Neves', 'mari.neves@email.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Pessoa Teste', 'idevbn@gmail.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
 
 INSERT INTO tb_grupo_permissao (grupo_id, permissao_id) VALUES (1, 1), (1, 2), (2, 1), (2, 2), (3, 1);
 
 INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1), (2, 4), (3, 2), (3, 3), (4, 1), (4, 4), (5, 1);
 
-INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '123456', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
 
 INSERT INTO tb_restaurante_usuario_responsavel (restaurante_id, usuario_id) VALUES (1, 5), (2, 5);
 
