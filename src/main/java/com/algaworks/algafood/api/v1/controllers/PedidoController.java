@@ -9,6 +9,7 @@ import com.algaworks.algafood.api.v1.model.out.PedidoResumoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.PedidoControllerOpenApi;
 import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -43,6 +44,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     private final PedidoResumoOutputDTOAssembler assemblerPedidoResumo;
     private final PedidoInputDTODisassembler disassembler;
     private final PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
+    private final AlgaSecurity algaSecurity;
 
 
     @Autowired
@@ -51,13 +53,15 @@ public class PedidoController implements PedidoControllerOpenApi {
                             final PedidoOutputDTOAssembler assembler,
                             final PedidoResumoOutputDTOAssembler assemblerPedidoResumo,
                             final PedidoInputDTODisassembler disassembler,
-                            final PagedResourcesAssembler<Pedido> pagedResourcesAssembler) {
+                            final PagedResourcesAssembler<Pedido> pagedResourcesAssembler,
+                            final AlgaSecurity algaSecurity) {
         this.repository = repository;
         this.service = service;
         this.assembler = assembler;
         this.assemblerPedidoResumo = assemblerPedidoResumo;
         this.disassembler = disassembler;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
+        this.algaSecurity = algaSecurity;
     }
 
     @GetMapping
@@ -119,7 +123,7 @@ public class PedidoController implements PedidoControllerOpenApi {
             final Pedido pedido = this.disassembler.toDomainModel(pedidoInputDTO);
 
             pedido.setCliente(new Usuario());
-            pedido.getCliente().setId(1L);
+            pedido.getCliente().setId(this.algaSecurity.getUsuarioId());
 
             this.service.emitir(pedido);
 
