@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 
 /**
  * Classe responsável por capturar as exceções de todos os controladores
- *
+ * <br>
  * Ver mais sobre a especificação RFC-7807 em:
  * <a href="https://www.rfc-editor.org/rfc/rfc7807">...</a>}
  */
@@ -166,6 +167,30 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 apiError,
                 new HttpHeaders(),
                 status,
+                request
+        );
+
+        return response;
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(
+            final AccessDeniedException ex,
+            final WebRequest request
+    ) {
+        final HttpStatus status = HttpStatus.FORBIDDEN;
+        final ApiErrorType acessoNegado = ApiErrorType.ACESSO_NEGADO;
+        final String detail = "Você não possui permissão para executar essa operação.";
+
+        final ApiError apiError = this.createApiErrorBuilder(status, acessoNegado, detail)
+                .userMessage(detail)
+                .build();
+
+        final ResponseEntity<Object> response = handleExceptionInternal(
+                ex,
+                apiError,
+                new HttpHeaders(),
+                HttpStatus.FORBIDDEN,
                 request
         );
 
