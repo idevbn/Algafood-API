@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.assembler.CozinhaOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.CozinhaInputDTO;
 import com.algaworks.algafood.api.v1.model.out.CozinhaOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.CozinhaControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -17,7 +18,6 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -46,7 +46,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecurity.Cozinhas.PodeConsultar
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PagedModel<CozinhaOutputDTO>> listar(final Pageable pageable) {
         log.info("Consultando cozinhas com páginas de {} registros", pageable.getPageSize());
@@ -63,7 +63,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @CheckSecurity.Cozinhas.PodeConsultar
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
         final Cozinha cozinha = this.service.buscarOuFalhar(id);
@@ -77,7 +77,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+    @CheckSecurity.Cozinhas.PodeEditar
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> adicionar(
             @RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO
@@ -97,7 +97,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
+    @CheckSecurity.Cozinhas.PodeEditar
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> atualizar(
             @PathVariable("id") Long id,
@@ -119,9 +119,9 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
+    @CheckSecurity.Cozinhas.PodeEditar
     @DeleteMapping(value = "/{id}", produces = {})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('EDITAR_COZINHAS')")
     public ResponseEntity<Void> remover(@PathVariable("id") Long id) {
         this.service.excluir(id);
 
