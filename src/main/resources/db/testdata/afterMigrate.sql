@@ -53,20 +53,13 @@ INSERT INTO tb_cidade (nome, estado_id) VALUES ('Passa-e-fica', 2);
 INSERT INTO tb_cidade (nome, estado_id) VALUES ('Itapipoca', 3);
 INSERT INTO tb_cidade (nome, estado_id) VALUES ('Garanhuns', 4);
 
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_COZINHAS', 'Permissão para consultar cozinhas');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_COZINHAS', 'Permissão para editar cozinhas');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_FORMAS_PAGAMENTO', 'Permite consultar formas de pagamento');
+INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_COZINHAS', 'Permite editar cozinhas');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_FORMAS_PAGAMENTO', 'Permite criar ou editar formas de pagamento');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_CIDADES', 'Permite consultar cidades');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_CIDADES', 'Permite criar ou editar cidades');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_ESTADOS', 'Permite consultar estados');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_ESTADOS', 'Permite criar ou editar estados');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_USUARIOS', 'Permite consultar usuários');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_USUARIOS', 'Permite criar ou editar usuários');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_RESTAURANTES', 'Permite consultar restaurantes');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_RESTAURANTES', 'Permite criar, editar ou gerenciar restaurantes');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_PRODUTOS', 'Permite consultar produtos');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_PRODUTOS', 'Permite criar ou editar produtos');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_PEDIDOS', 'Permite consultar pedidos');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('GERENCIAR_PEDIDOS', 'Permite gerenciar pedidos');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('GERAR_RELATORIOS', 'Permite gerar relatórios');
@@ -95,7 +88,7 @@ SELECT 1, id FROM tb_permissao;
 INSERT INTO tb_grupo_permissao (grupo_id, permissao_id)
 SELECT 2, id FROM tb_permissao WHERE nome LIKE 'CONSULTAR_%';
 
-INSERT INTO tb_grupo_permissao (grupo_id, permissao_id) VALUES (2, 14);
+INSERT INTO tb_grupo_permissao (grupo_id, permissao_id) VALUES (2, 10);
 
 # Adiciona permissoes no grupo do auxiliar
 INSERT INTO tb_grupo_permissao (grupo_id, permissao_id)
