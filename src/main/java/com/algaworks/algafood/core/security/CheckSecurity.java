@@ -4,22 +4,36 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 public @interface CheckSecurity {
 
     @interface Cozinhas {
-        @Retention(RetentionPolicy.RUNTIME)
+        @Retention(RUNTIME)
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_COZINHAS')")
         @interface PodeEditar {
         }
 
         @Target(ElementType.METHOD)
         @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
-        @Retention(RetentionPolicy.RUNTIME)
+        @Retention(RUNTIME)
         @interface PodeConsultar {
         }
+    }
+
+    @interface Restaurantes {
+
+        @Retention(RUNTIME)
+        @Target(ElementType.METHOD)
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
+        @interface PodeEditar { }
+
+        @Retention(RUNTIME)
+        @Target(ElementType.METHOD)
+        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @interface PodeConsultar { }
     }
 
 }
