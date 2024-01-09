@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.assembler.ProdutoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.ProdutoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.ProdutoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.RestauranteProdutoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Produto;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.ProdutoRepository;
@@ -44,6 +45,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @GetMapping
+    @CheckSecurity.Restaurantes.PodeConsultar
     public ResponseEntity<CollectionModel<ProdutoOutputDTO>> listar(
             @PathVariable("id") final Long id,
             @RequestParam(required = false) final Boolean incluirInativos
@@ -69,6 +71,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @GetMapping("/{produtoId}")
+    @CheckSecurity.Restaurantes.PodeConsultar
     public ResponseEntity<ProdutoOutputDTO> buscar(@PathVariable final Long id,
                                                    @PathVariable final Long produtoId) {
         final Produto produto = this.produtoService.buscarOuFalhar(id, produtoId);
@@ -83,6 +86,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @PostMapping
+    @CheckSecurity.Restaurantes.PodeEditar
     public ResponseEntity<ProdutoOutputDTO> adicionar(
             @PathVariable final Long id,
             @RequestBody @Valid final ProdutoInputDTO produtoInputDTO
@@ -104,6 +108,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @PutMapping("/{produtoId}")
+    @CheckSecurity.Restaurantes.PodeEditar
     public ResponseEntity<ProdutoOutputDTO> atualizar(
             @PathVariable final Long id,
             @PathVariable final Long produtoId,

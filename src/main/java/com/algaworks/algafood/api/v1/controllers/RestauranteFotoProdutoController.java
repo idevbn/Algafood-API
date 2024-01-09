@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.assembler.FotoProdutoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.FotoProdutoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.FotoProdutoOuputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.RestauranteFotoProdutoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.FotoProduto;
 import com.algaworks.algafood.domain.model.Produto;
@@ -50,6 +51,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
     }
 
     @GetMapping
+    @CheckSecurity.Restaurantes.PodeConsultar
     public ResponseEntity<?> recuperarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId
@@ -67,6 +69,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
         return response;
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
@@ -160,6 +163,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
     }
 
     @DeleteMapping
+    @CheckSecurity.Restaurantes.PodeEditar
     public ResponseEntity<Void> removerFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId

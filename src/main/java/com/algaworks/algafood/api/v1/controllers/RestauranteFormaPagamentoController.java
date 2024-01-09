@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.FormaPagamentoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.FormaPagamentoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.RestauranteFormaPagamentoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -34,6 +35,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
     }
 
     @GetMapping
+    @CheckSecurity.Restaurantes.PodeConsultar
     public ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> listar(
             @PathVariable("id") final Long id
     ) {
@@ -64,6 +66,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         return response;
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @PutMapping(value = "/{formaPagamentoId}")
     public ResponseEntity<Void> associar(
             @PathVariable("id") final Long id,
@@ -78,6 +81,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         return response;
     }
 
+    @CheckSecurity.Restaurantes.PodeEditar
     @DeleteMapping(value = "/{formaPagamentoId}")
     public ResponseEntity<Void> desassociar(
             @PathVariable("id") final Long id,
