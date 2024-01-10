@@ -13,7 +13,7 @@ public @interface CheckSecurity {
     @interface Cozinhas {
         @Retention(RUNTIME)
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_COZINHAS')")
-        @interface PodeEditar {
+        @interface PodeGerenciarCadastro {
         }
 
         @Target(ElementType.METHOD)
@@ -28,7 +28,14 @@ public @interface CheckSecurity {
         @Retention(RUNTIME)
         @Target(ElementType.METHOD)
         @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
-        @interface PodeEditar { }
+        @interface PodeGerenciarCadastro { }
+
+        @Retention(RUNTIME)
+        @Target(ElementType.METHOD)
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and "
+                + "(hasAuthority('EDITAR_RESTAURANTES') or "
+                + "@algaSecurity.gerenciaRestaurante(#id))")
+        @interface PodeGerenciarFuncionamento { }
 
         @Retention(RUNTIME)
         @Target(ElementType.METHOD)
