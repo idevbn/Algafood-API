@@ -102,7 +102,7 @@ INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1
 
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
 
-INSERT INTO tb_restaurante_usuario_responsavel (restaurante_id, usuario_id) VALUES (1, 5), (2, 5);
+INSERT INTO tb_restaurante_usuario_responsavel (restaurante_id, usuario_id) VALUES (1, 6), (2, 6);
 
 INSERT INTO tb_pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) VALUES (1, '6805ebbd-a172-4237-9d6a-015999ed89e4', 1, 1, 1, 1, '38400-000', 'Rua Floriano Peixoto', '500', 'Apto 801', 'Brasil', 'CRIADO', utc_timestamp, 298.90, 10, 308.90);
 INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (1, 1, 1, 1, 78.9, 78.9, null);
