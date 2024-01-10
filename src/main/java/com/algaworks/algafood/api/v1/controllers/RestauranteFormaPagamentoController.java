@@ -66,7 +66,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         return response;
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @PutMapping(value = "/{formaPagamentoId}")
     public ResponseEntity<Void> associar(
             @PathVariable("id") final Long id,
@@ -81,7 +81,7 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         return response;
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     @DeleteMapping(value = "/{formaPagamentoId}")
     public ResponseEntity<Void> desassociar(
             @PathVariable("id") final Long id,

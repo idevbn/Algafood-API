@@ -77,7 +77,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
-    @CheckSecurity.Cozinhas.PodeEditar
+    @CheckSecurity.Cozinhas.PodeGerenciarCadastro
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> adicionar(
             @RequestBody @Valid final CozinhaInputDTO cozinhaInputDTO
@@ -97,7 +97,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
-    @CheckSecurity.Cozinhas.PodeEditar
+    @CheckSecurity.Cozinhas.PodeGerenciarCadastro
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CozinhaOutputDTO> atualizar(
             @PathVariable("id") Long id,
@@ -119,7 +119,7 @@ public class CozinhaController implements CozinhaControllerOpenApi {
         return response;
     }
 
-    @CheckSecurity.Cozinhas.PodeEditar
+    @CheckSecurity.Cozinhas.PodeGerenciarCadastro
     @DeleteMapping(value = "/{id}", produces = {})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable("id") Long id) {

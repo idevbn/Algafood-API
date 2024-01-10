@@ -69,7 +69,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
         return response;
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
@@ -163,7 +163,7 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
     }
 
     @DeleteMapping
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> removerFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId

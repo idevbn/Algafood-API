@@ -145,7 +145,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         return response;
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestauranteOutputDTO> adicionar(
             @RequestBody @Valid final RestauranteInputDTO restauranteInputDTO
@@ -169,7 +169,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         }
     }
 
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RestauranteOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
@@ -197,7 +197,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @PatchMapping(value = "/{id}")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<RestauranteOutputDTO> atualizarParcialmente(
             @PathVariable("id") final Long id,
             @RequestBody final Map<String, Object> campos,
@@ -225,7 +225,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
      *           O POST não é IDEMPOTENTE.
      */
     @PutMapping(value = "/{id}/ativo")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> ativar(@PathVariable("id") final Long id) {
         this.service.ativar(id);
 
@@ -237,7 +237,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @PutMapping(value = "/ativacoes")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> ativarMultiplos(@RequestBody final List<Long> ids) {
         try {
             this.service.ativar(ids);
@@ -259,7 +259,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
      * @param id
      */
     @DeleteMapping(value = "/{id}/ativo")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> inativar(@PathVariable("id") final Long id) {
         this.service.inativar(id);
 
@@ -271,7 +271,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @DeleteMapping(value = "/ativacoes")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> inativarMultiplos(@RequestBody final List<Long> ids) {
         try {
             this.service.inativar(ids);
@@ -288,6 +288,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @PutMapping("/{id}/abertura")
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     public ResponseEntity<Void> abrir(@PathVariable("id") final Long id) {
         this.service.abrir(id);
 
@@ -299,7 +300,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     }
 
     @PutMapping("/{id}/fechamento")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     public ResponseEntity<Void> fechar(@PathVariable("id") final Long id) {
         this.service.fechar(id);
 

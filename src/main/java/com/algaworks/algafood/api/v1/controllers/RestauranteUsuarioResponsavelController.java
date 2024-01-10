@@ -66,7 +66,7 @@ public class RestauranteUsuarioResponsavelController
     }
 
     @PutMapping(value = "/{usuarioId}")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> associar(@PathVariable("id") final Long id,
                                          @PathVariable("usuarioId") final Long usuarioId) {
         this.restauranteService.associarResponsavel(id, usuarioId);
@@ -79,7 +79,7 @@ public class RestauranteUsuarioResponsavelController
     }
 
     @DeleteMapping(value = "/{usuarioId}")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarCadastro
     public ResponseEntity<Void> desassociar(@PathVariable("id") final Long id,
                                             @PathVariable("usuarioId") final Long usuarioId) {
         this.restauranteService.desassociarResponsavel(id, usuarioId);

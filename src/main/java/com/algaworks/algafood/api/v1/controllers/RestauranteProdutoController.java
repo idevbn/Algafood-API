@@ -86,7 +86,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @PostMapping
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     public ResponseEntity<ProdutoOutputDTO> adicionar(
             @PathVariable final Long id,
             @RequestBody @Valid final ProdutoInputDTO produtoInputDTO
@@ -108,7 +108,7 @@ public class RestauranteProdutoController implements RestauranteProdutoControlle
     }
 
     @PutMapping("/{produtoId}")
-    @CheckSecurity.Restaurantes.PodeEditar
+    @CheckSecurity.Restaurantes.PodeGerenciarFuncionamento
     public ResponseEntity<ProdutoOutputDTO> atualizar(
             @PathVariable final Long id,
             @PathVariable final Long produtoId,
