@@ -1,5 +1,7 @@
 package com.algaworks.algafood.core.security;
 
+import com.algaworks.algafood.domain.repository.RestauranteRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -15,6 +17,13 @@ import java.util.List;
  */
 @Component
 public class AlgaSecurity {
+
+    private final RestauranteRepository restauranteRepository;
+
+    @Autowired
+    public AlgaSecurity(final RestauranteRepository restauranteRepository) {
+        this.restauranteRepository = restauranteRepository;
+    }
 
     public Authentication getAuthentication() {
         final Authentication authentication = SecurityContextHolder
@@ -42,6 +51,13 @@ public class AlgaSecurity {
         final Long userId =  (Long) claimsValues.get(0);
 
         return userId;
+    }
+
+    public boolean gerenciaRestaurante(final Long restauranteId) {
+        final boolean existsResponsavel = this.restauranteRepository
+                .existsResponsavel(restauranteId, this.getUsuarioId());
+
+        return existsResponsavel;
     }
 
 }
