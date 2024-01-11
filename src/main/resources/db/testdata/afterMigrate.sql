@@ -16,6 +16,7 @@ DELETE FROM tb_restaurante_usuario_responsavel;
 DELETE FROM tb_pedido;
 DELETE FROM tb_item_pedido;
 DELETE FROM tb_foto_produto;
+DELETE FROM oauth_client_details;
 
 SET foreign_key_checks = 1;
 
@@ -115,3 +116,36 @@ INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitari
 INSERT INTO tb_pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pagamento_id, endereco_cidade_id, endereco_cep, endereco_logradouro, endereco_numero, endereco_complemento, endereco_bairro, status, data_criacao, subtotal, taxa_frete, valor_total) VALUES (3, '4b13595b-1580-4e6f-98a5-888ae491062a', 3, 5, 4, 3, '49200-000', 'Rua ABC', '1000', 'Casa', 'das Flores', 'CRIADO', utc_timestamp, 236.70, 5, 241.70);
 INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (4, 3, 1, 1, 78.9, 78.9, 'Mais molho');
 INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (5, 3, 2, 2, 78.9, 157.8, 'Menos picante, por favor');
+
+INSERT INTO oauth_client_details (
+  client_id, resource_ids, client_secret,
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+VALUES (
+  'algafood-web', null, '$2a$12$D.Tcj0DDBpSKE0SDLHm8UOP2aLB8wqxwo/OjTSg8DRoqXu6HU9zcy',
+  'READ,WRITE', 'password', null, null,
+  60 * 60 * 6, 60 * 24 * 60 * 60, null
+);
+
+INSERT INTO oauth_client_details (
+  client_id, resource_ids, client_secret,
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+VALUES (
+  'foodanalytics', null, '$2a$10$y8NZPRZzKQW7tc0Ccn0.hOwXlIWa5Tiv1VOamIxlQfjwvJuV4Q9Sa',
+  'READ,WRITE', 'authorization_code', 'http://localhost:8082', null,
+  null, null, null
+);
+
+INSERT INTO oauth_client_details (
+  client_id, resource_ids, client_secret,
+  scope, authorized_grant_types, web_server_redirect_uri, authorities,
+  access_token_validity, refresh_token_validity, autoapprove
+)
+VALUES (
+  'faturamento', null, '$2a$10$qtUCJb8e/umRr0e/fULrNuiKTYU365ahLOOAqYhver0Pt/3k00Tuu',
+  'READ,WRITE', 'client_credentials', null, 'CONSULTAR_PEDIDOS,GERAR_RELATORIOS',
+  null, null, null
+);
