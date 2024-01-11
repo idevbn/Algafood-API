@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.assembler.FormaPagamentoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.FormaPagamentoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.FormaPagamentoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.FormasPagamentoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
@@ -41,6 +42,7 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> listar(final ServletWebRequest request) {
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
@@ -74,6 +76,7 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
         return response;
     }
 
+    @CheckSecurity.FormasPagamento.PodeConsultar
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoOutputDTO> buscar(@PathVariable("id") final Long id,
                                                           final ServletWebRequest request) {
@@ -107,6 +110,7 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
         return response;
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoOutputDTO> adicionar(
             @RequestBody @Valid final FormaPagamentoInputDTO formaPagamentoInputDTO
@@ -126,6 +130,7 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
         return response;
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @PutMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FormaPagamentoOutputDTO>  atualizar(
             @PathVariable("id") final Long id,
@@ -148,6 +153,7 @@ public class FormaPagamentoController implements FormasPagamentoControllerOpenAp
         return response;
     }
 
+    @CheckSecurity.FormasPagamento.PodeEditar
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Void> remover(@PathVariable("id") final Long id) {
         this.service.excluir(id);
