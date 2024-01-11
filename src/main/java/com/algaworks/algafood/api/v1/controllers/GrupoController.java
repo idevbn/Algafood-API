@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.assembler.GrupoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.GrupoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.GrupoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.repository.GrupoRepository;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
@@ -37,6 +38,7 @@ public class GrupoController implements GrupoControllerOpenApi {
     }
 
     @GetMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<CollectionModel<GrupoOutputDTO>> listar() {
         final List<Grupo> grupos = this.repository.findAll();
 
@@ -51,6 +53,7 @@ public class GrupoController implements GrupoControllerOpenApi {
     }
 
     @GetMapping(value = "/{id}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<GrupoOutputDTO> buscar(@PathVariable("id") final Long id) {
         final Grupo grupo = this.service.buscarOuFalhar(id);
 
@@ -65,6 +68,7 @@ public class GrupoController implements GrupoControllerOpenApi {
     }
 
     @PostMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<GrupoOutputDTO> adicionar(
             @RequestBody @Valid final GrupoInputDTO grupoInputDTO
     ) {
@@ -83,6 +87,7 @@ public class GrupoController implements GrupoControllerOpenApi {
     }
 
     @PutMapping(value = "/{id}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<GrupoOutputDTO> atualizar(
             @PathVariable("id") final Long id,
             @RequestBody @Valid final GrupoInputDTO grupoInputDTO
@@ -105,6 +110,7 @@ public class GrupoController implements GrupoControllerOpenApi {
 
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<Void> excluir(@PathVariable("id") final Long id) {
         this.service.excluir(id);
 

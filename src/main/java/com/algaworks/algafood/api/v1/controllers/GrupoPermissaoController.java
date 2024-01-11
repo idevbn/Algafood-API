@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.PermissaoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.PermissaoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.GrupoPermissaoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.service.CadastroGrupoService;
@@ -35,6 +36,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     }
 
     @GetMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<CollectionModel<PermissaoOutputDTO>> listar(
             @PathVariable("id") final Long grupoId
     ) {
@@ -62,6 +64,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     }
 
     @PutMapping(value = "/{permissaoId}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<Void> associar(
             @PathVariable("id") final Long id,
             @PathVariable("permissaoId") final Long permissaoId
@@ -76,6 +79,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     }
 
     @DeleteMapping(value = "/{permissaoId}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<Void> desassociar(
             @PathVariable("id") final Long id,
             @PathVariable("permissaoId") final Long permissaoId

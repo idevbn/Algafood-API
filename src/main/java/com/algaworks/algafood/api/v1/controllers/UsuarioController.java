@@ -7,6 +7,7 @@ import com.algaworks.algafood.api.v1.model.in.UsuarioComSenhaInputDTO;
 import com.algaworks.algafood.api.v1.model.in.UsuarioInputDTO;
 import com.algaworks.algafood.api.v1.model.out.UsuarioOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.UsuarioControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
@@ -41,6 +42,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @GetMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<CollectionModel<UsuarioOutputDTO>> listar() {
         final List<Usuario> usuarios = this.repository.findAll();
 
@@ -55,6 +57,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @GetMapping(value = "/{id}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<UsuarioOutputDTO> buscar(@PathVariable("id") final Long id) {
         final Usuario usuario = this.service.buscarOuFalhar(id);
 
@@ -69,6 +72,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PostMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<UsuarioOutputDTO> adicionar(
             @RequestBody @Valid final UsuarioComSenhaInputDTO usuarioComSenhaInputDTO
     ) {
@@ -88,6 +92,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PutMapping(value = "/{id}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<UsuarioOutputDTO> atualizar(
             @PathVariable("id") final Long id,
             @RequestBody @Valid final UsuarioInputDTO usuarioInputDTO
@@ -109,6 +114,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PutMapping(value = "/{id}/senha")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<Void> alterarSenha(
             @PathVariable("id") final Long id,
             @RequestBody @Valid final SenhaInputDTO senha

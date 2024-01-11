@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.controllers;
 import com.algaworks.algafood.api.v1.assembler.PermissaoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.PermissaoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.PermissaoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Permissao;
 import com.algaworks.algafood.domain.repository.PermissaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public class PermissaoController implements PermissaoControllerOpenApi {
 
     @Override
     @GetMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<CollectionModel<PermissaoOutputDTO>> listar() {
         final List<Permissao> todasPermissoes = this.repository.findAll();
 

@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.GrupoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.UsuarioGrupoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
 import com.algaworks.algafood.domain.service.CadastroUsuarioService;
@@ -34,6 +35,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     }
 
     @GetMapping
+    @CheckSecurity.UsuariosGruposPermissoes.PodeConsultar
     public ResponseEntity<CollectionModel<GrupoOutputDTO>> listar(
             @PathVariable("id") final Long usuarioId
     ) {
@@ -59,6 +61,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     }
 
     @PutMapping(value = "/{grupoId}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<Void> associar(
             @PathVariable("id") final Long id,
             @PathVariable("grupoId") final Long grupoId
@@ -73,6 +76,7 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     }
 
     @DeleteMapping(value = "/{grupoId}")
+    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
     public ResponseEntity<Void> desassociar(
             @PathVariable("id") final Long id,
             @PathVariable("grupoId") final Long grupoId
