@@ -101,6 +101,7 @@ SELECT 4, id FROM tb_permissao WHERE nome LIKE '%_RESTAURANTES' OR nome LIKE '%_
 INSERT INTO tb_usuario_grupo (usuario_id, grupo_id) VALUES (1, 2), (1, 3), (2, 1), (2, 4), (3, 2), (3, 3), (4, 1), (4, 4), (5, 1);
 
 INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Manoel Lima', 'manoel.loja@gmail.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
+INSERT INTO tb_usuario (nome, email, senha, data_cadastro) VALUES ('Carlos Lima', 'carlos.daniel@email.com', '$2a$10$ICf.LJbDXrWCUxsBF5a0j.sWEGt.MMSnIKRyz4SMrlcXjX0UMGXbq', utc_timestamp);
 
 INSERT INTO tb_restaurante_usuario_responsavel (restaurante_id, usuario_id) VALUES (1, 6), (2, 6);
 
