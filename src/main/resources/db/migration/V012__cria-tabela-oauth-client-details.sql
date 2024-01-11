@@ -1,4 +1,4 @@
-CREATE TABLE tb_oauth_client_details (
+CREATE TABLE oauth_client_details (
   client_id VARCHAR(255),
   resource_ids VARCHAR(256),
   client_secret VARCHAR(256),
