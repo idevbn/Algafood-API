@@ -74,6 +74,7 @@ public class PedidoController implements PedidoControllerOpenApi {
                     type = "string"
             )
     })
+    @CheckSecurity.Pedidos.PodePesquisar
     public ResponseEntity<PagedModel<PedidoResumoOutputDTO>> pesquisar(
             @PageableDefault() Pageable pageable,
             final PedidoFilter filtro
