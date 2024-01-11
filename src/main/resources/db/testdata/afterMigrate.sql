@@ -57,8 +57,8 @@ INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_COZINHAS', 'Permite e
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_FORMAS_PAGAMENTO', 'Permite criar ou editar formas de pagamento');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_CIDADES', 'Permite criar ou editar cidades');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_ESTADOS', 'Permite criar ou editar estados');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_USUARIOS', 'Permite consultar usuários');
-INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_USUARIOS', 'Permite criar ou editar usuários');
+INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES', 'Permite consultar usuários, grupos e permissões');
+INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_USUARIOS_GRUPOS_PERMISSOES', 'Permite criar ou editar usuários, grupos e permissões');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('EDITAR_RESTAURANTES', 'Permite criar, editar ou gerenciar restaurantes');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('CONSULTAR_PEDIDOS', 'Permite consultar pedidos');
 INSERT INTO tb_permissao (nome, descricao) VALUES ('GERENCIAR_PEDIDOS', 'Permite gerenciar pedidos');
