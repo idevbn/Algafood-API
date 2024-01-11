@@ -10,6 +10,7 @@ import com.algaworks.algafood.api.v1.openapi.controllers.PedidoControllerOpenApi
 import com.algaworks.algafood.core.data.PageWrapper;
 import com.algaworks.algafood.core.data.PageableTranslator;
 import com.algaworks.algafood.core.security.AlgaSecurity;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.filter.PedidoFilter;
@@ -103,6 +104,7 @@ public class PedidoController implements PedidoControllerOpenApi {
                     type = "string"
             )
     })
+    @CheckSecurity.Pedidos.PodeBuscar
     public ResponseEntity<PedidoOutputDTO> buscar(@PathVariable("codigo") final String codigo) {
         final Pedido pedido = this.service.buscarOuFalhar(codigo);
 
