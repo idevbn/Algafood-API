@@ -54,6 +54,10 @@ public class AlgaSecurity {
     }
 
     public boolean gerenciaRestaurante(final Long restauranteId) {
+        if (restauranteId == null) {
+            return false;
+        }
+
         final boolean existsResponsavel = this.restauranteRepository
                 .existsResponsavel(restauranteId, this.getUsuarioId());
 
