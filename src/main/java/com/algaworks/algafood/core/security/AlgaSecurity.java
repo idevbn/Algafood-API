@@ -1,5 +1,6 @@
 package com.algaworks.algafood.core.security;
 
+import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,10 +20,12 @@ import java.util.List;
 public class AlgaSecurity {
 
     private final RestauranteRepository restauranteRepository;
-
+    private final PedidoRepository pedidoRepository;
     @Autowired
-    public AlgaSecurity(final RestauranteRepository restauranteRepository) {
+    public AlgaSecurity(final RestauranteRepository restauranteRepository,
+                        final PedidoRepository pedidoRepository) {
         this.restauranteRepository = restauranteRepository;
+        this.pedidoRepository = pedidoRepository;
     }
 
     public Authentication getAuthentication() {
@@ -62,6 +65,10 @@ public class AlgaSecurity {
                 .existsResponsavel(restauranteId, this.getUsuarioId());
 
         return existsResponsavel;
+    }
+
+    public boolean gerenciaRestauranteDoPedido(final String codigoPedido) {
+        return pedidoRepository.isPedidoGerenciadoPor(codigoPedido, this.getUsuarioId());
     }
 
 }
