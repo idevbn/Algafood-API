@@ -119,6 +119,7 @@ public class PedidoController implements PedidoControllerOpenApi {
     }
 
     @PostMapping
+    @CheckSecurity.Pedidos.PodeCriar
     public ResponseEntity<PedidoOutputDTO> adicionar(
             @Valid @RequestBody final PedidoInputDTO pedidoInputDTO
     ) {

@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.v1.controllers;
 
 import com.algaworks.algafood.api.v1.openapi.controllers.FluxoPedidoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.service.FluxoPedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
     }
 
     @PutMapping(value = "/confirmacao")
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     public ResponseEntity<Void> confirmar(@PathVariable("codigo") final String codigo) {
         this.pedidoService.confirmar(codigo);
 
@@ -34,6 +36,7 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
     }
 
     @PutMapping(value = "/cancelamento")
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     public ResponseEntity<Void> cancelar(@PathVariable("codigo") final String codigo) {
         this.pedidoService.cancelar(codigo);
 
@@ -45,6 +48,7 @@ public class FluxoPedidoController implements FluxoPedidoControllerOpenApi {
     }
 
     @PutMapping(value = "/entrega")
+    @CheckSecurity.Pedidos.PodeGerenciarPedidos
     public ResponseEntity<Void> entregar(@PathVariable("codigo") final String codigo) {
         this.pedidoService.entregar(codigo);
 
