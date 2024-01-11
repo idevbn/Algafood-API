@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.v1.assembler.CidadeOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.CidadeInputDTO;
 import com.algaworks.algafood.api.v1.model.out.CidadeOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.CidadeControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
@@ -41,6 +42,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
+    @CheckSecurity.Cidades.PodeConsultar
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<CidadeOutputDTO>> listar() {
         final List<Cidade> cidades = this.repository.findAll();
@@ -55,6 +57,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         return response;
     }
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTO> buscar(
             @PathVariable(value = "id") final Long id
@@ -71,8 +74,9 @@ public class CidadeController implements CidadeControllerOpenApi {
         return response;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @CheckSecurity.Estados.PodeEditar
     @ResponseStatus(value = HttpStatus.CREATED)
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTO> adicionar(
             @RequestBody @Valid final CidadeInputDTO cidadeInputDTO
     ) {
@@ -103,6 +107,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         }
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
@@ -129,6 +134,7 @@ public class CidadeController implements CidadeControllerOpenApi {
     }
 
     @DeleteMapping(value = "/{id}")
+    @CheckSecurity.Estados.PodeEditar
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable(value = "id") final Long id) {
         this.service.excluir(id);

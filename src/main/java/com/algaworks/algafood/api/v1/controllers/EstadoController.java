@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.v1.assembler.EstadoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.in.EstadoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.EstadoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.EstadoControllerOpenApi;
+import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.service.CadastroEstadoService;
@@ -38,6 +39,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         this.outputDTOAssembler = outputDTOAssembler;
     }
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CollectionModel<EstadoOutputDTO>> listar() {
         final List<Estado> estados = this.repository.findAll();
@@ -52,6 +54,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return response;
     }
 
+    @CheckSecurity.Estados.PodeConsultar
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstadoOutputDTO> buscar(@PathVariable(value = "id") final Long id) {
 
@@ -67,6 +70,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return response;
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstadoOutputDTO> adicionar(
             @RequestBody @Valid final EstadoInputDTO estadoInputDTO
@@ -86,6 +90,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return response;
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<EstadoOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
@@ -107,6 +112,7 @@ public class EstadoController implements EstadoControllerOpenApi {
         return response;
     }
 
+    @CheckSecurity.Estados.PodeEditar
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> remover(@PathVariable(value = "id") final Long id) {
         this.service.excluir(id);
