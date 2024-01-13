@@ -92,7 +92,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PutMapping(value = "/{id}")
-    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarUsuario
     public ResponseEntity<UsuarioOutputDTO> atualizar(
             @PathVariable("id") final Long id,
             @RequestBody @Valid final UsuarioInputDTO usuarioInputDTO
@@ -114,7 +114,7 @@ public class UsuarioController implements UsuarioControllerOpenApi {
     }
 
     @PutMapping(value = "/{id}/senha")
-    @CheckSecurity.UsuariosGruposPermissoes.PodeEditar
+    @CheckSecurity.UsuariosGruposPermissoes.PodeAlterarPropriaSenha
     public ResponseEntity<Void> alterarSenha(
             @PathVariable("id") final Long id,
             @RequestBody @Valid final SenhaInputDTO senha

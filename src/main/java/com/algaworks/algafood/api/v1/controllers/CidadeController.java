@@ -57,7 +57,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         return response;
     }
 
-    @CheckSecurity.Estados.PodeConsultar
+    @CheckSecurity.Cidades.PodeConsultar
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTO> buscar(
             @PathVariable(value = "id") final Long id
@@ -74,7 +74,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         return response;
     }
 
-    @CheckSecurity.Estados.PodeEditar
+    @CheckSecurity.Cidades.PodeEditar
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTO> adicionar(
@@ -107,7 +107,7 @@ public class CidadeController implements CidadeControllerOpenApi {
         }
     }
 
-    @CheckSecurity.Estados.PodeEditar
+    @CheckSecurity.Cidades.PodeEditar
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<CidadeOutputDTO> atualizar(
             @PathVariable(value = "id") final Long id,
@@ -134,7 +134,7 @@ public class CidadeController implements CidadeControllerOpenApi {
     }
 
     @DeleteMapping(value = "/{id}")
-    @CheckSecurity.Estados.PodeEditar
+    @CheckSecurity.Cidades.PodeEditar
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> remover(@PathVariable(value = "id") final Long id) {
         this.service.excluir(id);
