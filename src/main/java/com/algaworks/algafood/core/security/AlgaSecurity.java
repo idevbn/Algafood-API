@@ -76,4 +76,20 @@ public class AlgaSecurity {
                 && this.getUsuarioId().equals(usuarioId);
     }
 
+    /**
+     * Método que verifica se há pelo menos uma authority com o nome fornecido.
+     * Caso não exista nenhuma authority correspondente, é retornado false.
+     */
+    public boolean hasAuthority(final String authorityName) {
+        return this.getAuthentication().getAuthorities()
+                .stream()
+                .anyMatch(authority -> authority.getAuthority().equals(authorityName));
+    }
+
+    public boolean podeGerenciarPedidos(final String codigoPedido) {
+        return this.hasAuthority("SCOPE_WRITE")
+                && (this.hasAuthority("GERENCIAR_PEDIDOS")
+                || this.gerenciaRestauranteDoPedido(codigoPedido));
+    }
+
 }
