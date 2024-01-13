@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.controllers.PedidoController;
 import com.algaworks.algafood.api.v1.model.out.PedidoOutputDTO;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.model.Pedido;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
@@ -14,12 +15,15 @@ public class PedidoOutputDTOAssembler
 
     private final ModelMapper modelMapper;
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
     public PedidoOutputDTOAssembler(final ModelMapper modelMapper,
-                                    final AlgaLinks algaLinks) {
+                                    final AlgaLinks algaLinks,
+                                    final AlgaSecurity algaSecurity) {
         super(PedidoController.class, PedidoOutputDTO.class);
         this.modelMapper = modelMapper;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @Override
@@ -29,22 +33,27 @@ public class PedidoOutputDTOAssembler
 
         pedidoOutputDTO.add(this.algaLinks.linkToPedidos("pedidos"));
 
-        if (pedido.podeSerConfirmado()) {
-            pedidoOutputDTO.add(
-                    this.algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar")
-            );
-        }
+        final boolean podeGerenciarPedidos = this.algaSecurity
+                .podeGerenciarPedidos(pedido.getCodigo());
 
-        if (pedido.podeSerEntregue()) {
-            pedidoOutputDTO.add(
-                    this.algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar")
-            );
-        }
+        if (podeGerenciarPedidos) {
+            if (pedido.podeSerConfirmado()) {
+                pedidoOutputDTO.add(
+                        this.algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar")
+                );
+            }
 
-        if (pedido.podeSerCancelado()) {
-            pedidoOutputDTO.add(
-                    this.algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar")
-            );
+            if (pedido.podeSerEntregue()) {
+                pedidoOutputDTO.add(
+                        this.algaLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar")
+                );
+            }
+
+            if (pedido.podeSerCancelado()) {
+                pedidoOutputDTO.add(
+                        this.algaLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar")
+                );
+            }
         }
 
         pedidoOutputDTO.getRestaurante().add(
