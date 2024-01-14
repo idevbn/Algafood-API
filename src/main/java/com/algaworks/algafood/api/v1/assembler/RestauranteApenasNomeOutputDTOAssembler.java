@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.controllers.RestauranteController;
 import com.algaworks.algafood.api.v1.model.out.RestauranteApenasNomeOutputDTO;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,17 @@ public class RestauranteApenasNomeOutputDTOAssembler
         extends RepresentationModelAssemblerSupport<Restaurante, RestauranteApenasNomeOutputDTO> {
 
     private final ModelMapper modelMapper;
-
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
     @Autowired
     public RestauranteApenasNomeOutputDTOAssembler(final ModelMapper modelMapper,
-                                                   final AlgaLinks algaLinks) {
+                                                   final AlgaLinks algaLinks,
+                                                   final AlgaSecurity algaSecurity) {
         super(RestauranteController.class, RestauranteApenasNomeOutputDTO.class);
         this.modelMapper = modelMapper;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class RestauranteApenasNomeOutputDTOAssembler
 
         this.modelMapper.map(restaurante, restauranteApenasNomeOutputDTO);
 
-        restauranteApenasNomeOutputDTO.add(algaLinks.linkToRestaurantes("restaurantes"));
+        if (this.algaSecurity.podeConsultarRestaurantes()) {
+            restauranteApenasNomeOutputDTO
+                    .add(algaLinks.linkToRestaurantes("restaurantes"));
+        }
 
         return restauranteApenasNomeOutputDTO;
     }
@@ -42,8 +48,14 @@ public class RestauranteApenasNomeOutputDTOAssembler
     public CollectionModel<RestauranteApenasNomeOutputDTO> toCollectionModel(
             final Iterable<? extends Restaurante> entities
     ) {
-        return super.toCollectionModel(entities)
-                .add(algaLinks.linkToRestaurantes());
+        final CollectionModel<RestauranteApenasNomeOutputDTO> collectionModel = super
+                .toCollectionModel(entities);
+
+        if (this.algaSecurity.podeConsultarRestaurantes()) {
+            collectionModel.add(this.algaLinks.linkToRestaurantes());
+        }
+
+        return collectionModel;
     }
 
 }

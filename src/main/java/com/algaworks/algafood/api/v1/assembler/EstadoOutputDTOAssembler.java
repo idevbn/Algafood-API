@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.controllers.EstadoController;
 import com.algaworks.algafood.api.v1.model.out.EstadoOutputDTO;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.model.Estado;
 import org.modelmapper.ModelMapper;
 import org.springframework.hateoas.CollectionModel;
@@ -15,11 +16,15 @@ public class EstadoOutputDTOAssembler
 
     private final ModelMapper modelMapper;
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
-    public EstadoOutputDTOAssembler(final ModelMapper modelMapper, final AlgaLinks algaLinks) {
+    public EstadoOutputDTOAssembler(final ModelMapper modelMapper,
+                                    final AlgaLinks algaLinks,
+                                    final AlgaSecurity algaSecurity) {
         super(EstadoController.class, EstadoOutputDTO.class);
         this.modelMapper = modelMapper;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @Override
@@ -28,7 +33,9 @@ public class EstadoOutputDTOAssembler
                 .createModelWithId(estado.getId(), estado);
         this.modelMapper.map(estado, estadoOutputDTO);
 
-        estadoOutputDTO.add(this.algaLinks.linkToEstados("estados"));
+        if (this.algaSecurity.podeConsultarEstados()) {
+            estadoOutputDTO.add(this.algaLinks.linkToEstados("estados"));
+        }
 
         return estadoOutputDTO;
     }
@@ -37,7 +44,14 @@ public class EstadoOutputDTOAssembler
     public CollectionModel<EstadoOutputDTO> toCollectionModel(
             final Iterable<? extends Estado> entities
     ) {
-        return super.toCollectionModel(entities).add(algaLinks.linkToEstados());
+        final CollectionModel<EstadoOutputDTO> collectionModel = super
+                .toCollectionModel(entities);
+
+        if (this.algaSecurity.podeConsultarEstados()) {
+            collectionModel.add(this.algaLinks.linkToEstados("estados"));
+        }
+
+        return collectionModel;
     }
 
 }

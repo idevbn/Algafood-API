@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.PermissaoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.PermissaoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.GrupoPermissaoControllerOpenApi;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Permissao;
@@ -24,15 +25,18 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
     private final CadastroGrupoService service;
     private final PermissaoOutputDTOAssembler assembler;
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
 
     @Autowired
     public GrupoPermissaoController(final CadastroGrupoService service,
                                     final PermissaoOutputDTOAssembler assembler,
-                                    final AlgaLinks algaLinks) {
+                                    final AlgaLinks algaLinks,
+                                    final AlgaSecurity algaSecurity) {
         this.service = service;
         this.assembler = assembler;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @GetMapping
@@ -48,13 +52,17 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
         final CollectionModel<PermissaoOutputDTO> permissoesOutputDTOS = this.assembler
                 .toCollectionModel(permissoes)
                 .removeLinks()
-                .add(algaLinks.linkToGrupoPermissoes(grupoId))
-                .add(algaLinks.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+                .add(algaLinks.linkToGrupoPermissoes(grupoId));
 
-        permissoesOutputDTOS.getContent().forEach(permissaoOutputDTO -> {
-            permissaoOutputDTO.add(this.algaLinks.linkToGrupoPermissaoDesassociacao(
-                    grupoId, permissaoOutputDTO.getId(), "desassociar"));
-        });
+        if (this.algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+            permissoesOutputDTOS
+                    .add(algaLinks.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
+
+            permissoesOutputDTOS.getContent().forEach(permissaoOutputDTO -> {
+                permissaoOutputDTO.add(this.algaLinks.linkToGrupoPermissaoDesassociacao(
+                        grupoId, permissaoOutputDTO.getId(), "desassociar"));
+            });
+        }
 
         final ResponseEntity<CollectionModel<PermissaoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)

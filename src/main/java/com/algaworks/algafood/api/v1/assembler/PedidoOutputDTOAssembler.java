@@ -31,12 +31,11 @@ public class PedidoOutputDTOAssembler
         final PedidoOutputDTO pedidoOutputDTO = this.createModelWithId(pedido.getId(), pedido);
         this.modelMapper.map(pedido, pedidoOutputDTO);
 
-        pedidoOutputDTO.add(this.algaLinks.linkToPedidos("pedidos"));
+        if (this.algaSecurity.podePesquisarPedidos()) {
+            pedidoOutputDTO.add(this.algaLinks.linkToPedidos("pedidos"));
+        }
 
-        final boolean podeGerenciarPedidos = this.algaSecurity
-                .podeGerenciarPedidos(pedido.getCodigo());
-
-        if (podeGerenciarPedidos) {
+        if (this.algaSecurity.podeGerenciarPedidos(pedido.getCodigo())) {
             if (pedido.podeSerConfirmado()) {
                 pedidoOutputDTO.add(
                         this.algaLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar")
@@ -56,22 +55,33 @@ public class PedidoOutputDTOAssembler
             }
         }
 
-        pedidoOutputDTO.getRestaurante().add(
-                this.algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+        if (this.algaSecurity.podeConsultarRestaurantes()) {
+            pedidoOutputDTO.getRestaurante().add(
+                    this.algaLinks.linkToRestaurante(pedido.getRestaurante().getId()));
+        }
 
-        pedidoOutputDTO.getCliente().add(
-                this.algaLinks.linkToUsuario(pedido.getCliente().getId()));
+        if (this.algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+            pedidoOutputDTO.getCliente().add(
+                    this.algaLinks.linkToUsuario(pedido.getCliente().getId()));
+        }
 
-        pedidoOutputDTO.getFormaPagamento().add(
-                this.algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+        if (this.algaSecurity.podeConsultarFormasPagamento()) {
+            pedidoOutputDTO.getFormaPagamento().add(
+                    this.algaLinks.linkToFormaPagamento(pedido.getFormaPagamento().getId()));
+        }
 
-        pedidoOutputDTO.getEnderecoEntrega().getCidade().add(
-                this.algaLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        if (this.algaSecurity.podeConsultarCidades()) {
+            pedidoOutputDTO.getEnderecoEntrega().getCidade().add(
+                    this.algaLinks.linkToCidade(pedido.getEnderecoEntrega().getCidade().getId()));
+        }
 
-        pedidoOutputDTO.getItens().forEach(item -> {
-            item.add(this.algaLinks.linkToProduto(
-                    pedidoOutputDTO.getRestaurante().getId(), item.getProdutoId(), "produto"));
-        });
+        // Quem pode consultar restaurantes, também pode consultar os produtos dos restaurantes
+        if (this.algaSecurity.podeConsultarRestaurantes()) {
+            pedidoOutputDTO.getItens().forEach(item -> {
+                item.add(this.algaLinks.linkToProduto(
+                        pedidoOutputDTO.getRestaurante().getId(), item.getProdutoId(), "produto"));
+            });
+        }
 
         return pedidoOutputDTO;
     }

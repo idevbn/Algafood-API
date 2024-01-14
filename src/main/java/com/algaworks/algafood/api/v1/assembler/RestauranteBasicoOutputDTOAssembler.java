@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.v1.assembler;
 import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.controllers.RestauranteController;
 import com.algaworks.algafood.api.v1.model.out.RestauranteBasicoOutputDTO;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,17 @@ public class RestauranteBasicoOutputDTOAssembler
         extends RepresentationModelAssemblerSupport<Restaurante, RestauranteBasicoOutputDTO> {
 
     private final ModelMapper modelMapper;
-
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
     @Autowired
     public RestauranteBasicoOutputDTOAssembler(final ModelMapper modelMapper,
-                                               final AlgaLinks algaLinks) {
+                                               final AlgaLinks algaLinks,
+                                               final AlgaSecurity algaSecurity) {
         super(RestauranteController.class, RestauranteBasicoOutputDTO.class);
         this.modelMapper = modelMapper;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @Override
@@ -33,12 +36,16 @@ public class RestauranteBasicoOutputDTOAssembler
 
         this.modelMapper.map(restaurante, restauranteBasicoOutputDTO);
 
-        restauranteBasicoOutputDTO
-                .add(this.algaLinks.linkToRestaurantes("restaurantes"));
+        if (this.algaSecurity.podeConsultarRestaurantes()) {
+            restauranteBasicoOutputDTO
+                    .add(this.algaLinks.linkToRestaurantes("restaurantes"));
+        }
 
-        restauranteBasicoOutputDTO.getCozinha().add(
-                this.algaLinks.linkToCozinha(restaurante.getCozinha().getId())
-        );
+        if (this.algaSecurity.podeConsultarCozinhas()) {
+            restauranteBasicoOutputDTO.getCozinha().add(
+                    this.algaLinks.linkToCozinha(restaurante.getCozinha().getId())
+            );
+        }
 
         return restauranteBasicoOutputDTO;
     }
@@ -47,7 +54,14 @@ public class RestauranteBasicoOutputDTOAssembler
     public CollectionModel<RestauranteBasicoOutputDTO> toCollectionModel(
             final Iterable<? extends Restaurante> entities
     ) {
-        return super.toCollectionModel(entities).add(algaLinks.linkToRestaurantes());
+        final CollectionModel<RestauranteBasicoOutputDTO> collectionModel = super
+                .toCollectionModel(entities);
+
+        if (this.algaSecurity.podeConsultarRestaurantes()) {
+            collectionModel.add(this.algaLinks.linkToRestaurantes());
+        }
+
+        return collectionModel;
     }
 
 }
