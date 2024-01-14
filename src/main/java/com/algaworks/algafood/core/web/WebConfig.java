@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
@@ -22,17 +20,6 @@ public class WebConfig implements WebMvcConfigurer {
     public WebConfig(final ApiRetirementHandler apiRetirementHandler) {
         this.apiRetirementHandler = apiRetirementHandler;
     }
-
-    @Override
-    public void addCorsMappings(final CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedMethods("*");
-    }
-
-//    @Override
-//    public void addInterceptors(final InterceptorRegistry registry) {
-//        registry.addInterceptor(this.apiRetirementHandler);
-//    }
 
     /**
      * Recebe uma requisição HTTP e momento de informar a resposta HTTP,
