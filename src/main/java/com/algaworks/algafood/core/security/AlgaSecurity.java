@@ -56,6 +56,10 @@ public class AlgaSecurity {
         return userId;
     }
 
+    public boolean isAutenticado() {
+        return getAuthentication().isAuthenticated();
+    }
+
     public boolean gerenciaRestaurante(final Long restauranteId) {
         if (restauranteId == null) {
             return false;
@@ -86,10 +90,74 @@ public class AlgaSecurity {
                 .anyMatch(authority -> authority.getAuthority().equals(authorityName));
     }
 
+    public boolean temEscopoEscrita() {
+        return hasAuthority("SCOPE_WRITE");
+    }
+
+    public boolean temEscopoLeitura() {
+        return hasAuthority("SCOPE_READ");
+    }
+
     public boolean podeGerenciarPedidos(final String codigoPedido) {
-        return this.hasAuthority("SCOPE_WRITE")
+        return this.temEscopoEscrita()
                 && (this.hasAuthority("GERENCIAR_PEDIDOS")
                 || this.gerenciaRestauranteDoPedido(codigoPedido));
+    }
+
+    public boolean podeConsultarRestaurantes() {
+        return this.temEscopoLeitura() && this.isAutenticado();
+    }
+
+    public boolean podeGerenciarCadastroRestaurantes() {
+        return this.temEscopoEscrita()
+                && this.hasAuthority("EDITAR_RESTAURANTES");
+    }
+
+    public boolean podeGerenciarFuncionamentoRestaurantes(final Long restauranteId) {
+        return this.temEscopoEscrita() && (this.hasAuthority("EDITAR_RESTAURANTES")
+                || this.gerenciaRestaurante(restauranteId));
+    }
+
+    public boolean podeConsultarUsuariosGruposPermissoes() {
+        return this.temEscopoLeitura()
+                && this.hasAuthority("CONSULTAR_USUARIOS_GRUPOS_PERMISSOES");
+    }
+
+    public boolean podeEditarUsuariosGruposPermissoes() {
+        return this.temEscopoEscrita()
+                && this.hasAuthority("EDITAR_USUARIOS_GRUPOS_PERMISSOES");
+    }
+
+    public boolean podePesquisarPedidos(final Long clienteId, final Long restauranteId) {
+        return this.temEscopoLeitura()
+                && (this.hasAuthority("CONSULTAR_PEDIDOS")
+                || this.usuarioAutenticadoIgual(clienteId)
+                || this.gerenciaRestaurante(restauranteId));
+    }
+
+    public boolean podePesquisarPedidos() {
+        return this.isAutenticado() && this.temEscopoLeitura();
+    }
+
+    public boolean podeConsultarFormasPagamento() {
+        return this.isAutenticado() && this.temEscopoLeitura();
+    }
+
+    public boolean podeConsultarCidades() {
+        return this.isAutenticado() && this.temEscopoLeitura();
+    }
+
+    public boolean podeConsultarEstados() {
+        return this.isAutenticado() && this.temEscopoLeitura();
+    }
+
+    public boolean podeConsultarCozinhas() {
+        return this.isAutenticado() && this.temEscopoLeitura();
+    }
+
+    public boolean podeConsultarEstatisticas() {
+        return this.temEscopoLeitura()
+                && this.hasAuthority("GERAR_RELATORIOS");
     }
 
 }
