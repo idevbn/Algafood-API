@@ -28,15 +28,14 @@ import org.springframework.web.context.request.ServletWebRequest;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
 import springfox.documentation.builders.*;
 import springfox.documentation.schema.AlternateTypeRules;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.service.Response;
-import springfox.documentation.service.Tag;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.json.JacksonModuleRegistrar;
 import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -59,6 +58,9 @@ public class SpringFoxConfig {
                 .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .securityContexts(Collections.singletonList(securityContext()))
+                .securitySchemes(List.of(authenticationScheme()))
+                .securityContexts(List.of(securityContext()))
                 .additionalModels(typeResolver.resolve(ApiError.class))
                 .ignoredParameterTypes(
                         ServletWebRequest.class,
@@ -118,6 +120,9 @@ public class SpringFoxConfig {
                 .globalResponses(HttpMethod.POST, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.PUT, globalPostPutResponseMessages())
                 .globalResponses(HttpMethod.DELETE, globalDeleteResponseMessages())
+                .securityContexts(Collections.singletonList(securityContext()))
+                .securitySchemes(List.of(authenticationScheme()))
+                .securityContexts(List.of(securityContext()))
                 .additionalModels(typeResolver.resolve(ApiError.class))
                 .ignoredParameterTypes(
                         ServletWebRequest.class,
@@ -159,7 +164,8 @@ public class SpringFoxConfig {
     private Consumer<RepresentationBuilder> getProblemaModelReference() {
         return r -> r.model(m -> m.name("ApiError")
                 .referenceModel(ref -> ref.key(k -> k.qualifiedModelName(
-                        q -> q.name("ApiError").namespace("com.algaworks.algafood.api.exceptionhandler")))));
+                        q -> q.name("ApiError").namespace("com.algaworks.algafood.api.exceptionhandler"))
+                )));
     }
 
     private List<Response> globalGetResponseMessages() {
@@ -218,6 +224,23 @@ public class SpringFoxConfig {
         );
 
         return responses;
+    }
+
+    private SecurityContext securityContext() {
+        return SecurityContext.builder()
+                .securityReferences(securityReference()).build();
+    }
+
+    private List<SecurityReference> securityReference() {
+        final AuthorizationScope authorizationScope
+                = new AuthorizationScope("global", "accessEverything");
+        final AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
+        authorizationScopes[0] = authorizationScope;
+        return List.of(new SecurityReference("Authorization", authorizationScopes));
+    }
+
+    private HttpAuthenticationScheme authenticationScheme() {
+        return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("Authorization").build();
     }
 
     private List<Response> globalDeleteResponseMessages() {
