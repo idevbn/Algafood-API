@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.FormaPagamentoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.FormaPagamentoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.RestauranteFormaPagamentoControllerOpenApi;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -24,14 +25,17 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
     private final CadastroRestauranteService service;
     private final FormaPagamentoOutputDTOAssembler assembler;
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
     @Autowired
     public RestauranteFormaPagamentoController(final CadastroRestauranteService service,
                                                final FormaPagamentoOutputDTOAssembler assembler,
-                                               final AlgaLinks algaLinks) {
+                                               final AlgaLinks algaLinks,
+                                               final AlgaSecurity algaSecurity) {
         this.service = service;
         this.assembler = assembler;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @GetMapping
@@ -47,17 +51,21 @@ public class RestauranteFormaPagamentoController implements RestauranteFormaPaga
         final CollectionModel<FormaPagamentoOutputDTO> formasPagamentoOutputDTOS = this.assembler
                 .toCollectionModel(formasPagamento)
                 .removeLinks()
-                .add(this.algaLinks.linkToRestauranteFormasPagamento(id))
-                .add(this.algaLinks.linkToRestauranteFormaPagamentoAssociacao(id, "associar"));
+                .add(this.algaLinks.linkToRestauranteFormasPagamento(id));
 
-        formasPagamentoOutputDTOS.getContent().forEach(formaPagamentoOutputDTO -> {
-            formaPagamentoOutputDTO.add(this.algaLinks.linkToRestauranteFormaPagamentoDesassociacao(
-                            id,
-                            formaPagamentoOutputDTO.getId(),
-                            "desassociar"
-                    )
-            );
-        });
+        if (this.algaSecurity.podeGerenciarFuncionamentoRestaurantes(id)) {
+            formasPagamentoOutputDTOS
+                    .add(this.algaLinks.linkToRestauranteFormaPagamentoAssociacao(id, "associar"));
+
+            formasPagamentoOutputDTOS.getContent().forEach(formaPagamentoOutputDTO -> {
+                formaPagamentoOutputDTO.add(this.algaLinks.linkToRestauranteFormaPagamentoDesassociacao(
+                                id,
+                                formaPagamentoOutputDTO.getId(),
+                                "desassociar"
+                        )
+                );
+            });
+        }
 
         final ResponseEntity<CollectionModel<FormaPagamentoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)

@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.UsuarioOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.UsuarioOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.RestauranteUsuarioResponsavelControllerOpenApi;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.model.Usuario;
@@ -25,14 +26,17 @@ public class RestauranteUsuarioResponsavelController
     private final CadastroRestauranteService restauranteService;
     private final UsuarioOutputDTOAssembler assembler;
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
     @Autowired
     public RestauranteUsuarioResponsavelController(final CadastroRestauranteService restauranteService,
                                                    final UsuarioOutputDTOAssembler assembler,
-                                                   final AlgaLinks algaLinks) {
+                                                   final AlgaLinks algaLinks,
+                                                   final AlgaSecurity algaSecurity) {
         this.restauranteService = restauranteService;
         this.assembler = assembler;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @GetMapping
@@ -45,18 +49,21 @@ public class RestauranteUsuarioResponsavelController
         final CollectionModel<UsuarioOutputDTO> usuariosOutputDTOS = this.assembler
                 .toCollectionModel(responsaveis)
                 .removeLinks()
-                .add(this.algaLinks.linkToResponsaveisRestaurante(id))
-                .add(this.algaLinks.linkToRestauranteUsuarioResponsavelAssociacao(id, "associar"));
+                .add(this.algaLinks.linkToResponsaveisRestaurante(id));
 
-        usuariosOutputDTOS.getContent().forEach(usuarioOutputDTO -> {
-            usuarioOutputDTO.add(this.algaLinks.linkToRestauranteUsuarioResponsavelDesassociacao(
-                            id,
-                            usuarioOutputDTO.getId(),
-                            "desassociar"
-                    )
-            );
-        });
+        if (this.algaSecurity.podeGerenciarCadastroRestaurantes()) {
+            usuariosOutputDTOS
+                    .add(this.algaLinks.linkToRestauranteUsuarioResponsavelAssociacao(id, "associar"));
 
+            usuariosOutputDTOS.getContent().forEach(usuarioOutputDTO -> {
+                usuarioOutputDTO.add(this.algaLinks.linkToRestauranteUsuarioResponsavelDesassociacao(
+                                id,
+                                usuarioOutputDTO.getId(),
+                                "desassociar"
+                        )
+                );
+            });
+        }
 
         final ResponseEntity<CollectionModel<UsuarioOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)

@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.AlgaLinks;
 import com.algaworks.algafood.api.v1.assembler.GrupoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.model.out.GrupoOutputDTO;
 import com.algaworks.algafood.api.v1.openapi.controllers.UsuarioGrupoControllerOpenApi;
+import com.algaworks.algafood.core.security.AlgaSecurity;
 import com.algaworks.algafood.core.security.CheckSecurity;
 import com.algaworks.algafood.domain.model.Grupo;
 import com.algaworks.algafood.domain.model.Usuario;
@@ -24,14 +25,17 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
     private final GrupoOutputDTOAssembler assembler;
     private final CadastroUsuarioService service;
     private final AlgaLinks algaLinks;
+    private final AlgaSecurity algaSecurity;
 
     @Autowired
     public UsuarioGrupoController(final GrupoOutputDTOAssembler assembler,
                                   final CadastroUsuarioService service,
-                                  final AlgaLinks algaLinks) {
+                                  final AlgaLinks algaLinks,
+                                  final AlgaSecurity algaSecurity) {
         this.assembler = assembler;
         this.service = service;
         this.algaLinks = algaLinks;
+        this.algaSecurity = algaSecurity;
     }
 
     @GetMapping
@@ -45,13 +49,17 @@ public class UsuarioGrupoController implements UsuarioGrupoControllerOpenApi {
 
         final CollectionModel<GrupoOutputDTO> gruposOutputDTOS = this.assembler
                 .toCollectionModel(grupos)
-                .removeLinks()
-                .add(this.algaLinks.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+                .removeLinks();
 
-        gruposOutputDTOS.getContent().forEach(grupoOutputDTO -> {
-            grupoOutputDTO.add(this.algaLinks.linkToUsuarioGrupoDesassociacao(
-                    usuarioId, grupoOutputDTO.getId(), "desassociar"));
-        });
+        if (this.algaSecurity.podeEditarUsuariosGruposPermissoes()) {
+            gruposOutputDTOS
+                    .add(this.algaLinks.linkToUsuarioGrupoAssociacao(usuarioId, "associar"));
+
+            gruposOutputDTOS.getContent().forEach(grupoOutputDTO -> {
+                grupoOutputDTO.add(this.algaLinks.linkToUsuarioGrupoDesassociacao(
+                        usuarioId, grupoOutputDTO.getId(), "desassociar"));
+            });
+        }
 
         final ResponseEntity<CollectionModel<GrupoOutputDTO>> response = ResponseEntity
                 .status(HttpStatus.OK)

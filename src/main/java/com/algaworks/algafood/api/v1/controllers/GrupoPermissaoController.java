@@ -54,7 +54,7 @@ public class GrupoPermissaoController implements GrupoPermissaoControllerOpenApi
                 .removeLinks()
                 .add(algaLinks.linkToGrupoPermissoes(grupoId));
 
-        if (this.algaSecurity.podeConsultarUsuariosGruposPermissoes()) {
+        if (this.algaSecurity.podeEditarUsuariosGruposPermissoes()) {
             permissoesOutputDTOS
                     .add(algaLinks.linkToGrupoPermissaoAssociacao(grupoId, "associar"));
 
