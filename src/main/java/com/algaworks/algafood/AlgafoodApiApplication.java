@@ -1,5 +1,6 @@
 package com.algaworks.algafood;
 
+import com.algaworks.algafood.core.io.Base64pProtocolResolver;
 import com.algaworks.algafood.infraestructure.repository.CustomJpaRepositoryImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,10 @@ public class AlgafoodApiApplication {
 	public static void main(String[] args) {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
 
-		SpringApplication.run(AlgafoodApiApplication.class, args);
+		final SpringApplication springApplication
+				= new SpringApplication(AlgafoodApiApplication.class);
+		springApplication.addListeners(new Base64pProtocolResolver());
+		springApplication.run(args);
 	}
 
 }
