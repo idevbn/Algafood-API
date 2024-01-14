@@ -18,7 +18,7 @@ public @interface CheckSecurity {
         }
 
         @Target(METHOD)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@algaSecurity.podeConsultarCozinhas()")
         @Retention(RUNTIME)
         @interface PodeConsultar {
         }
@@ -28,19 +28,17 @@ public @interface CheckSecurity {
 
         @Retention(RUNTIME)
         @Target(METHOD)
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_RESTAURANTES')")
+        @PreAuthorize("@algaSecurity.podeGerenciarCadastroRestaurantes(#id)")
         @interface PodeGerenciarCadastro { }
 
         @Retention(RUNTIME)
         @Target(METHOD)
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and "
-                + "(hasAuthority('EDITAR_RESTAURANTES') or "
-                + "@algaSecurity.gerenciaRestaurante(#id))")
+        @PreAuthorize("@algaSecurity.podeGerenciarFuncionamentoRestaurantes()")
         @interface PodeGerenciarFuncionamento { }
 
         @Retention(RUNTIME)
         @Target(METHOD)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@algasSecurity.podeConsultarRestaurantes()")
         @interface PodeConsultar { }
     }
 
@@ -56,9 +54,7 @@ public @interface CheckSecurity {
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and (hasAuthority('CONSULTAR_PEDIDOS') or "
-                + "@algaSecurity.usuarioAutenticadoIgual(#filtro.clienteId) or"
-                + "@algaSecurity.gerenciaRestaurante(#filtro.restauranteId))")
+        @PreAuthorize("@algaSecurity.podePesquisarPedidos(#filtro.clienteId, #filtro.restauranteId)")
         @interface PodePesquisar { }
 
         @Target(METHOD)
@@ -79,7 +75,7 @@ public @interface CheckSecurity {
         @Target(METHOD)
         @interface PodeEditar { }
 
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@algaSecurity.podeConsultarFormasPagamento()")
         @Retention(RUNTIME)
         @Target(METHOD)
         @interface PodeConsultar { }
@@ -95,7 +91,7 @@ public @interface CheckSecurity {
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@algaSecurity.podeConsultarCidades()")
         @interface PodeConsultar { }
 
     }
@@ -109,7 +105,7 @@ public @interface CheckSecurity {
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and isAuthenticated()")
+        @PreAuthorize("@algaSecurity.podeConsultarEstados()")
         @interface PodeConsultar { }
     }
 
@@ -129,12 +125,12 @@ public @interface CheckSecurity {
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @PreAuthorize("@algaSecurity.podeEditarUsuariosGruposPermissoes()")
         @interface PodeEditar { }
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and hasAuthority('CONSULTAR_USUARIOS_GRUPOS_PERMISSOES')")
+        @PreAuthorize("@algaSecurity.podeConsultarUsuariosGruposPermissoes()")
         @interface PodeConsultar { }
     }
 
@@ -142,8 +138,7 @@ public @interface CheckSecurity {
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("hasAuthority('SCOPE_READ') and "
-                + "hasAuthority('GERAR_RELATORIOS')")
+        @PreAuthorize("@algaSecurity.podeConsultarEstatisticas()")
         @interface PodeConsultar { }
     }
 
