@@ -1,5 +1,9 @@
 package com.algaworks.algafood.core.security.authorizationserver;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.KeyUse;
+import com.nimbusds.jose.jwk.RSAKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +26,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 
 import javax.sql.DataSource;
 import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 import java.util.List;
 
@@ -87,23 +92,36 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     }
 
     @Bean
+    public JWKSet jwkSet() {
+        final RSAKey.Builder builder = new RSAKey.Builder((RSAPublicKey) this.keyPair().getPublic())
+                .keyUse(KeyUse.SIGNATURE)
+                .algorithm(JWSAlgorithm.RS256)
+                .keyID("algafood-key-id");
+
+        return new JWKSet(builder.build());
+    }
+
+    @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
         final JwtAccessTokenConverter jwtAccessTokenConverter
                 = new JwtAccessTokenConverter();
 
-//        jwtAccessTokenConverter.setSigningKey("aa27b16ae5be4cdf90d9c37a35f9298a");
+        jwtAccessTokenConverter.setKeyPair(this.keyPair());
 
+        return jwtAccessTokenConverter;
+    }
+
+    private KeyPair keyPair() {
         final Resource jksLocation = this.jwtKeyStoreProperties.getJksLocation();
         final String password = this.jwtKeyStoreProperties.getPassword();
         final String pairAlias = this.jwtKeyStoreProperties.getKeyPairAlias();
 
         final KeyStoreKeyFactory keyStoreKeyFactory
                 = new KeyStoreKeyFactory(jksLocation, password.toCharArray());
+
         final KeyPair keyPair = keyStoreKeyFactory.getKeyPair(pairAlias);
 
-        jwtAccessTokenConverter.setKeyPair(keyPair);
-
-        return jwtAccessTokenConverter;
+        return keyPair;
     }
 
     private ApprovalStore approvalStore(final TokenStore tokenStore) {
