@@ -1,5 +1,23 @@
 SET foreign_key_checks = 0;
 
+LOCK TABLES tb_cidade WRITE,
+            tb_cozinha WRITE,
+            tb_estado WRITE,
+            tb_forma_pagamento WRITE,
+            tb_grupo WRITE,
+            tb_grupo_permissao WRITE,
+            tb_permissao WRITE,
+            tb_produto WRITE,
+            tb_restaurante WRITE,
+            tb_restaurante_forma_pagamento WRITE,
+            tb_usuario WRITE,
+            tb_usuario_grupo WRITE,
+            tb_restaurante_usuario_responsavel WRITE,
+            tb_pedido WRITE,
+            tb_item_pedido WRITE,
+            tb_foto_produto WRITE,
+            oauth_client_details WRITE;
+
 DELETE FROM tb_cidade;
 DELETE FROM tb_cozinha;
 DELETE FROM tb_estado;
@@ -149,3 +167,5 @@ VALUES (
   'READ,WRITE', 'client_credentials', null, 'CONSULTAR_PEDIDOS,GERAR_RELATORIOS',
   null, null, null
 );
+
+UNLOCK TABLES;
