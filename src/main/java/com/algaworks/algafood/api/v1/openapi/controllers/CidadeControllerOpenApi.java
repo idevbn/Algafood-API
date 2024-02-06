@@ -31,7 +31,7 @@ public interface CidadeControllerOpenApi {
             @ApiResponse(
                     responseCode = "400",
                     description = "ID da cidade inválido",
-                    content =  @Content(schema = @Schema)
+                    content =  @Content(schema = @Schema(ref = "ApiError"))
             )
     })
     ResponseEntity<CidadeOutputDTO> buscar(
