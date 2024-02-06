@@ -2,12 +2,14 @@ package com.algaworks.algafood.api.v1.openapi.controllers;
 
 import com.algaworks.algafood.api.v1.model.in.FotoProdutoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.FotoProdutoOuputDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@SecurityRequirement(name = "security_auth")
 public interface RestauranteFotoProdutoControllerOpenApi {
 
     ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(final Long restauranteId,

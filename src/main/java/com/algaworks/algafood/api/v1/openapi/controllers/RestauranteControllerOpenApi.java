@@ -4,17 +4,18 @@ import com.algaworks.algafood.api.v1.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.v1.model.out.RestauranteApenasNomeOutputDTO;
 import com.algaworks.algafood.api.v1.model.out.RestauranteBasicoOutputDTO;
 import com.algaworks.algafood.api.v1.model.out.RestauranteOutputDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+@SecurityRequirement(name = "security_auth")
 public interface RestauranteControllerOpenApi {
 
     ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> listar();
 
 //    @JsonView(RestauranteView.Resumo.class)
-//    @ApiOperation(value = "Lista restaurantes", hidden = true)
 //    public ResponseEntity<CollectionModel<RestauranteBasicoOutputDTO>> listarResumido();
 
     ResponseEntity<CollectionModel<RestauranteApenasNomeOutputDTO>> listarApenasNomes();

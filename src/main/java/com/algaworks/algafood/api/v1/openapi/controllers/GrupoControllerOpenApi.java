@@ -2,9 +2,11 @@ package com.algaworks.algafood.api.v1.openapi.controllers;
 
 import com.algaworks.algafood.api.v1.model.in.GrupoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.GrupoOutputDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 
+@SecurityRequirement(name = "security_auth")
 public interface GrupoControllerOpenApi {
 
     ResponseEntity<CollectionModel<GrupoOutputDTO>> listar();
