@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 public class EstadoIdInputDTO {
 
     @NotNull
-    @Schema(example = "1", required = true)
+    @Schema(example = "1")
     private Long id;
 
 }
