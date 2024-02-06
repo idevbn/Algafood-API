@@ -20,8 +20,6 @@ import com.algaworks.algafood.domain.repository.PedidoRepository;
 import com.algaworks.algafood.domain.service.EmissaoPedidoService;
 import com.algaworks.algafood.infraestructure.repository.spec.PedidoSpecs;
 import com.google.common.collect.ImmutableMap;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -66,14 +64,6 @@ public class PedidoController implements PedidoControllerOpenApi {
     }
 
     @GetMapping
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
-                    name = "campos",
-                    paramType = "query",
-                    type = "string"
-            )
-    })
     @CheckSecurity.Pedidos.PodePesquisar
     public ResponseEntity<PagedModel<PedidoResumoOutputDTO>> pesquisar(
             @PageableDefault() Pageable pageable,
@@ -97,14 +87,6 @@ public class PedidoController implements PedidoControllerOpenApi {
     }
 
     @GetMapping(value = "/{codigo}")
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
-                    name = "campos",
-                    paramType = "query",
-                    type = "string"
-            )
-    })
     @CheckSecurity.Pedidos.PodeBuscar
     public ResponseEntity<PedidoOutputDTO> buscar(@PathVariable("codigo") final String codigo) {
         final Pedido pedido = this.service.buscarOuFalhar(codigo);

@@ -1,6 +1,5 @@
 package com.algaworks.algafood.api.v1.model.out;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.hateoas.RepresentationModel;
@@ -13,13 +12,10 @@ import java.math.BigDecimal;
 @Relation(collectionRelation = "restaurantes")
 public class RestauranteBasicoOutputDTO extends RepresentationModel<RestauranteBasicoOutputDTO> {
 
-    @ApiModelProperty(example = "1")
     private Long id;
 
-    @ApiModelProperty(example = "Thai Gourmet")
     private String nome;
 
-    @ApiModelProperty(example = "12.00")
     private BigDecimal taxaFrete;
 
     private CozinhaOutputDTO cozinha;

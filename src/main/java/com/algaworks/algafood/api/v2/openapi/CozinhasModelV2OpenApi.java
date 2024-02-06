@@ -1,7 +1,6 @@
 package com.algaworks.algafood.api.v2.openapi;
 
 import com.algaworks.algafood.api.v2.model.CozinhaOutputDTOV2;
-import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +10,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@ApiModel("CozinhasModel")
 public class CozinhasModelV2OpenApi {
 
     private CozinhasEmbeddedModelOpenApi _embedded;
@@ -19,7 +17,6 @@ public class CozinhasModelV2OpenApi {
     private PageModelV2OpenApi page;
 
     @Data
-    @ApiModel("CozinhasEmbeddedModel")
     public class CozinhasEmbeddedModelOpenApi {
 
         private List<CozinhaOutputDTOV2> cozinhas;
