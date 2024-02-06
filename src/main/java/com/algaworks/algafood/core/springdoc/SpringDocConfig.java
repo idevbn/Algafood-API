@@ -1,14 +1,18 @@
 package com.algaworks.algafood.core.springdoc;
 
+import com.algaworks.algafood.api.exceptionhandler.ApiError;
+import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.ExternalDocumentation;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.tags.Tag;
@@ -17,6 +21,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @SecurityScheme(
@@ -52,7 +58,10 @@ public class SpringDocConfig {
                                 new Tag().name("Cidades")
                                         .description("Gerencia as cidades")
                         )
-                );
+                )
+                .components(new Components().schemas(
+                        this.gerarSchemas()
+                ));
     }
 
     @Bean
@@ -121,6 +130,23 @@ public class SpringDocConfig {
                                 });
                     });
         };
+    }
+
+    private Map<String, Schema> gerarSchemas() {
+        final Map<String, Schema> schemaMap = new HashMap<>();
+
+        final Map<String, Schema> apiErrorSchema = ModelConverters
+                .getInstance()
+                .read(ApiError.class);
+
+        final Map<String, Schema> apiErrorObjectSchema = ModelConverters
+                .getInstance()
+                .read(ApiError.Object.class);
+
+        schemaMap.putAll(apiErrorSchema);
+        schemaMap.putAll(apiErrorObjectSchema);
+
+        return schemaMap;
     }
 
 }
