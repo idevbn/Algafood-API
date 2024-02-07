@@ -1,22 +1,26 @@
 package com.algaworks.algafood.api.v1.model.in;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @Setter
 public class ItemPedidoInputDTO {
     
     @NotNull
+    @Schema(example = "1")
     private Long produtoId;
     
     @NotNull
-    @PositiveOrZero
+    @Min(1)
+    @Schema(example = "2")
     private Integer quantidade;
 
+    @Schema(example = "Menos picante, por favor")
     private String observacao;
 
 }
