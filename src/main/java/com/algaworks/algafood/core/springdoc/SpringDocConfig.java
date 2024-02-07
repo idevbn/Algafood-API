@@ -64,8 +64,8 @@ public class SpringDocConfig {
                         .url("https://algaworks.com")
                 )
                 .tags(Arrays.asList(
-                                new Tag().name("Cidades")
-                                        .description("Gerencia as cidades")
+                                new Tag().name("Cidades").description("Gerencia as cidades"),
+                                new Tag().name("Grupos").description("Gerencia os grupos")
                         )
                 )
                 .components(new Components()
@@ -172,7 +172,7 @@ public class SpringDocConfig {
                 .content(content)
         );
 
-        apiResponseMap.put(notAcceptableResponse,  new ApiResponse()
+        apiResponseMap.put(notAcceptableResponse, new ApiResponse()
                 .description("Recurso não possui representação que poderia ser aceita pelo consumidor")
                 .content(content)
         );
