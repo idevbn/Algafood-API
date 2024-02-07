@@ -3,8 +3,10 @@ package com.algaworks.algafood.api.v1.openapi.controllers;
 import com.algaworks.algafood.api.v1.model.in.FotoProdutoInputDTO;
 import com.algaworks.algafood.api.v1.model.out.FotoProdutoOuputDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,15 @@ import java.io.IOException;
 @SecurityRequirement(name = "security_auth")
 public interface RestauranteFotoProdutoControllerOpenApi {
 
-    ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(final Long restauranteId,
-                                                      final Long produtoId,
-                                                      final FotoProdutoInputDTO fotoProdutoInput,
-                                                      final MultipartFile arquivo) throws IOException;
+    @Operation(summary = "Atualiza a foto do produto de um restaurante")
+    ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(
+            @Parameter(description = "Id do restaurante", example = "1", required = true)
+            final Long restauranteId,
+            @Parameter(description = "Id do produto", example = "2", required = true)
+            final Long produtoId,
+            @RequestBody(required = true)
+            final FotoProdutoInputDTO fotoProdutoInput
+    ) throws IOException;
 
     ResponseEntity<Void> removerFoto(final Long restauranteId,
                                      final Long produtoId);
