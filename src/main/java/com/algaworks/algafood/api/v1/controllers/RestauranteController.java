@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.v1.assembler.RestauranteApenasNomeOutputDTOAss
 import com.algaworks.algafood.api.v1.assembler.RestauranteBasicoOutputDTOAssembler;
 import com.algaworks.algafood.api.v1.assembler.RestauranteInputDTODisassembler;
 import com.algaworks.algafood.api.v1.assembler.RestauranteOutputDTOAssembler;
+import com.algaworks.algafood.api.v1.model.in.CidadeIdInputDTO;
 import com.algaworks.algafood.api.v1.model.in.CozinhaIdInputDTO;
 import com.algaworks.algafood.api.v1.model.in.RestauranteInputDTO;
 import com.algaworks.algafood.api.v1.model.out.RestauranteApenasNomeOutputDTO;
@@ -205,7 +206,7 @@ public class RestauranteController implements RestauranteControllerOpenApi {
     ) {
         final Restaurante restauranteAtual = this.service.buscarOuFalhar(id);
 
-        merge(campos, restauranteAtual, request);
+        this.merge(campos, restauranteAtual, request);
 
         validate(restauranteAtual, "restaurante");
 
@@ -368,6 +369,10 @@ public class RestauranteController implements RestauranteControllerOpenApi {
         cozinhaInputDTO.setId(restaurante.getCozinha().getId());
 
         restauranteInputDTO.setCozinha(cozinhaInputDTO);
+
+        final Long cidadeId = restaurante.getEndereco().getCidade().getId();
+        final CidadeIdInputDTO cidadeIdInputDTO = new CidadeIdInputDTO();
+        cidadeIdInputDTO.setId(cidadeId);
 
         return restauranteInputDTO;
     }
