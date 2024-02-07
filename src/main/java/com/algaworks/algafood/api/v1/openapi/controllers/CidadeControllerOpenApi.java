@@ -55,7 +55,16 @@ public interface CidadeControllerOpenApi {
             final CidadeInputDTO cidadeInputDTO
     );
 
-    @Operation(summary = "Atualiza uma cidade por ID")
+    @Operation(summary = "Atualiza uma cidade por ID",
+            responses = {
+                    @ApiResponse(responseCode = "200"),
+                    @ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+                            content = @Content(schema = @Schema(ref = "ApiError"))
+                    ),
+                    @ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+                            content = @Content(schema = @Schema(ref = "ApiError"))
+                    )
+            })
     ResponseEntity<CidadeOutputDTO> atualizar(
             @Parameter(
                     description = "ID de uma cidade",
@@ -69,7 +78,15 @@ public interface CidadeControllerOpenApi {
             final CidadeInputDTO cidadeInputDTO
     );
 
-    @Operation(summary = "Exclui uma cidade por ID")
+    @Operation(summary = "Exclui uma cidade por ID",responses = {
+            @ApiResponse(responseCode = "204"),
+            @ApiResponse(responseCode = "400", description = "ID da cidade inválido",
+                    content = @Content(schema = @Schema(ref = "ApiError"))
+            ),
+            @ApiResponse(responseCode = "404", description = "Cidade não encontrada",
+                    content = @Content(schema = @Schema(ref = "ApiError"))
+            )
+    })
     ResponseEntity<Void> remover(
             @Parameter(
                     description = "ID de uma cidade",
