@@ -74,12 +74,13 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
     public ResponseEntity<FotoProdutoOuputDTO> atualizarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
-            @Valid final FotoProdutoInputDTO fotoProdutoInput,
-            @RequestPart(required = true) final MultipartFile arquivo
+            @Valid final FotoProdutoInputDTO fotoProdutoInput
     ) throws IOException {
 
         final Produto produto = this.produtoService
                 .buscarOuFalhar(restauranteId, produtoId);
+
+        final MultipartFile arquivo = fotoProdutoInput.getArquivo();
 
         final FotoProduto foto = new FotoProduto();
         foto.setProduto(produto);
