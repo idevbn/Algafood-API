@@ -18,34 +18,34 @@ public @interface CheckSecurity {
         }
 
         @Target(METHOD)
-        @PreAuthorize("@algaSecurity.podeConsultarCozinhas()")
         @Retention(RUNTIME)
+        @PreAuthorize("@algaSecurity.podeConsultarCozinhas()")
         @interface PodeConsultar {
         }
     }
 
     @interface Restaurantes {
 
-        @Retention(RUNTIME)
         @Target(METHOD)
+        @Retention(RUNTIME)
         @PreAuthorize("@algaSecurity.podeGerenciarCadastroRestaurantes(#id)")
         @interface PodeGerenciarCadastro { }
 
-        @Retention(RUNTIME)
         @Target(METHOD)
+        @Retention(RUNTIME)
         @PreAuthorize("@algaSecurity.podeGerenciarFuncionamentoRestaurantes()")
         @interface PodeGerenciarFuncionamento { }
 
         @Retention(RUNTIME)
         @Target(METHOD)
-        @PreAuthorize("@algasSecurity.podeConsultarRestaurantes()")
+        @PreAuthorize("@algaSecurity.podeConsultarRestaurantes()")
         @interface PodeConsultar { }
     }
 
     @interface Pedidos {
 
-        @Retention(RUNTIME)
         @Target(METHOD)
+        @Retention(RUNTIME)
         @PostAuthorize("hasAuthority('CONSULTAR_PEDIDOS') or "
                 + "@algaSecurity.usuarioAutenticadoIgual(returnObject.body.cliente.id) or "
                 + "@algaSecurity.gerenciaRestaurante(returnObject.body.restaurante.id)")
@@ -70,14 +70,14 @@ public @interface CheckSecurity {
 
     @interface FormasPagamento {
 
-        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_FORMAS_PAGAMENTO')")
-        @Retention(RUNTIME)
         @Target(METHOD)
+        @Retention(RUNTIME)
+        @PreAuthorize("hasAuthority('SCOPE_WRITE') and hasAuthority('EDITAR_FORMAS_PAGAMENTO')")
         @interface PodeEditar { }
 
-        @PreAuthorize("@algaSecurity.podeConsultarFormasPagamento()")
-        @Retention(RUNTIME)
         @Target(METHOD)
+        @Retention(RUNTIME)
+        @PreAuthorize("@algaSecurity.podeConsultarFormasPagamento()")
         @interface PodeConsultar { }
 
     }
