@@ -50,9 +50,9 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
         this.assembler = assembler;
     }
 
-    @GetMapping
     @CheckSecurity.Restaurantes.PodeConsultar
-    public ResponseEntity<?> recuperarFoto(
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FotoProdutoOuputDTO> recuperarFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId
     ) {
@@ -103,18 +103,13 @@ public class RestauranteFotoProdutoController implements RestauranteFotoProdutoC
 
     @GetMapping(produces = {
             MediaType.IMAGE_JPEG_VALUE,
-            MediaType.IMAGE_PNG_VALUE,
-            MediaType.APPLICATION_JSON_VALUE
+            MediaType.IMAGE_PNG_VALUE
     })
     public ResponseEntity<?> servirFoto(
             @PathVariable("restauranteId") final Long restauranteId,
             @PathVariable("produtoId") final Long produtoId,
             @RequestHeader(name = "accept") final String acceptHeader
     ) throws HttpMediaTypeNotAcceptableException {
-
-        if (acceptHeader.equals(MediaType.APPLICATION_JSON_VALUE)) {
-            return this.recuperarFoto(restauranteId, produtoId);
-        }
 
         try {
             final FotoProduto fotoProduto = this.fotoProdutoService
