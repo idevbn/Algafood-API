@@ -28,7 +28,7 @@ public @interface CheckSecurity {
 
         @Target(METHOD)
         @Retention(RUNTIME)
-        @PreAuthorize("@algaSecurity.podeGerenciarCadastroRestaurantes(#id)")
+        @PreAuthorize("@algaSecurity.podeGerenciarCadastroRestaurantes()")
         @interface PodeGerenciarCadastro { }
 
         @Target(METHOD)
@@ -36,8 +36,8 @@ public @interface CheckSecurity {
         @PreAuthorize("@algaSecurity.podeGerenciarFuncionamentoRestaurantes()")
         @interface PodeGerenciarFuncionamento { }
 
-        @Retention(RUNTIME)
         @Target(METHOD)
+        @Retention(RUNTIME)
         @PreAuthorize("@algaSecurity.podeConsultarRestaurantes()")
         @interface PodeConsultar { }
     }
