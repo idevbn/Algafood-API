@@ -1,6 +1,7 @@
 package com.algaworks.algafood.api.v1.model.in;
 
 import com.algaworks.algafood.core.validation.TaxaFrete;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,10 +15,12 @@ import java.math.BigDecimal;
 public class RestauranteInputDTO {
 
     @NotBlank
+    @Schema(example = "Thai Gourmet")
     private String nome;
 
     @NotNull
     @TaxaFrete
+    @Schema(example = "12.00")
     private BigDecimal taxaFrete;
 
     @Valid
