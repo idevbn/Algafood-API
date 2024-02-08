@@ -9,12 +9,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Tag(name = "Produtos")
 @SecurityRequirement(name = "security_auth")
 public interface RestauranteFotoProdutoControllerOpenApi {
 
@@ -28,8 +29,19 @@ public interface RestauranteFotoProdutoControllerOpenApi {
             final FotoProdutoInputDTO fotoProdutoInput
     ) throws IOException;
 
-    ResponseEntity<Void> removerFoto(final Long restauranteId,
-                                     final Long produtoId);
+    @Operation(summary = "Exclui a foto do produto de um restaurante", responses = {
+            @ApiResponse(responseCode = "204", description = "Foto do produto excluída"),
+            @ApiResponse(responseCode = "400", description = "ID do restaurante ou produto inválido", content = {
+                    @Content(schema = @Schema(ref = "ApiError")) }),
+            @ApiResponse(responseCode = "404", description = "Foto de produto não encontrada", content = {
+                    @Content(schema = @Schema(ref = "ApiError")) }),
+    })
+    ResponseEntity<Void> removerFoto(
+            @Parameter(description = "ID do restaurante", example = "1", required = true)
+            final Long restauranteId,
+            @Parameter(description = "ID do produto", example = "1", required = true)
+            final Long produtoId
+    );
 
     @Operation(summary = "Busca a foto do produto de um restaurante", responses = {
             @ApiResponse(responseCode = "200", content = {
@@ -48,7 +60,9 @@ public interface RestauranteFotoProdutoControllerOpenApi {
             })
     })
     ResponseEntity<FotoProdutoOuputDTO> recuperarFoto(
+            @Parameter(description = "ID do restaurante", example = "1", required = true)
             final Long restauranteId,
+            @Parameter(description = "ID do produto", example = "1", required = true)
             final Long produtoId
     );
 
