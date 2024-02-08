@@ -63,7 +63,7 @@ public interface PedidoControllerOpenApi {
     @Operation(summary = "Busca um pedido por código", responses = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "404", description = "Pedido não encontrado", content = {
-                    @Content(schema = @Schema(ref = "Problema"))}),
+                    @Content(schema = @Schema(ref = "ApiError"))}),
     })
     ResponseEntity<PedidoOutputDTO> adicionar(final PedidoInputDTO pedidoInput);
 

@@ -45,7 +45,7 @@ public interface CozinhaControllerOpenApi {
     @Operation(summary = "Atualiza uma cozinha por ID", responses = {
             @ApiResponse(responseCode = "200", description = "Cozinha atualizada"),
             @ApiResponse(responseCode = "404", description = "Cozinha não encontrada",
-                    content = @Content(schema = @Schema(ref = "Problema"))),
+                    content = @Content(schema = @Schema(ref = "ApiError"))),
     })
     ResponseEntity<CozinhaOutputDTO> atualizar(
             @Parameter(
@@ -64,7 +64,7 @@ public interface CozinhaControllerOpenApi {
     @Operation(summary = "Exclui uma cozinha por ID", responses = {
             @ApiResponse(responseCode = "204", description = "Cozinha excluída"),
             @ApiResponse(responseCode = "404", description = "Cozinha não encontrada",
-                    content = @Content(schema = @Schema(ref = "Problema")))
+                    content = @Content(schema = @Schema(ref = "ApiError")))
     })
     ResponseEntity<Void> remover(
             @Parameter(description = "ID de uma cozinha", example = "1", required = true)

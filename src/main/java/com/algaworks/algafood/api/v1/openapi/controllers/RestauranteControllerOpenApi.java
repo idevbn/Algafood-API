@@ -142,7 +142,7 @@ public interface RestauranteControllerOpenApi {
     @Operation(summary = "Fecha um restaurante por ID", responses = {
             @ApiResponse(responseCode = "204", description = "Restaurante fechado com sucesso"),
             @ApiResponse(responseCode = "404", description = "Restaurante não encontrado", content = {
-                    @Content(schema = @Schema(ref = "Problema")) }),
+                    @Content(schema = @Schema(ref = "ApiError")) }),
     })
     ResponseEntity<Void> fechar(
             @Parameter(description = "ID de um restaurante", example = "1", required = true)

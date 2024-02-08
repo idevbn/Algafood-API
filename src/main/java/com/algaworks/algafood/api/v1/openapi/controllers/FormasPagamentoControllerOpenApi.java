@@ -26,9 +26,9 @@ public interface FormasPagamentoControllerOpenApi {
     @Operation(summary = "Busca uma forma de pagamento por ID", responses = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "400", description = "ID da forma de pagamento inválido", content = {
-                    @Content(schema = @Schema(ref = "Problema"))}),
+                    @Content(schema = @Schema(ref = "ApiError"))}),
             @ApiResponse(responseCode = "404", description = "Forma de pagamento não encontrada", content = {
-                    @Content(schema = @Schema(ref = "Problema"))})
+                    @Content(schema = @Schema(ref = "ApiError"))})
     })
     ResponseEntity<FormaPagamentoOutputDTO> buscar(
             @Parameter(description = "ID de uma forma de pagamento", example = "1", required = true)
@@ -50,7 +50,7 @@ public interface FormasPagamentoControllerOpenApi {
     @Operation(summary = "Atualiza uma forma de pagamento por ID", responses = {
             @ApiResponse(responseCode = "200", description = "Forma de pagamento atualizada"),
             @ApiResponse(responseCode = "404", description = "Forma de pagamento não encontrada", content = {
-                    @Content(schema = @Schema(ref = "Problema")) })
+                    @Content(schema = @Schema(ref = "ApiError")) })
     })
     ResponseEntity<FormaPagamentoOutputDTO> atualizar(
             @Parameter(description = "ID de uma forma de pagamento", example = "1", required = true)
@@ -65,7 +65,7 @@ public interface FormasPagamentoControllerOpenApi {
     @Operation(summary = "Exclui uma forma de pagamento por ID", responses = {
             @ApiResponse(responseCode = "204", description = "Forma de pagamento excluída"),
             @ApiResponse(responseCode = "404", description = "Forma de pagamento não encontrada", content = {
-                    @Content(schema = @Schema(ref = "Problema")) })
+                    @Content(schema = @Schema(ref = "ApiError")) })
     })
     ResponseEntity<Void> remover(
             @Parameter(description = "ID de uma forma de pagamento", example = "1", required = true)
