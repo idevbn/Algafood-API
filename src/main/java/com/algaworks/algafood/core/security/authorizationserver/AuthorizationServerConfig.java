@@ -89,8 +89,8 @@ public class AuthorizationServerConfig {
                                 .accessTokenTimeToLive(Duration.ofMinutes(30))
                                 .build()
                 )
-                .redirectUri("http://localhost:8080/oauth2/authorized")
-                .redirectUri("http://localhost:8080/swagger-ui/oauth2-redirect.html")
+                .redirectUri("http://127.0.0.1:8080/oauth2/authorized")
+                .redirectUri("http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html")
                 .clientSettings(
                         ClientSettings
                                 .builder()
