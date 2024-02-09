@@ -5,6 +5,7 @@ import com.algaworks.algafood.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,7 +40,11 @@ public class JpaUserDetailsService implements UserDetailsService {
                         new UsernameNotFoundException("Usuário não encontrado com email informado")
                 );
 
-        final AuthUser authUser = new AuthUser(usuario, this.getAuthorities(usuario));
+        final User authUser = new User(
+                usuario.getEmail(),
+                usuario.getSenha(),
+                this.getAuthorities(usuario)
+        );
 
         return authUser;
     }
