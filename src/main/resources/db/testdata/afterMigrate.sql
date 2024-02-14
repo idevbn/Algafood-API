@@ -16,7 +16,7 @@ LOCK TABLES tb_cidade WRITE,
             tb_pedido WRITE,
             tb_item_pedido WRITE,
             tb_foto_produto WRITE,
-            oauth_client_details WRITE;
+            oauth2_registered_client WRITE;
 
 DELETE FROM tb_cidade;
 DELETE FROM tb_cozinha;
@@ -34,7 +34,7 @@ DELETE FROM tb_restaurante_usuario_responsavel;
 DELETE FROM tb_pedido;
 DELETE FROM tb_item_pedido;
 DELETE FROM tb_foto_produto;
-DELETE FROM oauth_client_details;
+DELETE FROM oauth2_registered_client;
 
 SET foreign_key_checks = 1;
 
@@ -135,37 +135,16 @@ INSERT INTO tb_pedido (id, codigo, restaurante_id, usuario_cliente_id, forma_pag
 INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (4, 3, 1, 1, 78.9, 78.9, 'Mais molho');
 INSERT INTO tb_item_pedido (id, pedido_id, produto_id, quantidade, preco_unitario, preco_total, observacao) VALUES (5, 3, 2, 2, 78.9, 157.8, 'Menos picante, por favor');
 
-INSERT INTO oauth_client_details (
-  client_id, resource_ids, client_secret,
-  scope, authorized_grant_types, web_server_redirect_uri, authorities,
-  access_token_validity, refresh_token_validity, autoapprove
-)
-VALUES (
-  'algafood-web', null, '$2a$12$D.Tcj0DDBpSKE0SDLHm8UOP2aLB8wqxwo/OjTSg8DRoqXu6HU9zcy',
-  'READ,WRITE', 'password,authorization_code', 'http://localhost:8080,http://localhost:8080/swagger-ui/oauth2-redirect.html', null,
-  60 * 60 * 6, 60 * 24 * 60 * 60, null
-);
+INSERT INTO oauth2_registered_client
+(id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
+VALUES('1', 'algafood-backend', '2024-02-14 19:04:12', '$2a$10$97f9cT/X/htp85ELK8.IhOBpCRHAmn0Z0cYOJVscCj6esvTIFYOrS', NULL, '1', 'client_secret_basic', 'client_credentials', '', 'READ', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",1800.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.core.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",3600.000000000]}');
 
-INSERT INTO oauth_client_details (
-  client_id, resource_ids, client_secret,
-  scope, authorized_grant_types, web_server_redirect_uri, authorities,
-  access_token_validity, refresh_token_validity, autoapprove
-)
-VALUES (
-  'foodanalytics', null, '$2a$10$y8NZPRZzKQW7tc0Ccn0.hOwXlIWa5Tiv1VOamIxlQfjwvJuV4Q9Sa',
-  'READ,WRITE', 'authorization_code', 'http://localhost:8082', null,
-  null, null, null
-);
+INSERT INTO oauth2_registered_client
+(id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
+VALUES('2', 'algafood-web', '2024-02-14 19:04:12', '$2a$10$ku07Df8C0xrgJ.lId5.Cie..VZH4AReQ0wNIKaqvcMlC3MrjT6IF2', NULL, '2', 'client_secret_basic', 'refresh_token,authorization_code', 'http://127.0.0.1:8080/swagger-ui/oauth2-redirect.html,http://127.0.0.1:8080/oauth2/authorized', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":true}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":false,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",900.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.core.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",86400.000000000]}');
 
-INSERT INTO oauth_client_details (
-  client_id, resource_ids, client_secret,
-  scope, authorized_grant_types, web_server_redirect_uri, authorities,
-  access_token_validity, refresh_token_validity, autoapprove
-)
-VALUES (
-  'faturamento', null, '$2a$10$qtUCJb8e/umRr0e/fULrNuiKTYU365ahLOOAqYhver0Pt/3k00Tuu',
-  'READ,WRITE', 'client_credentials', null, 'CONSULTAR_PEDIDOS,GERAR_RELATORIOS',
-  null, null, null
-);
+INSERT INTO oauth2_registered_client
+(id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name, client_authentication_methods, authorization_grant_types, redirect_uris, scopes, client_settings, token_settings)
+VALUES('3', 'foodanalytics', '2024-02-14 19:04:12', '$2a$10$E5f93hZ5kq97tcZVVUEtru08Eg9KBkziAdyZegNT/cfgJItimzPwW', NULL, '3', 'client_secret_basic', 'authorization_code', 'http://www.foodanalytics.local:8082', 'READ,WRITE', '{"@class":"java.util.Collections$UnmodifiableMap","settings.client.require-proof-key":false,"settings.client.require-authorization-consent":false}', '{"@class":"java.util.Collections$UnmodifiableMap","settings.token.reuse-refresh-tokens":true,"settings.token.id-token-signature-algorithm":["org.springframework.security.oauth2.jose.jws.SignatureAlgorithm","RS256"],"settings.token.access-token-time-to-live":["java.time.Duration",1800.000000000],"settings.token.access-token-format":{"@class":"org.springframework.security.oauth2.core.OAuth2TokenFormat","value":"self-contained"},"settings.token.refresh-token-time-to-live":["java.time.Duration",3600.000000000]}');
 
 UNLOCK TABLES;
