@@ -19,7 +19,7 @@
 		<jasperreports.version>6.20.1</jasperreports.version>
 		<aws-java-sdk-s3.version>1.12.336</aws-java-sdk-s3.version>
 		<oauth2-oidc-sdk.version>10.4</oauth2-oidc-sdk.version>
-		<springdoc.version>1.6.9</springdoc.version>
+		<springdoc.version>2.0.0</springdoc.version>
 		<springauthserver.version>0.3.1</springauthserver.version>
 	</properties>
 	<dependencies>
@@ -81,8 +81,7 @@
 
 		<dependency>
 			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>7.15.0</version>
+			<artifactId>flyway-mysql</artifactId>
 		</dependency>
 
 		<dependency>
@@ -158,19 +157,13 @@
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
+			<artifactId>springdoc-openapi-starter-common</artifactId>
 			<version>${springdoc.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-hateoas</artifactId>
-			<version>${springdoc.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-security</artifactId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>${springdoc.version}</version>
 		</dependency>
 	</dependencies>
