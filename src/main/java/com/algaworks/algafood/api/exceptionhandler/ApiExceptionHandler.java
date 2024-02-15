@@ -13,13 +13,9 @@ import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -201,20 +197,20 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             final HttpMessageNotReadableException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         final Throwable rootCause = ExceptionUtils.getRootCause(ex);
 
         if (rootCause instanceof InvalidFormatException) {
             final ResponseEntity<Object> response = this.handleInvalidFormatException(
-                    (InvalidFormatException) rootCause, headers, status, request
+                    (InvalidFormatException) rootCause, headers, statusCode, request
             );
 
             return response;
         } else if (rootCause instanceof PropertyBindingException) {
             final ResponseEntity<Object> response = this.handlePropertyBindingException(
-                    (PropertyBindingException) rootCause, headers, status, request
+                    (PropertyBindingException) rootCause, headers, statusCode, request
             );
 
             return response;
@@ -223,11 +219,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         final ApiErrorType mensagemIncompreensivel = ApiErrorType.MENSAGEM_INCOMPREENSIVEL;
         final String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
 
-        final ApiError apiError = this.createApiErrorBuilder(status, mensagemIncompreensivel, detail)
+        final ApiError apiError = this.createApiErrorBuilder(statusCode, mensagemIncompreensivel, detail)
                 .build();
 
         final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, new HttpHeaders(), status, request);
+                .handleExceptionInternal(ex, apiError, new HttpHeaders(), statusCode, request);
 
         return response;
     }
@@ -236,26 +232,26 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleTypeMismatch(
             final TypeMismatchException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
 
         if (ex instanceof MethodArgumentTypeMismatchException) {
             final ResponseEntity<Object> response = this.handleMethodArgumentTypeMismatchException(
-                    (MethodArgumentTypeMismatchException) ex, headers, status, request
+                    (MethodArgumentTypeMismatchException) ex, headers, statusCode, request
             );
 
             return response;
         }
 
-        return super.handleTypeMismatch(ex, headers, status, request);
+        return super.handleTypeMismatch(ex, headers, statusCode, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(
             final NoHandlerFoundException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         final ApiErrorType recursoNaoEncontrado = ApiErrorType.RECURSO_NAO_ENCONTRADO;
@@ -265,12 +261,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 ex.getRequestURL()
         );
 
-        final ApiError apiError = this.createApiErrorBuilder(status, recursoNaoEncontrado, detail)
+        final ApiError apiError = this.createApiErrorBuilder(statusCode, recursoNaoEncontrado, detail)
                 .userMessage(detail)
                 .build();
 
         final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, headers, status, request);
+                .handleExceptionInternal(ex, apiError, headers, statusCode, request);
 
         return response;
     }
@@ -280,57 +276,40 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final Exception ex,
             Object body,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         if (body == null) {
             body = ApiError.builder()
-                    .title(status.getReasonPhrase())
-                    .status(status.value())
+                    .title(HttpStatus.valueOf(statusCode.value()).getReasonPhrase())
+                    .status(statusCode.value())
                     .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         } else if (body instanceof String) {
             body = ApiError.builder()
                     .title((String) body)
-                    .status(status.value())
+                    .status(statusCode.value())
                     .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                     .build();
         }
 
-        return super.handleExceptionInternal(ex, body, headers, status, request);
+        return super.handleExceptionInternal(ex, body, headers, statusCode, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             final MethodArgumentNotValidException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         final ResponseEntity<Object> response = this.handleValidationInternal(
                 ex,
                 ex.getBindingResult(),
                 headers,
-                status,
-                request
-        );
-
-        return response;
-    }
-
-    @Override
-    protected ResponseEntity<Object> handleBindException(
-            final BindException ex,
-            final HttpHeaders headers,
-            final HttpStatus status,
-            final WebRequest request) {
-        final ResponseEntity<Object> response = this.handleValidationInternal(
-                ex,
-                ex.getBindingResult(),
-                headers,
-                status,
+                statusCode,
                 request
         );
 
@@ -341,11 +320,11 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(
             final HttpMediaTypeNotAcceptableException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request) {
 
         final ResponseEntity<Object> response = ResponseEntity
-                .status(status)
+                .status(statusCode)
                 .headers(headers)
                 .build();
 
@@ -355,16 +334,16 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * Método privado que cria uma instância de {@link ApiError.ApiErrorBuilder}
      *
-     * @param status - o código HTTP da mensagem de erro
+     * @param statusCode - o código HTTP da mensagem de erro
      * @param apiErrorType - instância do enum com propriedades do erro
      * @param detail - texto com a mensagem detalhada do erro
      * @return
      */
     private ApiError.ApiErrorBuilder createApiErrorBuilder(
-            final HttpStatus status, final ApiErrorType apiErrorType, final String detail
+            final HttpStatusCode statusCode, final ApiErrorType apiErrorType, final String detail
     ) {
         final ApiError.ApiErrorBuilder apiErrorBuilder = ApiError.builder()
-                .status(status.value())
+                .status(statusCode.value())
                 .type(apiErrorType.getUri())
                 .title(apiErrorType.getTitle())
                 .detail(detail)
@@ -376,7 +355,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleInvalidFormatException(
             final InvalidFormatException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         final String path = this.joinPath(ex.getPath());
@@ -389,12 +368,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         final ApiError apiError = this
-                .createApiErrorBuilder(status, mensagemIncompreensivel, detail)
+                .createApiErrorBuilder(statusCode, mensagemIncompreensivel, detail)
                 .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                 .build();
 
         final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, headers, status, request);
+                .handleExceptionInternal(ex, apiError, headers, statusCode, request);
 
         return response;
     }
@@ -402,7 +381,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handlePropertyBindingException(
             final PropertyBindingException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         final String path = this.joinPath(ex.getPath());
@@ -415,12 +394,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         final ApiError apiError = this
-                .createApiErrorBuilder(status, mensagemIncompreensivel, detail)
+                .createApiErrorBuilder(statusCode, mensagemIncompreensivel, detail)
                 .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                 .build();
 
         final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, headers, status, request);
+                .handleExceptionInternal(ex, apiError, headers, statusCode, request);
 
         return response;
     }
@@ -428,7 +407,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleMethodArgumentTypeMismatchException(
             final MethodArgumentTypeMismatchException ex,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
         final ApiErrorType parametroInvalido = ApiErrorType.PARAMETRO_INVALIDO;
@@ -440,12 +419,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         );
 
         final ApiError apiError = this
-                .createApiErrorBuilder(status, parametroInvalido, detail)
+                .createApiErrorBuilder(statusCode, parametroInvalido, detail)
                 .userMessage(detail)
                 .build();
 
         final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, headers, status, request);
+                .handleExceptionInternal(ex, apiError, headers, statusCode, request);
 
         return response;
     }
@@ -454,7 +433,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
             final Exception ex,
             final BindingResult bindingResult,
             final HttpHeaders headers,
-            final HttpStatus status,
+            final HttpStatusCode statusCode,
             final WebRequest request
     ) {
 
@@ -481,13 +460,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 })
                 .collect(Collectors.toList());
 
-        final ApiError apiError = this.createApiErrorBuilder(status, errorType, detail)
+        final ApiError apiError = this.createApiErrorBuilder(statusCode, errorType, detail)
                 .userMessage(detail)
                 .objects(errObjects)
                 .build();
 
         final ResponseEntity<Object> response = this
-                .handleExceptionInternal(ex, apiError, headers, status, request);
+                .handleExceptionInternal(ex, apiError, headers, statusCode, request);
 
         return response;
     }
