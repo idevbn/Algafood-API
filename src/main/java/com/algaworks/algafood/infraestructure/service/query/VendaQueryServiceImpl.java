@@ -7,9 +7,9 @@ import com.algaworks.algafood.domain.model.dto.VendaDiaria;
 import com.algaworks.algafood.domain.service.VendaQueryService;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +48,7 @@ public class VendaQueryServiceImpl implements VendaQueryService {
         );
 
         if (filter.getRestauranteId() != null) {
-            predicates.add(builder.equal(root.get("restaurante"), filter.getRestauranteId()));
+            predicates.add(builder.equal(root.get("restaurante").get("id"), filter.getRestauranteId()));
         }
 
         if (filter.getDataCriacaoInicio() != null) {
